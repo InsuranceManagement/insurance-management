@@ -11,3 +11,78 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id        String   @id 
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? 
+}
+
+model InsuranceCompany {
+  id        String   @id 
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  products  Products[]
+}
+
+model ProductType {
+  id        String   @id 
+  name      String   @unique
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  products  Products[]
+}
+
+model Products {
+  id                 String   @id 
+  name               String
+  productTypeId      String
+  productType        ProductType @relation(fields: [productTypeId], references: [id])
+  insuranceCompanyId String
+  insuranceCompany   InsuranceCompany @relation(fields: [insuranceCompanyId], references: [id])
+  clients            Client[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  deletedAt          DateTime?
+
+  visits Visit[]
+}
+
+model Client {
+  id        String   @id 
+  name      String
+  email     String   @unique
+  cpf       String   @unique
+  cnpj      String   @unique
+  phoneNumber      String
+  birthDate DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  products   Products[]
+
+  visits Visit[]
+}
+
+model Visit {
+  id        String   @id
+  name      String
+  description String 
+  clientId  String
+  client    Client @relation(fields: [clientId], references: [id])
+  productId String
+  product   Products @relation(fields: [productId], references: [id])
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
