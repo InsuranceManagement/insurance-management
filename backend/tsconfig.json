@@ -16,6 +16,13 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@/*": ["src/*"],
+      "@file-system/*": ["src/modules/file-system/*"],
+      "@generated/prisma": ["generated/prisma/client"],
+      "@generated/prisma/*": ["generated/prisma/*"],
+      "@database/*": ["src/modules/database/*"]
+    }
   }
 }
