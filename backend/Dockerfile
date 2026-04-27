@@ -33,10 +33,10 @@ COPY --from=builder /usr/src/app/tsconfig.json ./tsconfig.json
 COPY --from=builder /usr/src/app/generated ./generated
 COPY --from=builder /usr/src/app/src ./src
 
-EXPOSE 3002
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:3002/ || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
 
 # Run migrations and start the app. Use exec to forward signals.
 # Auto-detect main.js location to handle different NestJS CLI configurations
