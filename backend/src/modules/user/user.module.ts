@@ -7,16 +7,11 @@ import { UserService } from './services/user.service'
 import { UserController } from './user.controller'
 import { UserRepository } from './user.repository'
 
-const jwtSecret = environment.JWT_SECRET
-if (!jwtSecret) {
-  throw new Error('JWT_SECRET is required')
-}
-
 @Module({
   imports: [
     PrismaModule,
     JwtModule.register({
-      secret: jwtSecret,
+      secret: environment.JWT_SECRET,
       signOptions: {
         expiresIn: environment.JWT_EXPIRES_IN_SECONDS,
       },
