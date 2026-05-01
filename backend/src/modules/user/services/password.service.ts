@@ -3,11 +3,11 @@ import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class PasswordService {
-  async hash(plainPassword: string): Promise<string> {
+  hash(plainPassword: string): string {
     return bcrypt.hash(plainPassword, 10)
   }
 
-  async compare(plainPassword: string, hashedPassword: string): Promise<boolean> {
+  compare(plainPassword: string, hashedPassword: string): boolean {
     return bcrypt.compare(plainPassword, hashedPassword)
   }
 }

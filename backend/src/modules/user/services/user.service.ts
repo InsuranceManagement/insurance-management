@@ -30,7 +30,7 @@ export class UserService {
       throw new BadRequestException('E-mail already in use')
     }
 
-    const hashedPassword = await this.passwordService.hash(input.password)
+    const hashedPassword = this.passwordService.hash(input.password)
     const user = await this.userRepository.create({ ...input, password: hashedPassword })
     const accessToken = await this.signToken(user)
 
@@ -40,11 +40,11 @@ export class UserService {
   async login(input: LoginDto): Promise<AuthResponseDto> {
     const user = await this.userRepository.findByEmail(input.email)
 
-    if (!user || !user.isActive()) {
+    if (!user?.isActive()) {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    const isPasswordValid = await this.passwordService.compare(input.password, user.password)
+    const isPasswordValid = this.passwordService.compare(input.password, user.password)
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials')
@@ -58,7 +58,7 @@ export class UserService {
   async getById(userId: string): Promise<UserResponseDto> {
     const user = await this.userRepository.findById(userId)
 
-    if (!user || !user.isActive()) {
+    if (!user?.isActive()) {
       throw new NotFoundException('User not found')
     }
 
@@ -77,7 +77,7 @@ export class UserService {
   async update(userId: string, input: UpdateUserDto): Promise<void> {
     const existingUser = await this.userRepository.findById(userId)
 
-    if (!existingUser || !existingUser.isActive()) {
+    if (!existingUser?.isActive()) {
       throw new NotFoundException('User not found')
     }
 
@@ -91,7 +91,7 @@ export class UserService {
     const updateData: UpdateUserDto = { ...input }
 
     if (updateData.password) {
-      updateData.password = await this.passwordService.hash(updateData.password)
+      updateData.password = this.passwordService.hash(updateData.password)
     }
 
     await this.userRepository.update(userId, updateData)
@@ -100,7 +100,7 @@ export class UserService {
   async delete(userId: string): Promise<void> {
     const existingUser = await this.userRepository.findById(userId)
 
-    if (!existingUser || !existingUser.isActive()) {
+    if (!existingUser?.isActive()) {
       throw new NotFoundException('User not found')
     }
 
@@ -108,7 +108,7 @@ export class UserService {
   }
 
   private async signToken(user: User): Promise<string> {
-    return this.jwtService.signAsync({
+    return await this.jwtService.signAsync({
       sub: user.id,
       id: user.id,
       name: user.name,
