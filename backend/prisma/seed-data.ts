@@ -42,7 +42,22 @@ export const seedData = {
     },
     { id: 'EMPRESARIAL', name: 'Empresarial', description: 'Seguro empresarial' },
   ],
-  // TODO: Add insurance companies and products seeds
-  insuranceCompany: [],
+  insuranceCompany: [
+    {
+      id: 'b0a3f1cc-8b9a-4f3d-9d88-1c2b6d3a4f01',
+      name: 'Alpha Seguros',
+      color: '#0A5CFF',
+    },
+    {
+      id: 'c9d42d83-ef64-4f8d-9d13-3d2a1c0b8f02',
+      name: 'Brava Vida',
+      color: '#1A8F5E',
+    },
+    {
+      id: '8f6b7a21-0e3c-4c0f-9f12-7d8e9a0b1c03',
+      name: 'Cobre Protecao',
+      color: '#F05A28',
+    },
+  ],
   products: [],
 }
