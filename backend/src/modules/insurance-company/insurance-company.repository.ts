@@ -109,7 +109,6 @@ export class InsuranceCompanyRepository {
       company.createdAt,
       company.updatedAt,
       company.deletedAt,
-
     )
   }
-}  
+}
