@@ -1,0 +1,82 @@
+import { CreateInsuranceCompanyDto } from '@/modules/insurance-company/dto/create-insurance-company.dto'
+import { InsuranceCompanyResponseDto } from '@/modules/insurance-company/dto/insurance-company-response.dto'
+import { ListInsuranceCompaniesDto } from '@/modules/insurance-company/dto/list-insurance-companies.dto'
+import { UpdateInsuranceCompanyDto } from '@/modules/insurance-company/dto/update-insurance-company.dto'
+import { InsuranceCompany } from '@/modules/insurance-company/entities/insurance-company'
+import { InsuranceCompanyRepository } from '@/modules/insurance-company/insurance-company.repository'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+
+@Injectable()
+export class InsuranceCompanyService {
+  constructor(private readonly insuranceCompanyRepository: InsuranceCompanyRepository) {}
+
+  async create(input: CreateInsuranceCompanyDto): Promise<InsuranceCompanyResponseDto> {
+    const existingCompany = await this.insuranceCompanyRepository.findByName(input.name)
+
+    if (existingCompany) {
+      throw new BadRequestException('Insurance company name already in use')
+    }
+
+    const company = await this.insuranceCompanyRepository.create(input)
+
+    return this.toResponse(company)
+  }
+
+  async getById(companyId: string): Promise<InsuranceCompanyResponseDto> {
+    const company = await this.insuranceCompanyRepository.findById(companyId)
+
+    if (!company?.isActive()) {
+      throw new NotFoundException('Insurance company not found')
+    }
+
+    return this.toResponse(company)
+  }
+
+  async list(
+    query: ListInsuranceCompaniesDto,
+  ): Promise<{ insuranceCompanies: InsuranceCompanyResponseDto[]; total: number }> {
+    const { companies, total } = await this.insuranceCompanyRepository.list(query)
+
+    return {
+      insuranceCompanies: companies.map((company) => this.toResponse(company)),
+      total,
+    }
+  }
+
+  async update(companyId: string, input: UpdateInsuranceCompanyDto): Promise<void> {
+    const existingCompany = await this.insuranceCompanyRepository.findById(companyId)
+
+    if (!existingCompany?.isActive()) {
+      throw new NotFoundException('Insurance company not found')
+    }
+
+    if (input.name && input.name !== existingCompany.name) {
+      const nameInUse = await this.insuranceCompanyRepository.findByName(input.name)
+      if (nameInUse && nameInUse.id !== companyId) {
+        throw new BadRequestException('Insurance company name already in use')
+      }
+    }
+
+    await this.insuranceCompanyRepository.update(companyId, input)
+  }
+
+  async delete(companyId: string): Promise<void> {
+    const existingCompany = await this.insuranceCompanyRepository.findById(companyId)
+
+    if (!existingCompany?.isActive()) {
+      throw new NotFoundException('Insurance company not found')
+    }
+
+    await this.insuranceCompanyRepository.softDelete(companyId)
+  }
+
+  private toResponse(company: InsuranceCompany): InsuranceCompanyResponseDto {
+    return {
+      id: company.id,
+      name: company.name,
+      color: company.color,
+      createdAt: company.createdAt,
+      updatedAt: company.updatedAt,
+    }
+  }
+}
