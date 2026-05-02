@@ -59,5 +59,60 @@ export const seedData = {
       color: '#F05A28',
     },
   ],
-  products: [],
+  products: [
+    {
+      id: 'a1f3c2d4-1111-4f2a-9c1a-000000000001',
+      name: 'Alpha Vida Essencial',
+      productTypeId: 'VIDA_QUALQUER_CAUSA',
+      insuranceCompanyId: 'b0a3f1cc-8b9a-4f3d-9d88-1c2b6d3a4f01',
+    },
+    {
+      id: 'a1f3c2d4-1111-4f2a-9c1a-000000000002',
+      name: 'Alpha Acidente Total',
+      productTypeId: 'MORTE_ACIDENTAL',
+      insuranceCompanyId: 'b0a3f1cc-8b9a-4f3d-9d88-1c2b6d3a4f01',
+    },
+    {
+      id: 'a1f3c2d4-1111-4f2a-9c1a-000000000003',
+      name: 'Alpha Invalidez Plus',
+      productTypeId: 'INVALIDEZ_PERMANENTE_ACIDENTE',
+      insuranceCompanyId: 'b0a3f1cc-8b9a-4f3d-9d88-1c2b6d3a4f01',
+    },
+    {
+      id: 'b2e4d3c5-2222-4b3b-9d2b-000000000001',
+      name: 'Brava Protecao Familiar',
+      productTypeId: 'SAF_FAMILIAR',
+      insuranceCompanyId: 'c9d42d83-ef64-4f8d-9d13-3d2a1c0b8f02',
+    },
+    {
+      id: 'b2e4d3c5-2222-4b3b-9d2b-000000000002',
+      name: 'Brava Cirurgias Plus',
+      productTypeId: 'CIRURGIAS',
+      insuranceCompanyId: 'c9d42d83-ef64-4f8d-9d13-3d2a1c0b8f02',
+    },
+    {
+      id: 'b2e4d3c5-2222-4b3b-9d2b-000000000003',
+      name: 'Brava Diaria UTI',
+      productTypeId: 'DIH_UTI',
+      insuranceCompanyId: 'c9d42d83-ef64-4f8d-9d13-3d2a1c0b8f02',
+    },
+    {
+      id: 'c3f5e4d6-3333-4c4c-9e3c-000000000001',
+      name: 'Cobre Responsabilidade',
+      productTypeId: 'RESPONSABILIDADE_CIVIL',
+      insuranceCompanyId: '8f6b7a21-0e3c-4c0f-9f12-7d8e9a0b1c03',
+    },
+    {
+      id: 'c3f5e4d6-3333-4c4c-9e3c-000000000002',
+      name: 'Cobre Doencas Graves',
+      productTypeId: 'DOENCAS_GRAVES',
+      insuranceCompanyId: '8f6b7a21-0e3c-4c0f-9f12-7d8e9a0b1c03',
+    },
+    {
+      id: 'c3f5e4d6-3333-4c4c-9e3c-000000000003',
+      name: 'Cobre Empresarial Base',
+      productTypeId: 'EMPRESARIAL',
+      insuranceCompanyId: '8f6b7a21-0e3c-4c0f-9f12-7d8e9a0b1c03',
+    },
+  ],
 }
