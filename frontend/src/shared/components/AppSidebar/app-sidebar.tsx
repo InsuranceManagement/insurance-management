@@ -13,7 +13,6 @@ import {
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -23,6 +22,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/shared/components/ui/sidebar"
+import { Typography } from "@/shared/components/ui/typography"
 
 const mainItems = [
   {
@@ -77,9 +77,13 @@ export function AppSidebar() {
                 <span aria-hidden className="text-base leading-none">
                   🛡️
                 </span>
-                <span className="group-data-[collapsible=icon]:hidden">
-                  Gerenciamento de seguros
-                </span>
+                <Typography
+                  asChild
+                  variant="small"
+                  className="group-data-[collapsible=icon]:hidden"
+                >
+                  <span>Gerenciamento de seguros</span>
+                </Typography>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -100,7 +104,9 @@ export function AppSidebar() {
                   >
                     <Link href={item.href}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <Typography asChild variant="small">
+                        <span>{item.title}</span>
+                      </Typography>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -118,7 +124,9 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <Link href={item.href}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <Typography asChild variant="small">
+                        <span>{item.title}</span>
+                      </Typography>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
