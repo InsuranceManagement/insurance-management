@@ -1,11 +1,8 @@
 import { cn } from "@/shared/lib/utils"
+import { AppHeader } from "@/shared/components/AppHeader/app-header"
 import { AppSidebar } from "@/shared/components/AppSidebar/app-sidebar"
-import { Separator } from "@/shared/components/ui/separator"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/shared/components/ui/sidebar"
+import { Box } from "@/shared/components/ui/box"
+import { SidebarInset, SidebarProvider } from "@/shared/components/ui/sidebar"
 import { TooltipProvider } from "@/shared/components/ui/tooltip"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
@@ -50,14 +47,8 @@ export default function RootLayout({
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-              <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator orientation="vertical" className="mr-2 h-4" />
-                <p className="text-sm font-medium text-muted-foreground">
-                  Painel de seguros
-                </p>
-              </header>
-              <div className="flex flex-1 flex-col">{children}</div>
+              <AppHeader />
+              <Box className="flex-1 flex-col">{children}</Box>
             </SidebarInset>
           </SidebarProvider>
         </TooltipProvider>
