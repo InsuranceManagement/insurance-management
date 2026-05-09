@@ -50,8 +50,8 @@ const mainItems = [
 
 const supportItems = [
   {
-    title: "Financeiro",
-    href: "#",
+    title: "Seguradoras",
+    href: "/seguradoras",
     icon: CircleDollarSignIcon,
   },
   {
@@ -116,7 +116,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Operacao</SidebarGroupLabel>
+          <SidebarGroupLabel>Operação</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {supportItems.map((item) => (
