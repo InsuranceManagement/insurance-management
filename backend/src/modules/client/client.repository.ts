@@ -17,17 +17,6 @@ type ClientRecord = {
   deletedAt: Date | null
 }
 
-type ClientWithProductsRecord = ClientRecord & {
-  products: Array<{
-    id: string
-    name: string
-    productTypeId: string
-    insuranceCompanyId: string
-    createdAt: Date
-    updatedAt: Date
-  }>
-}
-
 type ProductRecord = {
   id: string
   name: string
