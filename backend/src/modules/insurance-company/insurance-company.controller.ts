@@ -1,8 +1,7 @@
 import { CreateInsuranceCompanyDto } from '@/modules/insurance-company/dto/create-insurance-company.dto'
-import { ListInsuranceCompaniesDto } from '@/modules/insurance-company/dto/list-insurance-companies.dto'
 import { UpdateInsuranceCompanyDto } from '@/modules/insurance-company/dto/update-insurance-company.dto'
 import { InsuranceCompanyService } from '@/modules/insurance-company/services/insurance-company.service'
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Insurance Companies')
@@ -21,8 +20,8 @@ export class InsuranceCompanyController {
   }
 
   @Get()
-  list(@Query() query: ListInsuranceCompaniesDto) {
-    return this.insuranceCompanyService.list(query)
+  list() {
+    return this.insuranceCompanyService.list()
   }
 
   @Patch(':id')
