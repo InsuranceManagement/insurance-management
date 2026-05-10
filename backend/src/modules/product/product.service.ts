@@ -2,7 +2,6 @@ import { Product } from '@/modules/product/entities/product'
 import { ProductRepository } from '@/modules/product/product.repository'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateProductDto } from './dto/create-product.dto'
-import { ListProductsDto } from './dto/list-products.dto'
 import { ProductResponseDto } from './dto/product-response.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 
@@ -26,13 +25,10 @@ export class ProductService {
     return this.toResponse(product)
   }
 
-  async list(query: ListProductsDto): Promise<{ products: ProductResponseDto[]; total: number }> {
-    const { products, total } = await this.productRepository.list(query)
+  async list(): Promise<ProductResponseDto[]> {
+    const products = await this.productRepository.list()
 
-    return {
-      products: products.map((product) => this.toResponse(product)),
-      total,
-    }
+    return products.map((product) => this.toResponse(product))
   }
 
   async update(productId: string, input: UpdateProductDto): Promise<void> {

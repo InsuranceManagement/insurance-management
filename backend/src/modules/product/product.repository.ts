@@ -3,7 +3,6 @@ import { Product } from '@/modules/product/entities/product'
 import { CreateProductInput } from '@/modules/product/inputs/create-product.input'
 import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
-import { ListProductsInput } from './inputs/list-products.input'
 import { UpdateProductInput } from './inputs/update-product.input'
 
 type ProductRecord = {
@@ -66,30 +65,15 @@ export class ProductRepository {
     })
   }
 
-  async list(input: ListProductsInput): Promise<{ products: Product[]; total: number }> {
-    const where = {
-      deletedAt: null,
-      ...(input.searchTerm
-        ? {
-            name: { contains: input.searchTerm, mode: 'insensitive' as const },
-          }
-        : {}),
-    }
+  async list(): Promise<Product[]> {
+    const products = await this.prismaService.products.findMany({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: { createdAt: 'desc' },
+    })
 
-    const [products, total] = await Promise.all([
-      this.prismaService.products.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: input.skip ?? 0,
-        take: input.take ?? 10,
-      }),
-      this.prismaService.products.count({ where }),
-    ])
-
-    return {
-      products: products.map((product) => this.toEntity(product)),
-      total,
-    }
+    return products.map((product) => this.toEntity(product))
   }
 
   private toEntity(product: ProductRecord): Product {

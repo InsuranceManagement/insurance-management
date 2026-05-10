@@ -1,8 +1,7 @@
 import { ProductService } from '@/modules/product/product.service'
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { CreateProductDto } from './dto/create-product.dto'
-import { ListProductsDto } from './dto/list-products.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 
 @ApiTags('Products')
@@ -21,8 +20,8 @@ export class ProductController {
   }
 
   @Get()
-  list(@Query() query: ListProductsDto) {
-    return this.productService.list(query)
+  list() {
+    return this.productService.list()
   }
 
   @Patch(':id')

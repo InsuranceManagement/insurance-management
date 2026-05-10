@@ -1,9 +1,8 @@
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
-import { ListUsersDto } from '@/modules/user/dto/list-users.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { UpdateUserDto } from '@/modules/user/dto/update-user.dto'
 import { UserService } from '@/modules/user/services/user.service'
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Users')
@@ -27,8 +26,8 @@ export class UserController {
   }
 
   @Get()
-  list(@Query() query: ListUsersDto) {
-    return this.userService.list(query)
+  list() {
+    return this.userService.list()
   }
 
   @Patch(':id')
