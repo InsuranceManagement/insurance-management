@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   CircleDollarSignIcon,
   FileTextIcon,
@@ -29,7 +30,6 @@ const mainItems = [
     title: "Visao geral",
     href: "/",
     icon: HomeIcon,
-    isActive: true,
   },
   {
     title: "Apolices",
@@ -62,6 +62,8 @@ const supportItems = [
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
+
   return (
     <Sidebar collapsible="icon" variant="inset">
       <SidebarHeader>
@@ -99,7 +101,10 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    isActive={item.isActive}
+                    isActive={
+                      pathname === item.href ||
+                      (item.href !== "/" && pathname?.startsWith(item.href))
+                    }
                     tooltip={item.title}
                   >
                     <Link href={item.href}>
@@ -121,7 +126,14 @@ export function AppSidebar() {
             <SidebarMenu>
               {supportItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    isActive={
+                      pathname === item.href ||
+                      (item.href !== "/" && pathname?.startsWith(item.href))
+                    }
+                  >
                     <Link href={item.href}>
                       <item.icon />
                       <Typography asChild variant="small">
