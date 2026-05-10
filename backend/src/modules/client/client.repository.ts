@@ -76,14 +76,16 @@ export class ClientRepository {
       return null
     }
 
-    const products = client.products.map((product): ClientProduct => ({
-      id: product.id,
-      name: product.name,
-      productTypeId: product.productTypeId,
-      insuranceCompanyId: product.insuranceCompanyId,
-      createdAt: product.createdAt,
-      updatedAt: product.updatedAt,
-    }))
+    const products = client.products.map(
+      (product): ClientProduct => ({
+        id: product.id,
+        name: product.name,
+        productTypeId: product.productTypeId,
+        insuranceCompanyId: product.insuranceCompanyId,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+      }),
+    )
 
     return this.toEntity(client, products)
   }
