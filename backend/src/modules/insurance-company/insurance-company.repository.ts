@@ -1,7 +1,6 @@
 import { PrismaService } from '@/modules/database/prisma.service'
 import { InsuranceCompany } from '@/modules/insurance-company/entities/insurance-company'
 import { CreateInsuranceCompanyInput } from '@/modules/insurance-company/inputs/create-insurance-company.input'
-import { ListInsuranceCompaniesInput } from '@/modules/insurance-company/inputs/list-insurance-companies.input'
 import { UpdateInsuranceCompanyInput } from '@/modules/insurance-company/inputs/update-insurance-company.input'
 import { Injectable } from '@nestjs/common'
 
@@ -73,32 +72,17 @@ export class InsuranceCompanyRepository {
     })
   }
 
-  async list(
-    input: ListInsuranceCompaniesInput,
-  ): Promise<{ companies: InsuranceCompany[]; total: number }> {
+  async list(): Promise<InsuranceCompany[]> {
     const where = {
       deletedAt: null,
-      ...(input.searchTerm
-        ? {
-            name: { contains: input.searchTerm, mode: 'insensitive' as const },
-          }
-        : {}),
     }
 
-    const [companies, total] = await Promise.all([
-      this.prismaService.insuranceCompany.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: input.skip ?? 0,
-        take: input.take ?? 10,
-      }),
-      this.prismaService.insuranceCompany.count({ where }),
-    ])
+    const companies = await this.prismaService.insuranceCompany.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+    })
 
-    return {
-      companies: companies.map((company) => this.toEntity(company)),
-      total,
-    }
+    return companies.map((company) => this.toEntity(company))
   }
 
   private toEntity(company: InsuranceCompanyRecord): InsuranceCompany {
