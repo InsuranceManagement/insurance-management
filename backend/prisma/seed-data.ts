@@ -45,18 +45,38 @@ export const seedData = {
   insuranceCompany: [
     {
       id: 'b0a3f1cc-8b9a-4f3d-9d88-1c2b6d3a4f01',
-      name: 'Alpha Seguros',
-      color: '#0A5CFF',
+      name: 'MAG SEGUROS',
+      color: '#7EC8FF',
     },
     {
       id: 'c9d42d83-ef64-4f8d-9d13-3d2a1c0b8f02',
-      name: 'Brava Vida',
-      color: '#1A8F5E',
+      name: 'ANADEM',
+      color: '#0B6623',
     },
     {
       id: '8f6b7a21-0e3c-4c0f-9f12-7d8e9a0b1c03',
-      name: 'Cobre Protecao',
-      color: '#F05A28',
+      name: 'PORTO SEGURO',
+      color: '#003366',
+    },
+    {
+      id: 'd4a4f21d-9c64-4f2a-9f11-4a7b5a2c1d04',
+      name: 'AZOS',
+      color: '#7ED957',
+    },
+    {
+      id: 'e5b6a3f2-6c3d-4d2f-8a1b-2c3d4e5f6a05',
+      name: 'ICATU',
+      color: '#E53935',
+    },
+    {
+      id: 'f6c7b4a3-7d4e-5f3a-9b2c-3d4e5f6a7b06',
+      name: 'SULAMERICA',
+      color: '#F2994A',
+    },
+    {
+      id: 'a7d8c5b4-8e5f-6a4b-0c3d-4e5f6a7b8c07',
+      name: 'CAPEMISA',
+      color: '#6A1B9A',
     },
   ],
   products: [
