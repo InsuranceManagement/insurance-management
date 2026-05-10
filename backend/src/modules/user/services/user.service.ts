@@ -1,6 +1,5 @@
 import { AuthResponseDto } from '@/modules/user/dto/auth-response.dto'
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
-import { ListUsersDto } from '@/modules/user/dto/list-users.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { UpdateUserDto } from '@/modules/user/dto/update-user.dto'
 import { UserResponseDto } from '@/modules/user/dto/user-response.dto'
@@ -65,13 +64,10 @@ export class UserService {
     return this.toUserResponse(user)
   }
 
-  async list(query: ListUsersDto): Promise<{ users: UserResponseDto[]; total: number }> {
-    const { users, total } = await this.userRepository.list(query)
+  async list(): Promise<UserResponseDto[]> {
+    const users = await this.userRepository.list()
 
-    return {
-      users: users.map((user) => this.toUserResponse(user)),
-      total,
-    }
+    return users.map((user) => this.toUserResponse(user))
   }
 
   async update(userId: string, input: UpdateUserDto): Promise<void> {
