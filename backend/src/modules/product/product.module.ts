@@ -5,8 +5,8 @@ import { ProductRepository } from './product.repository'
 import { ProductService } from './product.service'
 
 @Module({
-	imports: [PrismaModule],
-	controllers: [ProductController],
-	providers: [ProductService, ProductRepository],
+  imports: [PrismaModule],
+  controllers: [ProductController],
+  providers: [ProductService, ProductRepository],
 })
 export class ProductModule {}
