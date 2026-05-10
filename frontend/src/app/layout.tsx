@@ -1,5 +1,6 @@
 import { cn } from "@/shared/lib/utils"
 import { AppHeader } from "@/shared/components/AppHeader/app-header"
+import { QueryProvider } from "@/shared/components/QueryProvider/query-provider"
 import { AppSidebar } from "@/shared/components/AppSidebar/app-sidebar"
 import { Box } from "@/shared/components/ui/box"
 import { SidebarInset, SidebarProvider } from "@/shared/components/ui/sidebar"
@@ -25,11 +26,13 @@ export const metadata: Metadata = {
   description: "Insurance operation and policy dashboard",
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+type RootLayoutProps = {
   children: React.ReactNode
-}>) {
+}
+
+export default function RootLayout(props: Readonly<RootLayoutProps>) {
+  const { children } = props
+
   return (
     <html
       lang="en"
@@ -43,15 +46,17 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full">
-        <TooltipProvider delayDuration={0}>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <AppHeader />
-              <Box className="flex-1 flex-col">{children}</Box>
-            </SidebarInset>
-          </SidebarProvider>
-        </TooltipProvider>
+        <QueryProvider>
+          <TooltipProvider delayDuration={0}>
+            <SidebarProvider>
+              <AppSidebar />
+              <SidebarInset>
+                <AppHeader />
+                <Box className="flex-1 flex-col">{children}</Box>
+              </SidebarInset>
+            </SidebarProvider>
+          </TooltipProvider>
+        </QueryProvider>
       </body>
     </html>
   )

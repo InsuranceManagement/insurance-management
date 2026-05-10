@@ -41,11 +41,6 @@ const mainItems = [
     href: "#",
     icon: ShieldCheckIcon,
   },
-  {
-    title: "Clientes",
-    href: "#",
-    icon: UsersIcon,
-  },
 ]
 
 const supportItems = [
@@ -53,6 +48,11 @@ const supportItems = [
     title: "Seguradoras",
     href: "/seguradoras",
     icon: CircleDollarSignIcon,
+  },
+  {
+    title: "Clientes",
+    href: "/clientes",
+    icon: UsersIcon,
   },
   {
     title: "Suporte",
