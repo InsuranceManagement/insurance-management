@@ -1,7 +1,6 @@
 import { PrismaService } from '@/modules/database/prisma.service'
 import { User } from '@/modules/user/entities/user'
 import { CreateUserInput } from '@/modules/user/inputs/create-user.input'
-import { ListUsersInput } from '@/modules/user/inputs/list-users.input'
 import { UpdateUserInput } from '@/modules/user/inputs/update-user.input'
 import { Injectable } from '@nestjs/common'
 
@@ -76,33 +75,15 @@ export class UserRepository {
     })
   }
 
-  async list(input: ListUsersInput): Promise<{ users: User[]; total: number }> {
-    const where = {
-      deletedAt: null,
-      ...(input.searchTerm
-        ? {
-            OR: [
-              { name: { contains: input.searchTerm, mode: 'insensitive' as const } },
-              { email: { contains: input.searchTerm, mode: 'insensitive' as const } },
-            ],
-          }
-        : {}),
-    }
+  async list(): Promise<User[]> {
+    const users = await this.prismaService.user.findMany({
+      where: {
+        deletedAt: null,
+      },
+      orderBy: { createdAt: 'desc' },
+    })
 
-    const [users, total] = await Promise.all([
-      this.prismaService.user.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: input.skip ?? 0,
-        take: input.take ?? 10,
-      }),
-      this.prismaService.user.count({ where }),
-    ])
-
-    return {
-      users: users.map((user) => this.toEntity(user)),
-      total,
-    }
+    return users.map((user) => this.toEntity(user))
   }
 
   private toEntity(user: UserRecord): User {
