@@ -1,15 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { Box } from "@/shared/components/ui/box"
 import { type ColumnDef } from "@tanstack/react-table"
 
 import { DataTable } from "@/shared/components/DataTable/data-table"
+import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
 import { useApiMutation } from "@/shared/hooks/use-api-mutation"
 import { useApiQuery } from "@/shared/hooks/use-api-query"
+import { Button } from "@/shared/components/ui/button"
 import { Typography } from "@/shared/components/ui/typography"
 import { ApiRouteType } from "@/shared/constants/routes"
+import { PlusIcon } from "lucide-react"
 
 type CrudSourceRoutes = {
   list: ApiRouteType
@@ -20,6 +23,7 @@ type CrudSourceRoutes = {
 
 type CrudRecord = {
   id: string
+  name: string
   [key: string]: unknown
 }
 
@@ -37,6 +41,8 @@ export function CrudScreen<TData extends CrudRecord>({
   caption,
 }: Readonly<CrudScreenProps<TData>>) {
   const [editingRow, setEditingRow] = useState<TData | null>(null)
+  const [rowsPendingDelete, setRowsPendingDelete] = useState<TData[]>([])
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const listPathKey =
     typeof sourceRoutes.list.path === "function"
@@ -45,7 +51,7 @@ export function CrudScreen<TData extends CrudRecord>({
 
   const listQueryKey = ["crud-screen", sourceRoutes.list.method, listPathKey]
 
-  const listQuery = useApiQuery<TData[]>({
+  const { data: rows, isLoading: areRowsLoading } = useApiQuery<TData[]>({
     route: sourceRoutes.list,
     queryKey: listQueryKey,
     meta: {
@@ -61,6 +67,14 @@ export function CrudScreen<TData extends CrudRecord>({
     },
   })
 
+  const createMutation = useApiMutation<unknown>({
+    route: sourceRoutes.create,
+    queryKeyToSync: listQueryKey,
+    meta: {
+      errorMessage: `Erro ao criar registros em ${title}.`,
+    },
+  })
+
   const editMutation = useApiMutation<unknown, TData>({
     route: sourceRoutes.edit,
     queryKeyToSync: listQueryKey,
@@ -69,12 +83,19 @@ export function CrudScreen<TData extends CrudRecord>({
     },
   })
 
-  const rows = listQuery.data ?? []
-
   const handleDeleteSelected = (selectedRows: TData[]) => {
-    const selectedIds = new Set(selectedRows.map((row) => row.id))
+    if (selectedRows.length === 0) {
+      return
+    }
 
-    selectedRows.forEach((selectedRow) => {
+    setRowsPendingDelete(selectedRows)
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    const selectedIds = new Set(rowsPendingDelete.map((row) => row.id))
+
+    rowsPendingDelete.forEach((selectedRow) => {
       deleteMutation.mutate({
         routeParams: [selectedRow.id],
       })
@@ -82,6 +103,28 @@ export function CrudScreen<TData extends CrudRecord>({
 
     if (editingRow && selectedIds.has(editingRow.id)) {
       setEditingRow(null)
+    }
+
+    setIsDeleteModalOpen(false)
+    setRowsPendingDelete([])
+  }
+
+  const deleteItemName = useMemo(() => {
+    const firstPendingDelete = rowsPendingDelete[0]
+    if (!firstPendingDelete) return ""
+
+    const pendingDeleteLabel = firstPendingDelete.name ?? firstPendingDelete.id
+
+    return rowsPendingDelete.length > 1
+      ? `${pendingDeleteLabel} e mais ${rowsPendingDelete.length - 1}`
+      : pendingDeleteLabel
+  }, [rowsPendingDelete])
+
+  const handleDeleteModalOpenChange = (open: boolean) => {
+    setIsDeleteModalOpen(open)
+
+    if (!open) {
+      setRowsPendingDelete([])
     }
   }
 
@@ -94,22 +137,44 @@ export function CrudScreen<TData extends CrudRecord>({
     })
   }
 
+  const handleCreate = () => {
+    createMutation.mutate({})
+  }
+
   return (
     <main className="flex flex-1 flex-col p-6 md:p-8">
-      <Box className="flex-col gap-4">
-        <Typography variant="h3">{title}</Typography>
+      <Box className="flex-col gap-15">
+        <Box className="items-center justify-between gap-4">
+          <Typography variant="h3">{title}</Typography>
+
+          <Button
+            type="button"
+            className="gap-1.5 px-3"
+            onClick={handleCreate}
+            disabled={createMutation.isPending}
+          >
+            <PlusIcon className="size-4" />
+            Novo Registro
+          </Button>
+        </Box>
 
         <DataTable
           caption={caption ?? "Tabela de registros"}
           columns={columns}
-          data={rows}
+          data={rows ?? []}
           emptyMessage={
-            listQuery.isLoading
-              ? "Carregando dados..."
-              : "Sem dados para exibir."
+            areRowsLoading ? "Carregando dados..." : "Sem dados para exibir."
           }
           onDeleteSelected={handleDeleteSelected}
           onEditSelected={handleEditSelected}
+        />
+
+        <DeleteModal
+          open={isDeleteModalOpen}
+          onOpenChange={handleDeleteModalOpenChange}
+          onConfirm={handleConfirmDelete}
+          itemName={deleteItemName}
+          isConfirming={deleteMutation.isPending}
         />
       </Box>
     </main>

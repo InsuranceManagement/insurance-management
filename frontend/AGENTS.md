@@ -9,6 +9,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### UI Components
 
 - Prefer reusing components from `src/shared/components/ui` before creating custom markup.
+- Use the `Modal` component from `ui/modal` for all popup dialogs instead of raw shadcn `Dialog` primitives. It encapsulates the standard layout (`title`, `children`, `footer`, `trigger`).
 - Use `Box` for layout containers instead of raw `div` in app-level components.
 - Use `Typography` for textual content instead of raw `h1`, `p`, and `span` whenever possible.
 - Use `Button` from `ui/button` for all clickable actions. Avoid native `button` unless strictly necessary.
