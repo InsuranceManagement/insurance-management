@@ -16,15 +16,19 @@ type UseEditEntityOptions<TData extends EditableEntityRecord> = {
   selectedRows: TData[]
 }
 
-export function useEditEntity<TData extends EditableEntityRecord>({
+export function useEditEntity<
+  TData extends EditableEntityRecord,
+  TEditPayload,
+>({
   title,
   editRoute,
   listQueryKey,
   selectedRows,
 }: Readonly<UseEditEntityOptions<TData>>) {
   const [editingRow, setEditingRow] = useState<TData | null>(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
-  const editMutation = useApiMutation<unknown, TData>({
+  const editMutation = useApiMutation<unknown, TEditPayload>({
     route: editRoute,
     queryKeyToSync: listQueryKey,
     meta: {
@@ -44,21 +48,48 @@ export function useEditEntity<TData extends EditableEntityRecord>({
     }
 
     setEditingRow(selectedRow)
+    setIsEditModalOpen(true)
+  }
 
-    editMutation.mutate({
-      routeParams: [selectedRow.id],
-      body: selectedRow,
-    })
+  const handleEditModalOpenChange = (open: boolean) => {
+    setIsEditModalOpen(open)
+
+    if (!open) {
+      setEditingRow(null)
+    }
+  }
+
+  const handleEdit = (payload: TEditPayload) => {
+    if (!editingRow) {
+      return
+    }
+
+    editMutation.mutate(
+      {
+        routeParams: [editingRow.id],
+        body: payload,
+      },
+      {
+        onSuccess: () => {
+          setIsEditModalOpen(false)
+          setEditingRow(null)
+        },
+      },
+    )
   }
 
   const clearEditingRow = () => {
+    setIsEditModalOpen(false)
     setEditingRow(null)
   }
 
   return {
     editingRow,
-    editMutation,
+    isEditModalOpen,
     handleEditSelected,
+    handleEditModalOpenChange,
+    handleEdit,
     clearEditingRow,
+    isPending: editMutation.isPending,
   }
 }

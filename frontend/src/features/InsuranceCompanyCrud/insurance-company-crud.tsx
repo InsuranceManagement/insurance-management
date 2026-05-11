@@ -1,19 +1,14 @@
 "use client"
 import { type ColumnDef } from "@tanstack/react-table"
 
+import { InsuranceCompanyForm } from "@/features/InsuranceCompanyCrud/components/form"
+import { type InsuranceCompany } from "@/features/models/insurance-company"
+import { type InsuranceCompanyUpsertFormValues } from "@/features/schema"
 import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen"
 import { Box } from "@/shared/components/ui/box"
 import { Typography } from "@/shared/components/ui/typography"
 import { routes } from "@/shared/constants/routes"
 import { formatDate } from "@/shared/lib/date-format"
-
-type InsuranceCompany = {
-  id: string
-  name: string
-  color: string
-  createdAt: string
-  updatedAt: string
-}
 
 const columns: ColumnDef<InsuranceCompany>[] = [
   {
@@ -58,9 +53,16 @@ const columns: ColumnDef<InsuranceCompany>[] = [
 
 export default function InsuranceCompanyCrud() {
   return (
-    <CrudScreen<InsuranceCompany>
+    <CrudScreen<InsuranceCompany, InsuranceCompanyUpsertFormValues>
       title="Seguradoras"
       columns={columns}
+      createForm={InsuranceCompanyForm}
+      createFormTitle="Nova seguradora"
+      editFormTitle="Editar seguradora"
+      mapEditEntityToFormValues={(entity) => ({
+        name: entity.name,
+        color: entity.color,
+      })}
       caption="Tabela de seguradoras"
       sourceRoutes={{
         list: routes.insuranceCompanies.list,
