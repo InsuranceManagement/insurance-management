@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 import { type QueryKey } from "@tanstack/react-query"
 
 import { type ApiRouteType } from "@/shared/constants/routes"
@@ -9,12 +11,14 @@ type UseCreateEntityOptions = {
   listQueryKey: QueryKey
 }
 
-export function useCreateEntity({
+export function useCreateEntity<TCreatePayload>({
   title,
   createRoute,
   listQueryKey,
 }: Readonly<UseCreateEntityOptions>) {
-  const createMutation = useApiMutation<unknown>({
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
+  const createMutation = useApiMutation<unknown, TCreatePayload>({
     route: createRoute,
     queryKeyToSync: listQueryKey,
     meta: {
@@ -22,12 +26,32 @@ export function useCreateEntity({
     },
   })
 
-  const handleCreate = () => {
-    createMutation.mutate({})
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true)
+  }
+
+  const handleCreateModalOpenChange = (open: boolean) => {
+    setIsCreateModalOpen(open)
+  }
+
+  const handleCreate = (payload: TCreatePayload) => {
+    createMutation.mutate(
+      {
+        body: payload,
+      },
+      {
+        onSuccess: () => {
+          setIsCreateModalOpen(false)
+        },
+      },
+    )
   }
 
   return {
-    createMutation,
     handleCreate,
+    handleOpenCreateModal,
+    handleCreateModalOpenChange,
+    isCreateModalOpen,
+    isPending: createMutation.isPending,
   }
 }

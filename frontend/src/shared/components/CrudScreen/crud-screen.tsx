@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { type ComponentType, useMemo, useState } from "react"
 
 import { Box } from "@/shared/components/ui/box"
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
@@ -13,8 +13,10 @@ import { useCreateEntity } from "@/shared/components/CrudScreen/hooks/use-create
 import { useDeleteEntity } from "@/shared/components/CrudScreen/hooks/use-delete-entity"
 import { useEditEntity } from "@/shared/components/CrudScreen/hooks/use-edit-entity"
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
+import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
 import { ApiRouteType } from "@/shared/constants/routes"
+import { EntityWithName } from "@/shared/models/entity"
 
 type CrudSourceRoutes = {
   list: ApiRouteType
@@ -23,25 +25,35 @@ type CrudSourceRoutes = {
   delete: ApiRouteType
 }
 
-type CrudRecord = {
-  id: string
-  name: string
-  [key: string]: unknown
+type CrudFormProps<TFormPayload> = {
+  initialValues?: Partial<TFormPayload>
+  onSubmit: (values: TFormPayload) => Promise<void> | void
+  onCancel?: () => void
+  submitLabel?: string
+  isSubmitting?: boolean
 }
 
-type CrudScreenProps<TData extends CrudRecord> = {
+type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   title: string
   sourceRoutes: CrudSourceRoutes
   columns: ColumnDef<TData>[]
+  createForm: ComponentType<CrudFormProps<TCreatePayload>>
+  createFormTitle?: string
+  editFormTitle?: string
+  mapEditEntityToFormValues?: (entity: TData) => Partial<TCreatePayload>
   caption?: string
 }
 
-export function CrudScreen<TData extends CrudRecord>({
+export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   title,
   sourceRoutes,
   columns,
+  createForm: CreateFormComponent,
+  createFormTitle = "Novo registro",
+  editFormTitle = "Editar registro",
+  mapEditEntityToFormValues,
   caption,
-}: Readonly<CrudScreenProps<TData>>) {
+}: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
   const { rows, areRowsLoading, listQueryKey } = useListEntity<TData>({
@@ -72,13 +84,25 @@ export function CrudScreen<TData extends CrudRecord>({
     setRowSelection({})
   }
 
-  const { editingRow, handleEditSelected, clearEditingRow } =
-    useEditEntity<TData>({
-      title,
-      editRoute: sourceRoutes.edit,
-      listQueryKey,
-      selectedRows,
-    })
+  const {
+    editingRow,
+    isEditModalOpen,
+    handleEditSelected,
+    handleEditModalOpenChange,
+    handleEdit,
+    clearEditingRow,
+    isPending: isEditPending,
+  } = useEditEntity<TData, TCreatePayload>({
+    title,
+    editRoute: sourceRoutes.edit,
+    listQueryKey,
+    selectedRows,
+  })
+
+  const editFormInitialValues = editingRow
+    ? (mapEditEntityToFormValues?.(editingRow) ??
+      (editingRow as unknown as Partial<TCreatePayload>))
+    : undefined
 
   const {
     isDeleteModalOpen,
@@ -97,7 +121,13 @@ export function CrudScreen<TData extends CrudRecord>({
     clearSelection: handleClearSelection,
   })
 
-  const { handleCreate, isPending: isCreatePending } = useCreateEntity({
+  const {
+    handleCreate,
+    handleOpenCreateModal,
+    handleCreateModalOpenChange,
+    isCreateModalOpen,
+    isPending: isCreatePending,
+  } = useCreateEntity<TCreatePayload>({
     title,
     createRoute: sourceRoutes.create,
     listQueryKey,
@@ -109,8 +139,38 @@ export function CrudScreen<TData extends CrudRecord>({
         <Box className="items-center justify-between gap-4">
           <Typography variant="h3">{title}</Typography>
 
-          <AddButton onClick={handleCreate} disabled={isCreatePending} />
+          <AddButton
+            onClick={handleOpenCreateModal}
+            disabled={isCreatePending}
+          />
         </Box>
+
+        <Modal
+          open={isCreateModalOpen}
+          onOpenChange={handleCreateModalOpenChange}
+          title={createFormTitle}
+        >
+          <CreateFormComponent
+            onSubmit={handleCreate}
+            onCancel={() => handleCreateModalOpenChange(false)}
+            submitLabel="Criar"
+            isSubmitting={isCreatePending}
+          />
+        </Modal>
+
+        <Modal
+          open={isEditModalOpen}
+          onOpenChange={handleEditModalOpenChange}
+          title={editFormTitle}
+        >
+          <CreateFormComponent
+            initialValues={editFormInitialValues}
+            onSubmit={handleEdit}
+            onCancel={() => handleEditModalOpenChange(false)}
+            submitLabel="Salvar alteracoes"
+            isSubmitting={isEditPending}
+          />
+        </Modal>
 
         <Box className="relative w-full flex-col">
           <ActionsPopover
