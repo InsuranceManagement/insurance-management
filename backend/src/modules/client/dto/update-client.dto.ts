@@ -2,6 +2,7 @@ import { UpdateClientInput } from '@/modules/client/inputs/update-client.input'
 import { CnpjValidator } from '@/modules/client/validators/cnpj.validator'
 import { CpfValidator } from '@/modules/client/validators/cpf.validator'
 import { ApiPropertyOptional } from '@nestjs/swagger'
+import { Transform } from 'class-transformer'
 import {
   ArrayUnique,
   IsArray,
@@ -48,6 +49,11 @@ export class UpdateClientDto implements UpdateClientInput {
 
   @ApiPropertyOptional({ description: 'Client birth date (ISO 8601)' })
   @IsOptional()
+  @Transform(({ value }) =>
+    typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
+      ? `${value}T00:00:00.000Z`
+      : value,
+  )
   @IsDateString()
   birthDate?: string
 

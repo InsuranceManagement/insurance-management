@@ -12,7 +12,6 @@ export class ClientService {
   constructor(private readonly clientRepository: ClientRepository) {}
 
   async create(input: CreateClientDto): Promise<ClientResponseDto> {
-    const normalizedBirthDate = this.normalizeBirthDate(input.birthDate)
     const productIds = input.productIds ?? []
 
     if (productIds.length > 0) {
@@ -36,7 +35,6 @@ export class ClientService {
 
     const client = await this.clientRepository.create({
       ...input,
-      birthDate: normalizedBirthDate,
       productIds,
     })
 
@@ -87,17 +85,12 @@ export class ClientService {
       }
     }
 
-    const normalizedUpdateBirthDate = input.birthDate
-      ? this.normalizeBirthDate(input.birthDate)
-      : undefined
-
     if (input.productIds) {
       await this.ensureProductsExist(input.productIds)
     }
 
     await this.clientRepository.update(clientId, {
       ...input,
-      birthDate: normalizedUpdateBirthDate ?? input.birthDate,
     })
   }
 
@@ -163,14 +156,6 @@ export class ClientService {
         updatedAt: product.updatedAt,
       })),
     }
-  }
-
-  private normalizeBirthDate(value: string): string {
-    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-      return `${value}T00:00:00.000Z`
-    }
-
-    return value
   }
 
   private async ensureProductsExist(productIds: string[]): Promise<void> {
