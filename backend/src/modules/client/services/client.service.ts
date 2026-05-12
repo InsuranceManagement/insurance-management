@@ -111,7 +111,6 @@ export class ClientService {
     }))
   }
 
-
   async delete(clientId: string): Promise<void> {
     const existingClient = await this.clientRepository.findById(clientId)
 
