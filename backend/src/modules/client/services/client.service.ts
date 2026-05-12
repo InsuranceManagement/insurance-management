@@ -53,10 +53,10 @@ export class ClientService {
     return this.toResponseWithProducts(client)
   }
 
-  async list(): Promise<ClientResponseDto[]> {
+  async list(): Promise<ClientWithProductsResponseDto[]> {
     const clients = await this.clientRepository.list()
 
-    return clients.map((client) => this.toResponse(client))
+    return clients.map((client) => this.toResponseWithProducts(client))
   }
 
   async update(clientId: string, input: UpdateClientDto): Promise<void> {

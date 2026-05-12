@@ -2,7 +2,8 @@ import { ClientService } from '@/modules/client/services/client.service'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 
 @ApiTags('Clients')
 @Controller('clients')
@@ -20,6 +21,7 @@ export class ClientController {
   }
 
   @Get()
+  @ApiOkResponse({ type: ClientWithProductsResponseDto, isArray: true })
   list() {
     return this.clientService.list()
   }

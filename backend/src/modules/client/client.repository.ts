@@ -167,10 +167,30 @@ export class ClientRepository {
       where: {
         deletedAt: null,
       },
+      include: {
+        products: {
+          where: {
+            deletedAt: null,
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     })
 
-    return clients.map((client) => this.toEntity(client))
+    return clients.map((client) => {
+      const products = client.products.map(
+        (product): ClientProduct => ({
+          id: product.id,
+          name: product.name,
+          productTypeId: product.productTypeId,
+          insuranceCompanyId: product.insuranceCompanyId,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        }),
+      )
+
+      return this.toEntity(client, products)
+    })
   }
 
   private toEntity(client: ClientRecord, products: ClientProduct[] = []): Client {
