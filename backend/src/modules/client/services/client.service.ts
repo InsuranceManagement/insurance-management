@@ -13,6 +13,11 @@ export class ClientService {
 
   async create(input: CreateClientDto): Promise<ClientResponseDto> {
     const normalizedBirthDate = this.normalizeBirthDate(input.birthDate)
+    const productIds = input.productIds ?? []
+
+    if (productIds.length > 0) {
+      await this.ensureProductsExist(productIds)
+    }
 
     const existingEmail = await this.clientRepository.findByEmail(input.email)
     if (existingEmail) {
@@ -32,6 +37,7 @@ export class ClientService {
     const client = await this.clientRepository.create({
       ...input,
       birthDate: normalizedBirthDate,
+      productIds,
     })
 
     return this.toResponse(client)
@@ -85,31 +91,14 @@ export class ClientService {
       ? this.normalizeBirthDate(input.birthDate)
       : undefined
 
+    if (input.productIds) {
+      await this.ensureProductsExist(input.productIds)
+    }
+
     await this.clientRepository.update(clientId, {
       ...input,
       birthDate: normalizedUpdateBirthDate ?? input.birthDate,
     })
-  }
-
-  async addProduct(clientId: string, productId: string): Promise<void> {
-    const existingClient = await this.clientRepository.findById(clientId)
-
-    if (!existingClient?.isActive()) {
-      throw new NotFoundException('Client not found')
-    }
-
-    const product = await this.clientRepository.findActiveProductById(productId)
-
-    if (!product) {
-      throw new NotFoundException('Product not found')
-    }
-
-    const isLinked = await this.clientRepository.isProductLinked(clientId, productId)
-    if (isLinked) {
-      return
-    }
-
-    await this.clientRepository.linkProduct(clientId, productId)
   }
 
   async listProducts(clientId: string): Promise<ClientProductResponseDto[]> {
@@ -129,26 +118,6 @@ export class ClientService {
     }))
   }
 
-  async removeProduct(clientId: string, productId: string): Promise<void> {
-    const existingClient = await this.clientRepository.findById(clientId)
-
-    if (!existingClient?.isActive()) {
-      throw new NotFoundException('Client not found')
-    }
-
-    const product = await this.clientRepository.findActiveProductById(productId)
-
-    if (!product) {
-      throw new NotFoundException('Product not found')
-    }
-
-    const isLinked = await this.clientRepository.isProductLinked(clientId, productId)
-    if (!isLinked) {
-      throw new NotFoundException('Client product relation not found')
-    }
-
-    await this.clientRepository.unlinkProduct(clientId, productId)
-  }
 
   async delete(clientId: string): Promise<void> {
     const existingClient = await this.clientRepository.findById(clientId)
@@ -202,5 +171,12 @@ export class ClientService {
     }
 
     return value
+  }
+
+  private async ensureProductsExist(productIds: string[]): Promise<void> {
+    const products = await this.clientRepository.findActiveProductsByIds(productIds)
+    if (products.length !== productIds.length) {
+      throw new NotFoundException('Product not found')
+    }
   }
 }

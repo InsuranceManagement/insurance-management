@@ -1,8 +1,17 @@
 import { CreateClientInput } from '@/modules/client/inputs/create-client.input'
 import { CnpjValidator } from '@/modules/client/validators/cnpj.validator'
 import { CpfValidator } from '@/modules/client/validators/cpf.validator'
-import { ApiProperty } from '@nestjs/swagger'
-import { IsDateString, IsEmail, IsString, Matches, Validate } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import {
+  ArrayUnique,
+  IsArray,
+  IsDateString,
+  IsEmail,
+  IsOptional,
+  IsString,
+  Matches,
+  Validate,
+} from 'class-validator'
 
 export class CreateClientDto implements CreateClientInput {
   @ApiProperty({ description: 'Client name' })
@@ -35,4 +44,11 @@ export class CreateClientDto implements CreateClientInput {
   @ApiProperty({ description: 'Client birth date (ISO 8601)' })
   @IsDateString()
   birthDate!: string
+
+  @ApiPropertyOptional({ description: 'Product ids linked to the client' })
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsString({ each: true })
+  productIds?: string[]
 }

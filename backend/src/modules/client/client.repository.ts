@@ -19,12 +19,6 @@ type ClientRecord = {
 
 type ProductRecord = {
   id: string
-  name: string
-  productTypeId: string
-  insuranceCompanyId: string
-  createdAt: Date
-  updatedAt: Date
-  deletedAt: Date | null
 }
 
 @Injectable()
@@ -32,6 +26,7 @@ export class ClientRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(input: CreateClientInput): Promise<Client> {
+    const productIds = input.productIds ?? []
     const client = await this.prismaService.client.create({
       data: {
         name: input.name,
@@ -40,6 +35,7 @@ export class ClientRepository {
         cnpj: input.cnpj,
         phoneNumber: input.phoneNumber,
         birthDate: input.birthDate,
+        products: productIds.length > 0 ? { connect: productIds.map((id) => ({ id })) } : undefined,
       },
     })
 
@@ -90,54 +86,18 @@ export class ClientRepository {
     return this.toEntity(client, products)
   }
 
-  async findActiveProductById(productId: string): Promise<ProductRecord | null> {
-    return await this.prismaService.products.findFirst({
+  async findActiveProductsByIds(productIds: string[]): Promise<ProductRecord[]> {
+    if (productIds.length === 0) {
+      return []
+    }
+
+    return await this.prismaService.products.findMany({
       where: {
-        id: productId,
+        id: { in: productIds },
         deletedAt: null,
       },
-    })
-  }
-
-  async isProductLinked(clientId: string, productId: string): Promise<boolean> {
-    const client = await this.prismaService.client.findFirst({
-      where: {
-        id: clientId,
-        deletedAt: null,
-        products: {
-          some: {
-            id: productId,
-          },
-        },
-      },
-      select: { id: true },
-    })
-
-    return Boolean(client)
-  }
-
-  async linkProduct(clientId: string, productId: string): Promise<void> {
-    await this.prismaService.client.update({
-      where: {
-        id: clientId,
-      },
-      data: {
-        products: {
-          connect: { id: productId },
-        },
-      },
-    })
-  }
-
-  async unlinkProduct(clientId: string, productId: string): Promise<void> {
-    await this.prismaService.client.update({
-      where: {
-        id: clientId,
-      },
-      data: {
-        products: {
-          disconnect: { id: productId },
-        },
+      select: {
+        id: true,
       },
     })
   }
@@ -176,12 +136,14 @@ export class ClientRepository {
   }
 
   async update(clientId: string, input: UpdateClientInput): Promise<void> {
+    const { productIds, ...clientData } = input
     await this.prismaService.client.update({
       where: {
         id: clientId,
       },
       data: {
-        ...input,
+        ...clientData,
+        products: productIds ? { set: productIds.map((id) => ({ id })) } : undefined,
       },
     })
   }

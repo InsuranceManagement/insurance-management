@@ -5,4 +5,5 @@ export interface CreateClientInput {
   cnpj: string
   phoneNumber: string
   birthDate: string
+  productIds?: string[]
 }

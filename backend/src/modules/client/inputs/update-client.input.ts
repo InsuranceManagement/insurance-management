@@ -5,4 +5,5 @@ export interface UpdateClientInput {
   cnpj?: string
   phoneNumber?: string
   birthDate?: string
+  productIds?: string[]
 }
