@@ -1,6 +1,6 @@
 "use client"
 
-import { type ComponentType, useMemo, useState } from "react"
+import { type ComponentType, type ReactNode, useMemo, useState } from "react"
 
 import { Box } from "@/shared/components/ui/box"
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
@@ -9,9 +9,14 @@ import { AddButton } from "@/shared/components/CrudScreen/components/add-button"
 import { ActionsPopover } from "@/shared/components/CrudScreen/components/actions-popover"
 import { DataTable } from "@/shared/components/DataTable/data-table"
 import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
+import {
+  EntityViewModal,
+  type EntityViewField,
+} from "@/shared/components/CrudScreen/components/EntityViewModal"
 import { useCreateEntity } from "@/shared/components/CrudScreen/hooks/use-create-entity"
 import { useDeleteEntity } from "@/shared/components/CrudScreen/hooks/use-delete-entity"
 import { useEditEntity } from "@/shared/components/CrudScreen/hooks/use-edit-entity"
+import { useEntityView } from "@/shared/components/CrudScreen/hooks/use-entity-view"
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
@@ -41,6 +46,11 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   createFormTitle?: string
   editFormTitle?: string
   mapEditEntityToFormValues?: (entity: TData) => Partial<TCreatePayload>
+  viewFields?: EntityViewField<TData>[]
+  viewModalTitle?: string
+  viewModalSubtitle?: ReactNode | ((entity: TData) => ReactNode)
+  viewModalCloseLabel?: string
+  viewModalEmptyValue?: ReactNode
   caption?: string
 }
 
@@ -52,6 +62,11 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   createFormTitle = "Novo registro",
   editFormTitle = "Editar registro",
   mapEditEntityToFormValues,
+  viewFields,
+  viewModalTitle = "Detalhes",
+  viewModalSubtitle,
+  viewModalCloseLabel,
+  viewModalEmptyValue,
   caption,
 }: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -79,10 +94,22 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
 
   const selectedCount = selectedRows.length
   const isSingleSelection = selectedCount === 1
+  const hasEntityView = !!viewFields?.length
 
   const handleClearSelection = () => {
     setRowSelection({})
   }
+
+  const {
+    isEntityViewOpen,
+    entityInView,
+    handleViewEntity,
+    handleEntityViewOpenChange,
+  } = useEntityView<TData>({
+    selectedRows,
+    isSingleSelection,
+    isEnabled: hasEntityView,
+  })
 
   const {
     editingRow,
@@ -172,13 +199,28 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           />
         </Modal>
 
+        {hasEntityView ? (
+          <EntityViewModal<TData>
+            title={viewModalTitle}
+            subtitle={viewModalSubtitle}
+            closeLabel={viewModalCloseLabel}
+            emptyValue={viewModalEmptyValue}
+            open={isEntityViewOpen}
+            onOpenChange={handleEntityViewOpenChange}
+            entity={entityInView}
+            fields={viewFields}
+          />
+        ) : null}
+
         <Box className="relative w-full flex-col">
           <ActionsPopover
             selectedCount={selectedCount}
             isSingleSelection={isSingleSelection}
+            canViewEntity={hasEntityView}
             onClearSelection={handleClearSelection}
             onDeleteSelected={handleDeleteSelected}
             onEditSelected={handleEditSelected}
+            onViewEntity={handleViewEntity}
           />
 
           <DataTable
