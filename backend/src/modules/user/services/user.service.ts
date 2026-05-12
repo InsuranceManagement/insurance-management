@@ -114,11 +114,7 @@ export class UserService {
       const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
 
       await this.userRepository.setPasswordResetToken(existingUser.id, tokenHash, expiresAt)
-      await this.passwordResetService.sendPasswordResetNotification(
-        existingUser,
-        token,
-        expiresAt,
-      )
+      await this.passwordResetService.sendPasswordResetNotification(existingUser, token, expiresAt)
     }
 
     return { message: 'If the email exists, reset instructions will be sent.' }
