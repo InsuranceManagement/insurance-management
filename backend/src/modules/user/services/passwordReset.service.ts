@@ -55,9 +55,9 @@ export class PasswordResetService {
     }
 
     const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    const authorization = await this.buildNotificationsAuthorization()
-    if (authorization) {
-      headers.Authorization = authorization
+    const authHeader = await this.buildNotificationsAuthorization()
+    if (authHeader) {
+      headers.Authorization = authHeader
     }
 
     try {
@@ -100,15 +100,15 @@ export class PasswordResetService {
   }
 
   private async buildNotificationsAuthorization(): Promise<string | null> {
-    if (!environment.NOTIFICATIONS_JWT_SECRET) {
+    if (!environment.JWT_SECRET) {
       return null
     }
 
     const token = await this.jwtService.signAsync(
       { features: ['notification-service'] },
       {
-        secret: environment.NOTIFICATIONS_JWT_SECRET,
-        expiresIn: environment.NOTIFICATIONS_JWT_EXPIRES_IN_SECONDS,
+        secret: environment.JWT_SECRET,
+        expiresIn: environment.JWT_EXPIRES_IN_SECONDS,
       },
     )
 
