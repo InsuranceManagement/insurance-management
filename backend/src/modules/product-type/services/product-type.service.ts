@@ -10,19 +10,18 @@ export class ProductTypeService {
   constructor(private readonly productTypeRepository: ProductTypeRepository) {}
 
   async create(input: CreateProductTypeDto): Promise<ProductTypeResponseDto> {
-    const existingById = await this.productTypeRepository.findById(input.id)
-
-    if (existingById) {
-      throw new BadRequestException('Product type id already in use')
-    }
-
     const existingByName = await this.productTypeRepository.findByName(input.name)
 
     if (existingByName) {
       throw new BadRequestException('Product type name already in use')
     }
 
-    const productType = await this.productTypeRepository.create(input)
+    const id = this.buildIdFromName(input.name)
+    const productType = await this.productTypeRepository.create({
+      id,
+      name: input.name,
+      description: input.description,
+    })
 
     return this.toResponse(productType)
   }
@@ -37,13 +36,10 @@ export class ProductTypeService {
     return this.toResponse(productType)
   }
 
-  async list(): Promise<{ productTypes: ProductTypeResponseDto[]; total: number }> {
-    const { productTypes, total } = await this.productTypeRepository.list()
+  async list(): Promise<ProductTypeResponseDto[]> {
+    const productTypes = await this.productTypeRepository.list()
 
-    return {
-      productTypes: productTypes.map((productType) => this.toResponse(productType)),
-      total,
-    }
+    return productTypes.map((productType) => this.toResponse(productType))
   }
 
   async update(productTypeId: string, input: UpdateProductTypeDto): Promise<void> {
@@ -81,5 +77,9 @@ export class ProductTypeService {
       createdAt: productType.createdAt,
       updatedAt: productType.updatedAt,
     }
+  }
+
+  private buildIdFromName(name: string): string {
+    return name.trim().replace(/\\s+/g, '_').toUpperCase()
   }
 }

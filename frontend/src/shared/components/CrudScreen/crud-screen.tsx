@@ -1,18 +1,27 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { type ComponentType, type ReactNode, useMemo, useState } from "react"
 
 import { Box } from "@/shared/components/ui/box"
-import { type ColumnDef } from "@tanstack/react-table"
+import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
 
+import { AddButton } from "@/shared/components/CrudScreen/components/add-button"
+import { ActionsPopover } from "@/shared/components/CrudScreen/components/actions-popover"
 import { DataTable } from "@/shared/components/DataTable/data-table"
 import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
-import { useApiMutation } from "@/shared/hooks/use-api-mutation"
-import { useApiQuery } from "@/shared/hooks/use-api-query"
-import { Button } from "@/shared/components/ui/button"
+import {
+  EntityViewModal,
+  type EntityViewField,
+} from "@/shared/components/CrudScreen/components/EntityViewModal"
+import { useCreateEntity } from "@/shared/components/CrudScreen/hooks/use-create-entity"
+import { useDeleteEntity } from "@/shared/components/CrudScreen/hooks/use-delete-entity"
+import { useEditEntity } from "@/shared/components/CrudScreen/hooks/use-edit-entity"
+import { useEntityView } from "@/shared/components/CrudScreen/hooks/use-entity-view"
+import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
+import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
 import { ApiRouteType } from "@/shared/constants/routes"
-import { PlusIcon } from "lucide-react"
+import { EntityWithName } from "@/shared/models/entity"
 
 type CrudSourceRoutes = {
   list: ApiRouteType
@@ -21,125 +30,135 @@ type CrudSourceRoutes = {
   delete: ApiRouteType
 }
 
-type CrudRecord = {
-  id: string
-  name: string
-  [key: string]: unknown
+type CrudFormProps<TFormPayload> = {
+  initialValues?: Partial<TFormPayload>
+  onSubmit: (values: TFormPayload) => Promise<void> | void
+  onCancel?: () => void
+  submitLabel?: string
+  isSubmitting?: boolean
 }
 
-type CrudScreenProps<TData extends CrudRecord> = {
+type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   title: string
   sourceRoutes: CrudSourceRoutes
   columns: ColumnDef<TData>[]
+  createForm: ComponentType<CrudFormProps<TCreatePayload>>
+  createFormTitle?: string
+  editFormTitle?: string
+  mapEditEntityToFormValues?: (entity: TData) => Partial<TCreatePayload>
+  viewFields?: EntityViewField<TData>[]
+  viewModalTitle?: string
+  viewModalSubtitle?: ReactNode | ((entity: TData) => ReactNode)
+  viewModalCloseLabel?: string
+  viewModalEmptyValue?: ReactNode
   caption?: string
 }
 
-export function CrudScreen<TData extends CrudRecord>({
+export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   title,
   sourceRoutes,
   columns,
+  createForm: CreateFormComponent,
+  createFormTitle = "Novo registro",
+  editFormTitle = "Editar registro",
+  mapEditEntityToFormValues,
+  viewFields,
+  viewModalTitle = "Detalhes",
+  viewModalSubtitle,
+  viewModalCloseLabel,
+  viewModalEmptyValue,
   caption,
-}: Readonly<CrudScreenProps<TData>>) {
-  const [editingRow, setEditingRow] = useState<TData | null>(null)
-  const [rowsPendingDelete, setRowsPendingDelete] = useState<TData[]>([])
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+}: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
-  const listPathKey =
-    typeof sourceRoutes.list.path === "function"
-      ? sourceRoutes.list.path.toString()
-      : sourceRoutes.list.path
-
-  const listQueryKey = ["crud-screen", sourceRoutes.list.method, listPathKey]
-
-  const { data: rows, isLoading: areRowsLoading } = useApiQuery<TData[]>({
-    route: sourceRoutes.list,
-    queryKey: listQueryKey,
-    meta: {
-      errorMessage: `Erro ao carregar dados de ${title}.`,
-    },
+  const { rows, areRowsLoading, listQueryKey } = useListEntity<TData>({
+    title,
+    listRoute: sourceRoutes.list,
   })
 
-  const deleteMutation = useApiMutation<unknown>({
-    route: sourceRoutes.delete,
-    queryKeyToSync: listQueryKey,
-    meta: {
-      errorMessage: `Erro ao deletar registros em ${title}.`,
-    },
+  const selectedRows = useMemo(() => {
+    const currentRows = rows
+
+    return Object.entries(rowSelection).reduce<TData[]>(
+      (acc, [rowIndex, selected]) => {
+        if (!selected) return acc
+        const selectedRow = currentRows[Number(rowIndex)]
+
+        if (selectedRow) acc.push(selectedRow)
+
+        return acc
+      },
+      [],
+    )
+  }, [rowSelection, rows])
+
+  const selectedCount = selectedRows.length
+  const isSingleSelection = selectedCount === 1
+  const hasEntityView = !!viewFields?.length
+
+  const handleClearSelection = () => {
+    setRowSelection({})
+  }
+
+  const {
+    isEntityViewOpen,
+    entityInView,
+    handleViewEntity,
+    handleEntityViewOpenChange,
+  } = useEntityView<TData>({
+    selectedRows,
+    isSingleSelection,
+    isEnabled: hasEntityView,
   })
 
-  const createMutation = useApiMutation<unknown>({
-    route: sourceRoutes.create,
-    queryKeyToSync: listQueryKey,
-    meta: {
-      errorMessage: `Erro ao criar registros em ${title}.`,
-    },
+  const {
+    editingRow,
+    isEditModalOpen,
+    handleEditSelected,
+    handleEditModalOpenChange,
+    handleEdit,
+    clearEditingRow,
+    isPending: isEditPending,
+  } = useEditEntity<TData, TCreatePayload>({
+    title,
+    editRoute: sourceRoutes.edit,
+    listQueryKey,
+    selectedRows,
   })
 
-  const editMutation = useApiMutation<unknown, TData>({
-    route: sourceRoutes.edit,
-    queryKeyToSync: listQueryKey,
-    meta: {
-      errorMessage: `Erro ao editar registros em ${title}.`,
-    },
+  const editFormInitialValues = editingRow
+    ? (mapEditEntityToFormValues?.(editingRow) ??
+      (editingRow as unknown as Partial<TCreatePayload>))
+    : undefined
+
+  const {
+    isDeleteModalOpen,
+    deleteItemName,
+    deleteMutation,
+    handleDeleteSelected,
+    handleConfirmDelete,
+    handleDeleteModalOpenChange,
+  } = useDeleteEntity<TData>({
+    title,
+    deleteRoute: sourceRoutes.delete,
+    listQueryKey,
+    selectedRows,
+    editingRow,
+    clearEditingRow,
+    clearSelection: handleClearSelection,
   })
 
-  const handleDeleteSelected = (selectedRows: TData[]) => {
-    if (selectedRows.length === 0) {
-      return
-    }
-
-    setRowsPendingDelete(selectedRows)
-    setIsDeleteModalOpen(true)
-  }
-
-  const handleConfirmDelete = () => {
-    const selectedIds = new Set(rowsPendingDelete.map((row) => row.id))
-
-    rowsPendingDelete.forEach((selectedRow) => {
-      deleteMutation.mutate({
-        routeParams: [selectedRow.id],
-      })
-    })
-
-    if (editingRow && selectedIds.has(editingRow.id)) {
-      setEditingRow(null)
-    }
-
-    setIsDeleteModalOpen(false)
-    setRowsPendingDelete([])
-  }
-
-  const deleteItemName = useMemo(() => {
-    const firstPendingDelete = rowsPendingDelete[0]
-    if (!firstPendingDelete) return ""
-
-    const pendingDeleteLabel = firstPendingDelete.name ?? firstPendingDelete.id
-
-    return rowsPendingDelete.length > 1
-      ? `${pendingDeleteLabel} e mais ${rowsPendingDelete.length - 1}`
-      : pendingDeleteLabel
-  }, [rowsPendingDelete])
-
-  const handleDeleteModalOpenChange = (open: boolean) => {
-    setIsDeleteModalOpen(open)
-
-    if (!open) {
-      setRowsPendingDelete([])
-    }
-  }
-
-  const handleEditSelected = (selectedRow: TData) => {
-    setEditingRow(selectedRow)
-
-    editMutation.mutate({
-      routeParams: [selectedRow.id],
-      body: selectedRow,
-    })
-  }
-
-  const handleCreate = () => {
-    createMutation.mutate({})
-  }
+  const {
+    handleCreate,
+    handleOpenCreateModal,
+    handleCreateModalOpenChange,
+    isCreateModalOpen,
+    isPending: isCreatePending,
+  } = useCreateEntity<TCreatePayload>({
+    title,
+    createRoute: sourceRoutes.create,
+    listQueryKey,
+  })
 
   return (
     <main className="flex flex-1 flex-col p-6 md:p-8">
@@ -147,27 +166,75 @@ export function CrudScreen<TData extends CrudRecord>({
         <Box className="items-center justify-between gap-4">
           <Typography variant="h3">{title}</Typography>
 
-          <Button
-            type="button"
-            className="gap-1.5 px-3"
-            onClick={handleCreate}
-            disabled={createMutation.isPending}
-          >
-            <PlusIcon className="size-4" />
-            Novo Registro
-          </Button>
+          <AddButton
+            onClick={handleOpenCreateModal}
+            disabled={isCreatePending}
+          />
         </Box>
 
-        <DataTable
-          caption={caption ?? "Tabela de registros"}
-          columns={columns}
-          data={rows ?? []}
-          emptyMessage={
-            areRowsLoading ? "Carregando dados..." : "Sem dados para exibir."
-          }
-          onDeleteSelected={handleDeleteSelected}
-          onEditSelected={handleEditSelected}
-        />
+        <Modal
+          open={isCreateModalOpen}
+          onOpenChange={handleCreateModalOpenChange}
+          title={createFormTitle}
+        >
+          <CreateFormComponent
+            onSubmit={handleCreate}
+            onCancel={() => handleCreateModalOpenChange(false)}
+            submitLabel="Criar"
+            isSubmitting={isCreatePending}
+          />
+        </Modal>
+
+        <Modal
+          open={isEditModalOpen}
+          onOpenChange={handleEditModalOpenChange}
+          title={editFormTitle}
+        >
+          <CreateFormComponent
+            initialValues={editFormInitialValues}
+            onSubmit={handleEdit}
+            onCancel={() => handleEditModalOpenChange(false)}
+            submitLabel="Salvar alteracoes"
+            isSubmitting={isEditPending}
+          />
+        </Modal>
+
+        {hasEntityView ? (
+          <EntityViewModal<TData>
+            title={viewModalTitle}
+            subtitle={viewModalSubtitle}
+            closeLabel={viewModalCloseLabel}
+            emptyValue={viewModalEmptyValue}
+            open={isEntityViewOpen}
+            onOpenChange={handleEntityViewOpenChange}
+            entity={entityInView}
+            fields={viewFields}
+          />
+        ) : null}
+
+        <Box className="relative w-full flex-col">
+          <ActionsPopover
+            selectedCount={selectedCount}
+            isSingleSelection={isSingleSelection}
+            canViewEntity={hasEntityView}
+            onClearSelection={handleClearSelection}
+            onDeleteSelected={handleDeleteSelected}
+            onEditSelected={handleEditSelected}
+            onViewEntity={handleViewEntity}
+          />
+
+          <DataTable
+            caption={caption ?? "Tabela de registros"}
+            columns={columns}
+            data={rows}
+            className="w-full"
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            emptyMessage={
+              areRowsLoading ? "Carregando dados..." : "Sem dados para exibir."
+            }
+          />
+        </Box>
 
         <DeleteModal
           open={isDeleteModalOpen}

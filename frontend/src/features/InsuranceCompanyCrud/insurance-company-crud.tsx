@@ -1,19 +1,15 @@
 "use client"
 import { type ColumnDef } from "@tanstack/react-table"
 
+import { InsuranceCompanyForm } from "@/features/InsuranceCompanyCrud/components/form"
+import { type InsuranceCompany } from "@/features/models/insurance-company"
+import { type InsuranceCompanyUpsertFormValues } from "@/features/schema"
+import { type EntityViewField } from "@/shared/components/CrudScreen/components/EntityViewModal"
 import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen"
 import { Box } from "@/shared/components/ui/box"
 import { Typography } from "@/shared/components/ui/typography"
 import { routes } from "@/shared/constants/routes"
 import { formatDate } from "@/shared/lib/date-format"
-
-type InsuranceCompany = {
-  id: string
-  name: string
-  color: string
-  createdAt: string
-  updatedAt: string
-}
 
 const columns: ColumnDef<InsuranceCompany>[] = [
   {
@@ -56,11 +52,62 @@ const columns: ColumnDef<InsuranceCompany>[] = [
   },
 ]
 
+const viewFields: EntityViewField<InsuranceCompany>[] = [
+  {
+    accessorKey: "name",
+    label: "Nome",
+  },
+  {
+    accessorKey: "color",
+    label: "Cor",
+    cell: ({ value }) => (
+      <Box className="items-center gap-2">
+        <Box
+          aria-hidden
+          className="size-4 rounded-full border"
+          style={{ backgroundColor: String(value) }}
+        />
+        <Typography asChild variant="small">
+          <span>{String(value)}</span>
+        </Typography>
+      </Box>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    label: "Criado em",
+    cell: ({ value }) => (
+      <Typography asChild variant="small">
+        <span>{formatDate(String(value), "DD/MM/YYYY HH:mm")}</span>
+      </Typography>
+    ),
+  },
+  {
+    accessorKey: "updatedAt",
+    label: "Atualizado em",
+    cell: ({ value }) => (
+      <Typography asChild variant="small">
+        <span>{formatDate(String(value), "DD/MM/YYYY HH:mm")}</span>
+      </Typography>
+    ),
+  },
+]
+
 export default function InsuranceCompanyCrud() {
   return (
-    <CrudScreen<InsuranceCompany>
+    <CrudScreen<InsuranceCompany, InsuranceCompanyUpsertFormValues>
       title="Seguradoras"
       columns={columns}
+      createForm={InsuranceCompanyForm}
+      createFormTitle="Nova seguradora"
+      editFormTitle="Editar seguradora"
+      viewModalTitle="Detalhes da Seguradora"
+      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
+      viewFields={viewFields}
+      mapEditEntityToFormValues={(entity) => ({
+        name: entity.name,
+        color: entity.color,
+      })}
       caption="Tabela de seguradoras"
       sourceRoutes={{
         list: routes.insuranceCompanies.list,

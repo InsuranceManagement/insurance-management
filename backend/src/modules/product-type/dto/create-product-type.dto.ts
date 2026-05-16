@@ -3,10 +3,6 @@ import { ApiProperty } from '@nestjs/swagger'
 import { IsString } from 'class-validator'
 
 export class CreateProductTypeDto implements CreateProductTypeInput {
-  @ApiProperty({ description: 'Product type id' })
-  @IsString()
-  id!: string
-
   @ApiProperty({ description: 'Product type name' })
   @IsString()
   name!: string

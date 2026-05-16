@@ -13,11 +13,15 @@ type ProductTypeRecord = {
   deletedAt: Date | null
 }
 
+type CreateProductTypeData = CreateProductTypeInput & {
+  id: string
+}
+
 @Injectable()
 export class ProductTypeRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(input: CreateProductTypeInput): Promise<ProductType> {
+  async create(input: CreateProductTypeData): Promise<ProductType> {
     const productType = await this.prismaService.productType.create({
       data: {
         id: input.id,
@@ -73,21 +77,13 @@ export class ProductTypeRepository {
     })
   }
 
-  async list(): Promise<{ productTypes: ProductType[]; total: number }> {
-    const where = { deletedAt: null }
+  async list(): Promise<ProductType[]> {
+    const productTypes = await this.prismaService.productType.findMany({
+      where: { deletedAt: null },
+      orderBy: { createdAt: 'desc' },
+    })
 
-    const [productTypes, total] = await Promise.all([
-      this.prismaService.productType.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prismaService.productType.count({ where }),
-    ])
-
-    return {
-      productTypes: productTypes.map((productType) => this.toEntity(productType)),
-      total,
-    }
+    return productTypes.map((productType) => this.toEntity(productType))
   }
 
   private toEntity(productType: ProductTypeRecord): ProductType {
