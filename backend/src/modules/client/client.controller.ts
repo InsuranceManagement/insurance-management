@@ -1,10 +1,11 @@
-import { ClientService } from '@/modules/client/services/client.service'
+import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
+import { ClientService } from '@/modules/client/services/client.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
-import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 
+@ApiBearerAuth()
 @ApiTags('Clients')
 @Controller('clients')
 export class ClientController {
