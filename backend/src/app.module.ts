@@ -11,7 +11,14 @@ import { ProductModule } from './modules/product/product.module'
 import { UserModule } from './modules/user/user.module'
 
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule, InsuranceCompanyModule, ProductModule, ClientModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UserModule,
+    InsuranceCompanyModule,
+    ProductModule,
+    ClientModule,
+  ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
 })
