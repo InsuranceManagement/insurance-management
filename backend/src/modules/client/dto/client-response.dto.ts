@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { AddressResponseDto } from './adress/address-response.dto'
 
 export class ClientResponseDto {
   @ApiProperty()
@@ -10,11 +11,11 @@ export class ClientResponseDto {
   @ApiProperty()
   email!: string
 
-  @ApiProperty()
-  cpf!: string
+  @ApiPropertyOptional()
+  cpf?: string
 
-  @ApiProperty()
-  cnpj!: string
+  @ApiPropertyOptional()
+  cnpj?: string
 
   @ApiProperty()
   phoneNumber!: string
@@ -27,4 +28,7 @@ export class ClientResponseDto {
 
   @ApiProperty()
   updatedAt!: Date
+
+  @ApiProperty({ type: AddressResponseDto })
+  address!: AddressResponseDto
 }

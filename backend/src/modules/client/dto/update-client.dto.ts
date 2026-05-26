@@ -1,66 +1,16 @@
 import { UpdateClientInput } from '@/modules/client/inputs/update-client.input'
-import { CnpjValidator } from '@/modules/client/validators/cnpj.validator'
-import { CpfValidator } from '@/modules/client/validators/cpf.validator'
-import { ApiPropertyOptional } from '@nestjs/swagger'
-import { Transform } from 'class-transformer'
-import {
-  ArrayUnique,
-  IsArray,
-  IsDateString,
-  IsEmail,
-  IsOptional,
-  IsString,
-  Matches,
-  Validate,
-} from 'class-validator'
+import { ApiPropertyOptional, OmitType, PartialType } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
+import { IsOptional, ValidateNested } from 'class-validator'
+import { UpdateAddressDto } from './adress/update-address.dto'
+import { CreateClientDto } from './create-client.dto'
 
-export class UpdateClientDto implements UpdateClientInput {
-  @ApiPropertyOptional({ description: 'Client name' })
-  @IsOptional()
-  @IsString()
-  name?: string
+class UpdateClientBaseDto extends PartialType(OmitType(CreateClientDto, ['address'] as const)) {}
 
-  @ApiPropertyOptional({ description: 'Client e-mail' })
+export class UpdateClientDto extends UpdateClientBaseDto implements UpdateClientInput {
+  @ApiPropertyOptional({ type: UpdateAddressDto })
   @IsOptional()
-  @IsEmail()
-  email?: string
-
-  @ApiPropertyOptional({ description: 'Client CPF' })
-  @IsOptional()
-  @IsString()
-  @Matches(/^\d{11}$/, { message: 'cpf must contain 11 digits (numbers only)' })
-  @Validate(CpfValidator)
-  cpf?: string
-
-  @ApiPropertyOptional({ description: 'Client CNPJ' })
-  @IsOptional()
-  @IsString()
-  @Matches(/^\d{14}$/, { message: 'cnpj must contain 14 digits (numbers only)' })
-  @Validate(CnpjValidator)
-  cnpj?: string
-
-  @ApiPropertyOptional({ description: 'Client phone number' })
-  @IsOptional()
-  @IsString()
-  @Matches(/^\d{10,15}$/, {
-    message: 'phoneNumber must contain 10 to 15 digits (numbers only)',
-  })
-  phoneNumber?: string
-
-  @ApiPropertyOptional({ description: 'Client birth date (ISO 8601)' })
-  @IsOptional()
-  @Transform(({ value }) =>
-    typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
-      ? `${value}T00:00:00.000Z`
-      : value,
-  )
-  @IsDateString()
-  birthDate?: string
-
-  @ApiPropertyOptional({ description: 'Product ids linked to the client' })
-  @IsOptional()
-  @IsArray()
-  @ArrayUnique()
-  @IsString({ each: true })
-  productIds?: string[]
+  @ValidateNested()
+  @Type(() => UpdateAddressDto)
+  address?: UpdateAddressDto
 }

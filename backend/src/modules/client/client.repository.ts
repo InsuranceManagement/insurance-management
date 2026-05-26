@@ -1,21 +1,8 @@
-import { PrismaService } from '@/modules/database/prisma.service'
-import { Client, ClientProduct } from '@/modules/client/entities/client'
+import { Client } from '@/modules/client/entities/client'
 import { CreateClientInput } from '@/modules/client/inputs/create-client.input'
 import { UpdateClientInput } from '@/modules/client/inputs/update-client.input'
+import { PrismaService } from '@/modules/database/prisma.service'
 import { Injectable } from '@nestjs/common'
-
-type ClientRecord = {
-  id: string
-  name: string
-  email: string
-  cpf: string
-  cnpj: string
-  phoneNumber: string
-  birthDate: Date
-  createdAt: Date
-  updatedAt: Date
-  deletedAt: Date | null
-}
 
 type ProductRecord = {
   id: string
@@ -35,11 +22,19 @@ export class ClientRepository {
         cnpj: input.cnpj,
         phoneNumber: input.phoneNumber,
         birthDate: input.birthDate,
+        address: {
+          create: {
+            ...input.address,
+          },
+        },
         products: productIds.length > 0 ? { connect: productIds.map((id) => ({ id })) } : undefined,
+      },
+      include: {
+        address: true,
       },
     })
 
-    return this.toEntity(client)
+    return Client.fromPrisma(client)
   }
 
   async findById(clientId: string): Promise<Client | null> {
@@ -48,9 +43,12 @@ export class ClientRepository {
         id: clientId,
         deletedAt: null,
       },
+      include: {
+        address: true,
+      },
     })
 
-    return client ? this.toEntity(client) : null
+    return client ? Client.fromPrisma(client) : null
   }
 
   async findByIdWithProducts(clientId: string): Promise<Client | null> {
@@ -60,6 +58,7 @@ export class ClientRepository {
         deletedAt: null,
       },
       include: {
+        address: true,
         products: {
           where: {
             deletedAt: null,
@@ -72,18 +71,7 @@ export class ClientRepository {
       return null
     }
 
-    const products = client.products.map(
-      (product): ClientProduct => ({
-        id: product.id,
-        name: product.name,
-        productTypeId: product.productTypeId,
-        insuranceCompanyId: product.insuranceCompanyId,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
-      }),
-    )
-
-    return this.toEntity(client, products)
+    return Client.fromPrisma(client)
   }
 
   async findActiveProductsByIds(productIds: string[]): Promise<ProductRecord[]> {
@@ -108,9 +96,12 @@ export class ClientRepository {
         email,
         deletedAt: null,
       },
+      include: {
+        address: true,
+      },
     })
 
-    return client ? this.toEntity(client) : null
+    return client ? Client.fromPrisma(client) : null
   }
 
   async findByCpf(cpf: string): Promise<Client | null> {
@@ -119,9 +110,12 @@ export class ClientRepository {
         cpf,
         deletedAt: null,
       },
+      include: {
+        address: true,
+      },
     })
 
-    return client ? this.toEntity(client) : null
+    return client ? Client.fromPrisma(client) : null
   }
 
   async findByCnpj(cnpj: string): Promise<Client | null> {
@@ -130,19 +124,29 @@ export class ClientRepository {
         cnpj,
         deletedAt: null,
       },
+      include: {
+        address: true,
+      },
     })
 
-    return client ? this.toEntity(client) : null
+    return client ? Client.fromPrisma(client) : null
   }
 
   async update(clientId: string, input: UpdateClientInput): Promise<void> {
-    const { productIds, ...clientData } = input
+    const { productIds, address, ...clientData } = input
     await this.prismaService.client.update({
       where: {
         id: clientId,
       },
       data: {
         ...clientData,
+        address: address
+          ? {
+              update: {
+                ...address,
+              },
+            }
+          : undefined,
         products: productIds ? { set: productIds.map((id) => ({ id })) } : undefined,
       },
     })
@@ -168,6 +172,7 @@ export class ClientRepository {
         deletedAt: null,
       },
       include: {
+        address: true,
         products: {
           where: {
             deletedAt: null,
@@ -177,35 +182,6 @@ export class ClientRepository {
       orderBy: { createdAt: 'desc' },
     })
 
-    return clients.map((client) => {
-      const products = client.products.map(
-        (product): ClientProduct => ({
-          id: product.id,
-          name: product.name,
-          productTypeId: product.productTypeId,
-          insuranceCompanyId: product.insuranceCompanyId,
-          createdAt: product.createdAt,
-          updatedAt: product.updatedAt,
-        }),
-      )
-
-      return this.toEntity(client, products)
-    })
-  }
-
-  private toEntity(client: ClientRecord, products: ClientProduct[] = []): Client {
-    return new Client(
-      client.id,
-      client.name,
-      client.email,
-      client.cpf,
-      client.cnpj,
-      client.phoneNumber,
-      client.birthDate,
-      client.createdAt,
-      client.updatedAt,
-      client.deletedAt,
-      products,
-    )
+    return clients.map((client) => Client.fromPrisma(client))
   }
 }
