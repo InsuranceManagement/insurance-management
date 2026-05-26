@@ -24,6 +24,7 @@ async function bootstrap() {
     .setTitle('Insurance Management API')
     .setDescription('Insurance Management system API')
     .setVersion('0.0.1')
+    .addBearerAuth()
     .build()
 
   const document = SwaggerModule.createDocument(app, config)

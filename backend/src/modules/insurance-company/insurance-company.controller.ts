@@ -2,8 +2,9 @@ import { CreateInsuranceCompanyDto } from '@/modules/insurance-company/dto/creat
 import { UpdateInsuranceCompanyDto } from '@/modules/insurance-company/dto/update-insurance-company.dto'
 import { InsuranceCompanyService } from '@/modules/insurance-company/services/insurance-company.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+@ApiBearerAuth()
 @ApiTags('Insurance Companies')
 @Controller('insurance-companies')
 export class InsuranceCompanyController {
