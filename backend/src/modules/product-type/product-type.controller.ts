@@ -2,8 +2,9 @@ import { CreateProductTypeDto } from '@/modules/product-type/dto/create-product-
 import { UpdateProductTypeDto } from '@/modules/product-type/dto/update-product-type.dto'
 import { ProductTypeService } from '@/modules/product-type/services/product-type.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
+@ApiBearerAuth()
 @ApiTags('Product Types')
 @Controller('product-types')
 export class ProductTypeController {
