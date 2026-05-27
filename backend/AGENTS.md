@@ -139,6 +139,12 @@ Este documento resume o projeto ate agora: arquitetura, organizacao de pastas e 
 - Repository: Prisma queries, paginacao, soft delete.
 - PrismaService: conexao e ciclo de vida.
 
+## Convencoes de mapeamento de dominio
+
+- Repositories devem usar tipos gerados do Prisma (ex.: `Prisma.ModelGetPayload`) em vez de tipos manuais `Record`.
+- O mapeamento de Prisma para dominio deve ficar na entity de dominio, via metodo estatico `fromPrisma(...)`.
+- `Chart` e `ChartType` seguem este padrao: repository somente consulta/persiste, e a entity concentra a transformacao para dominio.
+
 ## Frontend - resumo
 
 - App Router com layout global em `frontend/src/app/layout.tsx`.
