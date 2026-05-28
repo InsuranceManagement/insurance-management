@@ -41,7 +41,7 @@ model ProductType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
-  products  Products[]
+  products  Products[] //remove products relation later
 }
 
 model Products {
