@@ -65,6 +65,22 @@ export class ProductRepository {
     })
   }
 
+  async softDeleteMany(productIds: string[]): Promise<void> {
+    if (productIds.length === 0) {
+      return
+    }
+
+    await this.prismaService.products.updateMany({
+      where: {
+        id: { in: productIds },
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    })
+  }
+
   async list(): Promise<Product[]> {
     const products = await this.prismaService.products.findMany({
       where: {

@@ -1,4 +1,5 @@
 import { CreateChartTypeDto } from '@/modules/chart-type/dto/create-chart-type.dto'
+import { DeleteManyDto } from '@/modules/chart-type/dto/delete-many.dto'
 import { UpdateChartTypeDto } from '@/modules/chart-type/dto/update-chart-type.dto'
 import { ChartTypeService } from '@/modules/chart-type/services/chart-type.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
@@ -30,8 +31,8 @@ export class ChartTypeController {
     return this.chartTypeService.update(id, input)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.chartTypeService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.chartTypeService.deleteMany(input.ids)
   }
 }

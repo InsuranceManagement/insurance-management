@@ -86,14 +86,12 @@ export class ChartService {
     })
   }
 
-  async delete(chartId: string): Promise<void> {
-    const existingChart = await this.chartRepository.findById(chartId)
-
-    if (!existingChart) {
-      throw new NotFoundException('Chart not found')
+  async deleteMany(chartIds: string[]): Promise<void> {
+    if (chartIds.length === 0) {
+      return
     }
 
-    await this.chartRepository.delete(chartId)
+    await this.chartRepository.deleteMany(chartIds)
   }
 
   private toResponse(chart: Chart): ChartResponseDto {

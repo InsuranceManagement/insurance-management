@@ -1,5 +1,6 @@
 import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
+import { DeleteManyDto } from '@/modules/client/dto/delete-many.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
 import { ClientService } from '@/modules/client/services/client.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
@@ -37,8 +38,8 @@ export class ClientController {
     return this.clientService.listProducts(id)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.clientService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.clientService.deleteMany(input.ids)
   }
 }

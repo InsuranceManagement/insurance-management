@@ -77,6 +77,42 @@ export class UserRepository {
     })
   }
 
+  async softDeleteMany(userIds: string[]): Promise<void> {
+    if (userIds.length === 0) {
+      return
+    }
+
+    const users = await this.prismaService.user.findMany({
+      where: {
+        id: { in: userIds },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    if (users.length === 0) {
+      return
+    }
+
+    const deletedAt = new Date()
+
+    await this.prismaService.$transaction(
+      users.map((user) =>
+        this.prismaService.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            deletedAt,
+            email: `deleted+${user.id}@local`,
+          },
+        }),
+      ),
+    )
+  }
+
   async list(): Promise<User[]> {
     const users = await this.prismaService.user.findMany({
       where: {

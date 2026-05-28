@@ -1,5 +1,6 @@
 import { Public } from '@/common/auth/auth.decorators'
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
+import { DeleteManyDto } from '@/modules/user/dto/delete-many.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { UpdateUserDto } from '@/modules/user/dto/update-user.dto'
 import { UserService } from '@/modules/user/services/user.service'
@@ -55,9 +56,9 @@ export class UserController {
     return this.userService.update(id, input)
   }
 
-  @Delete(':id')
+  @Delete()
   @ApiBearerAuth()
-  delete(@Param('id') id: string) {
-    return this.userService.delete(id)
+  delete(@Body() input: DeleteManyDto) {
+    return this.userService.deleteMany(input.ids)
   }
 }

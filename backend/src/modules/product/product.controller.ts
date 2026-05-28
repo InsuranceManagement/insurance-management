@@ -2,6 +2,7 @@ import { ProductService } from '@/modules/product/product.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { CreateProductDto } from './dto/create-product.dto'
+import { DeleteManyDto } from './dto/delete-many.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 
 @ApiBearerAuth()
@@ -30,8 +31,8 @@ export class ProductController {
     return this.productService.update(id, input)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.productService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.productService.deleteMany(input.ids)
   }
 }

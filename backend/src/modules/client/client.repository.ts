@@ -166,6 +166,44 @@ export class ClientRepository {
     })
   }
 
+  async softDeleteMany(clientIds: string[]): Promise<void> {
+    if (clientIds.length === 0) {
+      return
+    }
+
+    const clients = await this.prismaService.client.findMany({
+      where: {
+        id: { in: clientIds },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    if (clients.length === 0) {
+      return
+    }
+
+    const deletedAt = new Date()
+
+    await this.prismaService.$transaction(
+      clients.map((client) =>
+        this.prismaService.client.update({
+          where: {
+            id: client.id,
+          },
+          data: {
+            deletedAt,
+            email: `deleted+${client.id}@local`,
+            cpf: `deleted-${client.id}`,
+            cnpj: `deleted-${client.id}`,
+          },
+        }),
+      ),
+    )
+  }
+
   async list(): Promise<Client[]> {
     const clients = await this.prismaService.client.findMany({
       where: {
