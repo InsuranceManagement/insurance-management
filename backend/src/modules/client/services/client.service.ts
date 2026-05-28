@@ -1,10 +1,10 @@
+import { ClientRepository } from '@/modules/client/client.repository'
+import { ClientProductResponseDto } from '@/modules/client/dto/client-product-response.dto'
 import { ClientResponseDto } from '@/modules/client/dto/client-response.dto'
 import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
-import { ClientProductResponseDto } from '@/modules/client/dto/client-product-response.dto'
 import { Client } from '@/modules/client/entities/client'
-import { ClientRepository } from '@/modules/client/client.repository'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
 @Injectable()
@@ -20,17 +20,21 @@ export class ClientService {
 
     const existingEmail = await this.clientRepository.findByEmail(input.email)
     if (existingEmail) {
-      throw new BadRequestException('E-mail already in use')
+      throw new BadRequestException('E-mail já está em uso')
     }
 
-    const existingCpf = await this.clientRepository.findByCpf(input.cpf)
-    if (existingCpf) {
-      throw new BadRequestException('CPF already in use')
+    if (input.cpf) {
+      const existingCpf = await this.clientRepository.findByCpf(input.cpf)
+      if (existingCpf) {
+        throw new BadRequestException('CPF já está em uso')
+      }
     }
 
-    const existingCnpj = await this.clientRepository.findByCnpj(input.cnpj)
-    if (existingCnpj) {
-      throw new BadRequestException('CNPJ already in use')
+    if (input.cnpj) {
+      const existingCnpj = await this.clientRepository.findByCnpj(input.cnpj)
+      if (existingCnpj) {
+        throw new BadRequestException('CNPJ already in use')
+      }
     }
 
     const client = await this.clientRepository.create({
@@ -126,12 +130,17 @@ export class ClientService {
       id: client.id,
       name: client.name,
       email: client.email,
-      cpf: client.cpf,
-      cnpj: client.cnpj,
+      cpf: client.cpf ?? undefined,
+      cnpj: client.cnpj ?? undefined,
       phoneNumber: client.phoneNumber,
       birthDate: client.birthDate,
       createdAt: client.createdAt,
       updatedAt: client.updatedAt,
+      address: {
+        ...client.address,
+        cep: client.address.cep ?? undefined,
+        complement: client.address.complement ?? undefined,
+      },
     }
   }
 
@@ -140,12 +149,17 @@ export class ClientService {
       id: client.id,
       name: client.name,
       email: client.email,
-      cpf: client.cpf,
-      cnpj: client.cnpj,
+      cpf: client.cpf ?? undefined,
+      cnpj: client.cnpj ?? undefined,
       phoneNumber: client.phoneNumber,
       birthDate: client.birthDate,
       createdAt: client.createdAt,
       updatedAt: client.updatedAt,
+      address: {
+        ...client.address,
+        cep: client.address.cep ?? undefined,
+        complement: client.address.complement ?? undefined,
+      },
       products: client.products.map((product) => ({
         id: product.id,
         name: product.name,

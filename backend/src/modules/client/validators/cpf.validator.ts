@@ -40,7 +40,11 @@ function isValidCpf(value: string): boolean {
 
 @ValidatorConstraint({ name: 'cpf', async: false })
 export class CpfValidator implements ValidatorConstraintInterface {
-  validate(value: string): boolean {
+  validate(value?: string): boolean {
+    if (value === undefined || value === null) {
+      return true
+    }
+
     if (value.length !== CPF_LENGTH) {
       return false
     }

@@ -34,7 +34,11 @@ function isValidCnpj(value: string): boolean {
 
 @ValidatorConstraint({ name: 'cnpj', async: false })
 export class CnpjValidator implements ValidatorConstraintInterface {
-  validate(value: string): boolean {
+  validate(value?: string): boolean {
+    if (value === undefined || value === null) {
+      return true
+    }
+
     if (value.length !== CNPJ_LENGTH) {
       return false
     }

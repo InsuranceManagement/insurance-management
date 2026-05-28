@@ -63,16 +63,55 @@ model Client {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
-  cpf       String   @unique
-  cnpj      String   @unique
+  cpf       String?  @unique
+  cnpj      String?  @unique
   phoneNumber      String
   birthDate DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
   products   Products[]
+  address   Address?
 
   visits Visit[]
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  cep     String?
+  street      String
+  district    String
+  state       String
+  city        String
+  number      String
+  complement  String?
+  clientId    String   @unique
+  client      Client   @relation(fields: [clientId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+}
+
+model ChartType {
+  id          String   @id
+  name        String   @unique
+  description String
+  size        String   @default("1x1")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  charts      Chart[]
+}
+
+model Chart {
+  id          String   @id
+  name        String   @unique
+  description String
+  apiRoute    String
+  chartTypeId String
+  chartType   ChartType @relation(fields: [chartTypeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Visit {
