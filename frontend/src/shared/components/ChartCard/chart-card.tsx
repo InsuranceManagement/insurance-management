@@ -2,7 +2,7 @@ import { type ReactNode } from "react"
 
 import { Card, CardContent } from "@/shared/components/ui/card"
 import { cn } from "@/shared/lib/utils"
-import { ChartTypeSizePreset } from "@/shared/models/chart-size-preset"
+import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
 type ChartCardProps = {
   preset?: ChartTypeSizePreset

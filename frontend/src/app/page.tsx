@@ -1,5 +1,27 @@
+import { ChartCard } from "@/shared/components/ChartCard/chart-card"
+import { BarChart } from "@/shared/components/Charts/bar-chart"
 import { Box } from "@/shared/components/ui/box"
 import { Typography } from "@/shared/components/ui/typography"
+import { type ChartSeries } from "@/shared/models/charts/chart-series"
+import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
+
+const mockClientsByCompany: ChartSeries[] = [
+  {
+    id: "clients-by-company",
+    name: "Clientes",
+    type: "bar",
+    color: "#3B82F6",
+    unit: "clientes",
+    points: [
+      { x: "Porto", y: 1280 },
+      { x: "SulAmerica", y: 1134 },
+      { x: "Bradesco", y: 1028 },
+      { x: "Tokio Marine", y: 842 },
+      { x: "Allianz", y: 795 },
+      { x: "MAPFRE", y: 674 },
+    ],
+  },
+]
 
 export default function Home() {
   return (
@@ -23,6 +45,24 @@ export default function Home() {
             R$ 2,8 mi
           </Typography>
         </article>
+      </section>
+
+      <section className="grid auto-rows-min gap-4 xl:grid-cols-4">
+        <ChartCard
+          preset={ChartTypeSizePreset.TWO_BY_ONE}
+          contentClassName="flex h-full flex-col"
+        >
+          <BarChart
+            data={mockClientsByCompany}
+            title="Clientes por seguradora"
+            subtitle="Base mockada para validar visualizacao"
+            xAxisTitle="Quantidade de clientes"
+            yAxisTitle="Seguradoras"
+            orientation="column"
+            showLegend={false}
+            height="100%"
+          />
+        </ChartCard>
       </section>
 
       <section className="min-h-80 rounded-xl border bg-card p-5">

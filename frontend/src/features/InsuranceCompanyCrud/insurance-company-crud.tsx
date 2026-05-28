@@ -2,7 +2,7 @@
 import { type ColumnDef } from "@tanstack/react-table"
 
 import { InsuranceCompanyForm } from "@/features/InsuranceCompanyCrud/components/form"
-import { type InsuranceCompany } from "@/features/models/insurance-company"
+import { type InsuranceCompany } from "@/features/InsuranceCompanyCrud/models/insurance-company"
 import { type InsuranceCompanyUpsertFormValues } from "@/features/schema"
 import { type EntityViewField } from "@/shared/components/CrudScreen/components/EntityViewModal"
 import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen"
