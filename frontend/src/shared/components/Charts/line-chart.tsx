@@ -14,40 +14,36 @@ import { cn } from "@/shared/lib/utils"
 import { type ChartSeries } from "@/shared/models/charts/chart-series"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-type BarChartOrientation = "bar" | "column"
-
-type BarChartProps = {
+type LineChartProps = {
   data: ChartSeries[]
   className?: string
   title?: string
   subtitle?: string
   xAxisTitle?: string
   yAxisTitle?: string
-  orientation?: BarChartOrientation
-  stacked?: boolean
   showLegend?: boolean
+  smooth?: boolean
 }
 
-export function BarChart({
+export function LineChart({
   data,
   className,
   title,
   subtitle,
   xAxisTitle,
   yAxisTitle,
-  orientation = "bar",
-  stacked = false,
   showLegend = true,
-}: Readonly<BarChartProps>) {
+  smooth = false,
+}: Readonly<LineChartProps>) {
   const { categories, series, isEmpty } = useCategoricalChartData({
     data,
-    orientation,
+    orientation: "line",
   })
 
   const options = useMemo<Options>(
     () => ({
       chart: {
-        type: orientation,
+        type: "line",
         backgroundColor: "transparent",
       },
       title: {
@@ -61,6 +57,9 @@ export function BarChart({
       },
       legend: {
         enabled: showLegend,
+        align: "center",
+        verticalAlign: "bottom",
+        layout: "horizontal",
       },
       xAxis: {
         categories,
@@ -81,23 +80,23 @@ export function BarChart({
       plotOptions: {
         series: {
           animation: false,
-          borderRadius: 6,
+          marker: {
+            enabled: true,
+            radius: 3,
+          },
+          lineWidth: 2,
         },
-        bar: {
-          stacking: stacked ? "normal" : undefined,
-        },
-        column: {
-          stacking: stacked ? "normal" : undefined,
+        line: {
+          linecap: smooth ? "round" : undefined,
         },
       },
       series,
     }),
     [
       categories,
-      orientation,
       series,
       showLegend,
-      stacked,
+      smooth,
       subtitle,
       title,
       xAxisTitle,
@@ -113,11 +112,7 @@ export function BarChart({
     />
   ) : (
     <ChartCard preset={ChartTypeSizePreset.FOUR_BY_FOUR}>
-      <div
-        ref={containerRef}
-        className={cn("h-full w-full", className)}
-        style={{ height: "100%" }}
-      />
+      <div ref={containerRef} className={cn("h-full w-full", className)} />
     </ChartCard>
   )
 }
