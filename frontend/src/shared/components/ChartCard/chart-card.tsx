@@ -12,12 +12,9 @@ type ChartCardProps = {
 }
 
 const presetStyles: Record<ChartTypeSizePreset, string> = {
-  [ChartTypeSizePreset.ONE_BY_ONE]:
-    "col-span-1 row-span-1 min-h-56 sm:min-h-64 lg:min-h-72",
-  [ChartTypeSizePreset.TWO_BY_ONE]:
-    "col-span-1 md:col-span-2 row-span-1 min-h-56 sm:min-h-64 lg:min-h-72",
-  [ChartTypeSizePreset.FOUR_BY_FOUR]:
-    "col-span-1 md:col-span-2 xl:col-span-4 row-span-1 md:row-span-2 xl:row-span-4 min-h-72 sm:min-h-96 xl:min-h-[42rem]",
+  [ChartTypeSizePreset.ONE_BY_ONE]: "col-span-2 row-span-1",
+  [ChartTypeSizePreset.TWO_BY_ONE]: "col-span-4 row-span-1",
+  [ChartTypeSizePreset.FOUR_BY_FOUR]: "col-span-4 row-span-4",
 }
 
 export function ChartCard({
@@ -28,7 +25,7 @@ export function ChartCard({
 }: Readonly<ChartCardProps>) {
   return (
     <Card className={cn("h-full w-full", presetStyles[preset], className)}>
-      <CardContent className={cn("h-full", contentClassName)}>
+      <CardContent className={cn("h-full min-h-0", contentClassName)}>
         <div className="h-full w-full">{children}</div>
       </CardContent>
     </Card>

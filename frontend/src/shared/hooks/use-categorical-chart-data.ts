@@ -1,13 +1,14 @@
-import type Highcharts from "highcharts"
-import { useMemo } from "react"
+import Highcharts, { type Options } from "highcharts"
+import { useEffect, useMemo, useRef } from "react"
 
 import { type ChartSeries } from "@/shared/models/charts/chart-series"
 
 type CategoricalSeriesOption =
   | Highcharts.SeriesBarOptions
   | Highcharts.SeriesColumnOptions
+  | Highcharts.SeriesLineOptions
 
-type CategoricalChartOrientation = "bar" | "column"
+type CategoricalChartOrientation = "bar" | "column" | "line"
 
 type UseCategoricalChartDataParams = {
   data: ChartSeries[]
@@ -18,6 +19,12 @@ type UseCategoricalChartDataParams = {
 type UseCategoricalChartDataResult = {
   categories: string[]
   series: CategoricalSeriesOption[]
+  isEmpty: boolean
+}
+
+type UseHighchartsChartParams = {
+  options: Options
+  isEmpty: boolean
 }
 
 export function useCategoricalChartData({
@@ -25,7 +32,7 @@ export function useCategoricalChartData({
   orientation,
   fillValue = 0,
 }: Readonly<UseCategoricalChartDataParams>): UseCategoricalChartDataResult {
-  return useMemo(() => {
+  const { categories, series } = useMemo(() => {
     const categories = [
       ...new Set(
         data.flatMap((series) => series.points.map((point) => point.x)),
@@ -50,9 +57,40 @@ export function useCategoricalChartData({
         }
       })
 
-    return {
-      categories,
-      series,
-    }
+    return { categories, series }
   }, [data, fillValue, orientation])
+
+  const isEmpty = useMemo(
+    () => series.length === 0 || categories.length === 0,
+    [categories.length, series.length],
+  )
+
+  return {
+    categories,
+    series,
+    isEmpty,
+  }
+}
+
+export function useHighchartsChart({
+  options,
+  isEmpty,
+}: Readonly<UseHighchartsChartParams>) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<Highcharts.Chart | null>(null)
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container || isEmpty) return
+
+    chartRef.current?.destroy()
+    chartRef.current = Highcharts.chart(container, options)
+
+    return () => {
+      chartRef.current?.destroy()
+      chartRef.current = null
+    }
+  }, [isEmpty, options])
+
+  return containerRef
 }
