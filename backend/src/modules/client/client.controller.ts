@@ -1,3 +1,4 @@
+import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
@@ -37,8 +38,8 @@ export class ClientController {
     return this.clientService.listProducts(id)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.clientService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.clientService.delete(input.ids)
   }
 }

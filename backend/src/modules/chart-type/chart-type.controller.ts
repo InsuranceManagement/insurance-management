@@ -1,3 +1,4 @@
+import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { CreateChartTypeDto } from '@/modules/chart-type/dto/create-chart-type.dto'
 import { UpdateChartTypeDto } from '@/modules/chart-type/dto/update-chart-type.dto'
 import { ChartTypeService } from '@/modules/chart-type/services/chart-type.service'
@@ -30,8 +31,8 @@ export class ChartTypeController {
     return this.chartTypeService.update(id, input)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.chartTypeService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.chartTypeService.delete(input.ids)
   }
 }

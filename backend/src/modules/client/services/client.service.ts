@@ -115,14 +115,12 @@ export class ClientService {
     }))
   }
 
-  async delete(clientId: string): Promise<void> {
-    const existingClient = await this.clientRepository.findById(clientId)
+  async delete(clientIds: string[]): Promise<void> {
+    const deletedCount = await this.clientRepository.softDeleteMany(clientIds)
 
-    if (!existingClient?.isActive()) {
+    if (deletedCount === 0) {
       throw new NotFoundException('Client not found')
     }
-
-    await this.clientRepository.softDelete(clientId)
   }
 
   private toResponse(client: Client): ClientResponseDto {
