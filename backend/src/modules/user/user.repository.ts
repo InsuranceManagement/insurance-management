@@ -2,6 +2,7 @@ import { PrismaService } from '@/modules/database/prisma.service'
 import { User } from '@/modules/user/entities/user'
 import { CreateUserInput } from '@/modules/user/inputs/create-user.input'
 import { UpdateUserInput } from '@/modules/user/inputs/update-user.input'
+import { Prisma } from '@generated/prisma'
 import { Injectable } from '@nestjs/common'
 
 type UserRecord = {
@@ -75,6 +76,24 @@ export class UserRepository {
         email: `deleted+${userId}@local`,
       },
     })
+  }
+
+  async softDeleteMany(userIds: string[]): Promise<number> {
+    if (userIds.length === 0) {
+      return 0
+    }
+
+    const result = await this.prismaService.$executeRaw(
+      Prisma.sql`
+        UPDATE "User"
+        SET "deletedAt" = NOW(),
+            "email" = 'deleted+' || "id" || '@local'
+        WHERE "id" IN (${Prisma.join(userIds)})
+          AND "deletedAt" IS NULL
+      `,
+    )
+
+    return Number(result)
   }
 
   async list(): Promise<User[]> {

@@ -72,6 +72,26 @@ export class InsuranceCompanyRepository {
     })
   }
 
+  async softDeleteMany(companyIds: string[]): Promise<number> {
+    if (companyIds.length === 0) {
+      return 0
+    }
+
+    const { count } = await this.prismaService.insuranceCompany.updateMany({
+      where: {
+        id: {
+          in: companyIds,
+        },
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    })
+
+    return count
+  }
+
   async list(): Promise<InsuranceCompany[]> {
     const where = {
       deletedAt: null,

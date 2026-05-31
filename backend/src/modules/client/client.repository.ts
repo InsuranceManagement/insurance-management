@@ -2,6 +2,7 @@ import { Client } from '@/modules/client/entities/client'
 import { CreateClientInput } from '@/modules/client/inputs/create-client.input'
 import { UpdateClientInput } from '@/modules/client/inputs/update-client.input'
 import { PrismaService } from '@/modules/database/prisma.service'
+import { Prisma } from '@generated/prisma'
 import { Injectable } from '@nestjs/common'
 
 type ProductRecord = {
@@ -164,6 +165,26 @@ export class ClientRepository {
         cnpj: `deleted-${clientId}`,
       },
     })
+  }
+
+  async softDeleteMany(clientIds: string[]): Promise<number> {
+    if (clientIds.length === 0) {
+      return 0
+    }
+
+    const result = await this.prismaService.$executeRaw(
+      Prisma.sql`
+        UPDATE "Client"
+        SET "deletedAt" = NOW(),
+            "email" = 'deleted+' || "id" || '@local',
+            "cpf" = 'deleted-' || "id",
+            "cnpj" = 'deleted-' || "id"
+        WHERE "id" IN (${Prisma.join(clientIds)})
+          AND "deletedAt" IS NULL
+      `,
+    )
+
+    return Number(result)
   }
 
   async list(): Promise<Client[]> {

@@ -1,8 +1,8 @@
 export type ApiRouteType = {
-  method: "GET" | "POST" | "PATCH" | "DELETE"
+  method: "GET" | "POST" | "PATCH" | "DELETE";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  path: string | ((...args: any[]) => string)
-}
+  path: string | ((...args: any[]) => string);
+};
 
 export const routes: Record<string, Record<string, ApiRouteType>> = {
   users: {
@@ -26,9 +26,9 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/users/${id}`,
     },
-    deleteById: {
+    deleteMany: {
       method: "DELETE",
-      path: (id: string) => `/users/${id}`,
+      path: "/users",
     },
   },
   insuranceCompanies: {
@@ -48,9 +48,9 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/insurance-companies/${id}`,
     },
-    deleteById: {
+    deleteMany: {
       method: "DELETE",
-      path: (id: string) => `/insurance-companies/${id}`,
+      path: "/insurance-companies",
     },
   },
-} as const
+} as const;

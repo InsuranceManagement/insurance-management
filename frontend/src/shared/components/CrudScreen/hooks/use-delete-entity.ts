@@ -1,24 +1,24 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState } from "react";
 
-import { type QueryKey } from "@tanstack/react-query"
+import { type QueryKey } from "@tanstack/react-query";
 
-import { type ApiRouteType } from "@/shared/constants/routes"
-import { useApiMutation } from "@/shared/hooks/use-api-mutation"
+import { type ApiRouteType } from "@/shared/constants/routes";
+import { useApiMutation } from "@/shared/hooks/use-api-mutation";
 
 type DeletableEntityRecord = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 
 type UseDeleteEntityOptions<TData extends DeletableEntityRecord> = {
-  title: string
-  deleteRoute: ApiRouteType
-  listQueryKey: QueryKey
-  selectedRows: TData[]
-  editingRow: TData | null
-  clearEditingRow: () => void
-  clearSelection: () => void
-}
+  title: string;
+  deleteRoute: ApiRouteType;
+  listQueryKey: QueryKey;
+  selectedRows: TData[];
+  editingRow: TData | null;
+  clearEditingRow: () => void;
+  clearSelection: () => void;
+};
 
 export function useDeleteEntity<TData extends DeletableEntityRecord>({
   title,
@@ -29,8 +29,8 @@ export function useDeleteEntity<TData extends DeletableEntityRecord>({
   clearEditingRow,
   clearSelection,
 }: Readonly<UseDeleteEntityOptions<TData>>) {
-  const [rowsPendingDelete, setRowsPendingDelete] = useState<TData[]>([])
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [rowsPendingDelete, setRowsPendingDelete] = useState<TData[]>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const deleteMutation = useApiMutation<unknown>({
     route: deleteRoute,
@@ -38,56 +38,60 @@ export function useDeleteEntity<TData extends DeletableEntityRecord>({
     meta: {
       errorMessage: `Erro ao deletar registros em ${title}.`,
     },
-  })
+  });
 
   const handleDeleteSelected = () => {
     if (selectedRows.length === 0) {
-      return
+      return;
     }
 
-    setRowsPendingDelete(selectedRows)
-    setIsDeleteModalOpen(true)
-  }
+    setRowsPendingDelete(selectedRows);
+    setIsDeleteModalOpen(true);
+  };
 
   const handleConfirmDelete = () => {
-    const selectedIds = new Set(rowsPendingDelete.map((row) => row.id))
+    if (rowsPendingDelete.length === 0) {
+      return;
+    }
 
-    rowsPendingDelete.forEach((selectedRow) => {
-      deleteMutation.mutate({
-        routeParams: [selectedRow.id],
-      })
-    })
+    const selectedIds = new Set(rowsPendingDelete.map((row) => row.id));
+
+    deleteMutation.mutate({
+      body: {
+        ids: Array.from(selectedIds),
+      },
+    });
 
     if (editingRow && selectedIds.has(editingRow.id)) {
-      clearEditingRow()
+      clearEditingRow();
     }
 
-    clearSelection()
-    setIsDeleteModalOpen(false)
-    setRowsPendingDelete([])
-  }
+    clearSelection();
+    setIsDeleteModalOpen(false);
+    setRowsPendingDelete([]);
+  };
 
   const deleteItemName = useMemo(() => {
-    const firstPendingDelete = rowsPendingDelete[0]
+    const firstPendingDelete = rowsPendingDelete[0];
 
     if (!firstPendingDelete) {
-      return ""
+      return "";
     }
 
-    const pendingDeleteLabel = firstPendingDelete.name ?? firstPendingDelete.id
+    const pendingDeleteLabel = firstPendingDelete.name ?? firstPendingDelete.id;
 
     return rowsPendingDelete.length > 1
       ? `${pendingDeleteLabel} e mais ${rowsPendingDelete.length - 1}`
-      : pendingDeleteLabel
-  }, [rowsPendingDelete])
+      : pendingDeleteLabel;
+  }, [rowsPendingDelete]);
 
   const handleDeleteModalOpenChange = (open: boolean) => {
-    setIsDeleteModalOpen(open)
+    setIsDeleteModalOpen(open);
 
     if (!open) {
-      setRowsPendingDelete([])
+      setRowsPendingDelete([]);
     }
-  }
+  };
 
   return {
     rowsPendingDelete,
@@ -97,5 +101,5 @@ export function useDeleteEntity<TData extends DeletableEntityRecord>({
     handleDeleteSelected,
     handleConfirmDelete,
     handleDeleteModalOpenChange,
-  }
+  };
 }
