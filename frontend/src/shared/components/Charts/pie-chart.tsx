@@ -11,40 +11,34 @@ import { cn } from "@/shared/lib/utils"
 import { type ChartSeries } from "@/shared/models/charts/chart-series"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-type BarChartOrientation = "bar" | "column"
-
-type BarChartProps = {
+type PieChartProps = {
   data: ChartSeries[]
   className?: string
   title?: string
   subtitle?: string
-  xAxisTitle?: string
-  yAxisTitle?: string
-  orientation?: BarChartOrientation
-  stacked?: boolean
   showLegend?: boolean
+  donut?: boolean
+  showDataLabels?: boolean
 }
-
-export function BarChart({
+export function PieChart({
   data,
   className,
   title,
   subtitle,
-  xAxisTitle,
-  yAxisTitle,
-  orientation = "bar",
-  stacked = false,
   showLegend = true,
-}: Readonly<BarChartProps>) {
+  donut = false,
+  showDataLabels = true,
+}: Readonly<PieChartProps>) {
   const { series, isEmpty } = useHighchartsSeriesData({
     data,
-    seriesType: orientation,
+    seriesType: "pie",
   })
 
+  const unit = data[0]?.unit
   const options = useMemo<ChartOptions>(
     () => ({
       chart: {
-        type: orientation,
+        type: "pie",
         backgroundColor: "transparent",
       },
       title: {
@@ -58,47 +52,26 @@ export function BarChart({
       },
       legend: {
         enabled: showLegend,
-      },
-      xAxis: {
-        type: "category",
-        title: {
-          text: xAxisTitle,
-        },
-      },
-      yAxis: {
-        min: 0,
-        allowDecimals: false,
-        title: {
-          text: yAxisTitle,
-        },
-      },
-      tooltip: {
-        shared: true,
+        align: "center",
+        verticalAlign: "bottom",
+        layout: "horizontal",
       },
       plotOptions: {
-        series: {
+        pie: {
           animation: false,
-          borderRadius: 6,
-        },
-        bar: {
-          stacking: stacked ? "normal" : undefined,
-        },
-        column: {
-          stacking: stacked ? "normal" : undefined,
+          allowPointSelect: true,
+          cursor: "pointer",
+          borderWidth: 0,
+          innerSize: donut ? "45%" : "0%",
+          dataLabels: {
+            enabled: showDataLabels,
+            format: "{point.name}: {point.percentage:.1f}%",
+          },
         },
       },
       series,
     }),
-    [
-      orientation,
-      series,
-      showLegend,
-      stacked,
-      subtitle,
-      title,
-      xAxisTitle,
-      yAxisTitle,
-    ],
+    [donut, series, showDataLabels, showLegend, subtitle, title, unit],
   )
 
   return isEmpty ? (

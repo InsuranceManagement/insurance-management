@@ -1,5 +1,25 @@
+export type ChartPointX = number | string
+
 export interface ChartPoint {
-  x: string
+  name?: string
+  x?: ChartPointX
   y: number
-  time?: number
+  color?: string
+}
+
+export type ChartSeriesType =
+  | "line"
+  | "spline"
+  | "area"
+  | "column"
+  | "bar"
+  | "pie"
+  | "scatter"
+  | "kpi"
+
+export interface ChartSeries {
+  name: string
+  type: ChartSeriesType
+  data: ChartPoint[]
+  unit?: string
 }

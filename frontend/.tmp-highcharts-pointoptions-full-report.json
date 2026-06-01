@@ -1,0 +1,442 @@
+{
+  "sourceRegistry": "node_modules\\highcharts\\highcharts.src.d.ts",
+  "scannedDtsFiles": 1315,
+  "totalSeriesOptionsInRegistry": 118,
+  "withPointOptionsObjectInData": 55,
+  "withoutPointOptionsObjectInData": 15,
+  "withoutDataPropertyCount": 48,
+  "undeclaredCount": 0,
+  "percentageWithPointOptionsObjectAgainstTotal": 46.61,
+  "percentageWithoutPointOptionsObjectAgainstTotal": 12.71,
+  "withPointOptionsObject": [
+    {
+      "interface": "SeriesAreaOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesArearangeOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesAreasplineOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesAreasplinerangeOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesBarOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesBoxplotOptions",
+      "dataType": "Array<([(number|string), number, number, number, number]|[(number|string), number, number, number, number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesBubbleOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesBulletOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesCandlestickOptions",
+      "dataType": "Array<([(number|string), number, number, number]|[(number|string), number, number, number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesColumnOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesColumnpyramidOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesColumnrangeOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesContourOptions",
+      "dataType": "Array<(Array<number>|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesCylinderOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesDumbbellOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesErrorbarOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesFlagsOptions",
+      "dataType": "Array<Highcharts.PointOptionsObject>"
+    },
+    {
+      "interface": "SeriesFunnel3dOptions",
+      "dataType": "Array<(number|Array<number>|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesFunnelOptions",
+      "dataType": "Array<(number|null|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesGaugeOptions",
+      "dataType": "Array<(number|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesHeatmapOptions",
+      "dataType": "Array<(Array<number>|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesHeikinashiOptions",
+      "dataType": "Array<([(number|string), number, number, number]|[(number|string), number, number, number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesHlcOptions",
+      "dataType": "Array<([(number|string), number, number]|[(number|string), number, number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesHollowcandlestickOptions",
+      "dataType": "Array<([(number|string), number, number, number]|[(number|string), number, number, number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesItemOptions",
+      "dataType": "Array<(number|[string, (number|null)]|null|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesLineOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesLollipopOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesNetworkgraphOptions",
+      "dataType": "(Highcharts.PointOptionsObject|Array<(object|any[]|number)>)"
+    },
+    {
+      "interface": "SeriesOhlcOptions",
+      "dataType": "Array<([(number|string), number, number, number]|[(number|string), number, number, number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPackedbubbleOptions",
+      "dataType": "(Highcharts.PointOptionsObject|Array<(object|any[])>)"
+    },
+    {
+      "interface": "SeriesParetoOptions",
+      "dataType": "Array<(Array<(number|string)>|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPictorialOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPieOptions",
+      "dataType": "Array<(number|[string, (number|null)]|null|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPointandfigureOptions",
+      "dataType": "Array<([number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPolygonOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPyramid3dOptions",
+      "dataType": "Array<(number|Array<number>|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesPyramidOptions",
+      "dataType": "Array<(number|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesRenkoOptions",
+      "dataType": "Array<([number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesScatter3dOptions",
+      "dataType": "Array<(Array<number>|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesScatterOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesSolidgaugeOptions",
+      "dataType": "Array<(number|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesSplineOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesStreamgraphOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesSunburstOptions",
+      "dataType": "Array<(number|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesTilemapOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesTimelineOptions",
+      "dataType": "Array<Highcharts.PointOptionsObject>"
+    },
+    {
+      "interface": "SeriesTreegraphOptions",
+      "dataType": "Array<PointOptionsObject>"
+    },
+    {
+      "interface": "SeriesTreemapOptions",
+      "dataType": "Array<(number|null|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesVariablepieOptions",
+      "dataType": "Array<([(number|string), number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesVariwideOptions",
+      "dataType": "Array<([(number|string), number]|[(number|string), number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesVectorOptions",
+      "dataType": "Array<([(number|string), number, number, number]|Highcharts.PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesVennOptions",
+      "dataType": "Array<Highcharts.PointOptionsObject>"
+    },
+    {
+      "interface": "SeriesWaterfallOptions",
+      "dataType": "Array<(number|[(number|string), (number|null)]|null|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesWindbarbOptions",
+      "dataType": "Array<([(number|string), number, number]|PointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesWordcloudOptions",
+      "dataType": "Array<([string, number]|Highcharts.PointOptionsObject)>"
+    }
+  ],
+  "withoutPointOptionsObject": [
+    {
+      "interface": "SeriesArcdiagramOptions",
+      "dataType": "Array<SeriesSankeyPointOptionsObject>"
+    },
+    {
+      "interface": "SeriesBellcurveOptions",
+      "dataType": "undefined"
+    },
+    {
+      "interface": "SeriesDependencywheelOptions",
+      "dataType": "Array<([string, string, number]|Highcharts.SeriesSankeyPointOptionsObject)>"
+    },
+    {
+      "interface": "SeriesFlowmapOptions",
+      "dataType": "Array<(number|null|SeriesFlowmapDataOptions)>"
+    },
+    {
+      "interface": "SeriesGanttOptions",
+      "dataType": "Array<GanttPointOptionsObject>"
+    },
+    {
+      "interface": "SeriesGeoheatmapOptions",
+      "dataType": "Array<(Array<number>|SeriesGeoheatmapDataOptions)>"
+    },
+    {
+      "interface": "SeriesHistogramOptions",
+      "dataType": "undefined"
+    },
+    {
+      "interface": "SeriesMapOptions",
+      "dataType": "Array<(number|[string, (number|null)]|null|Highcharts.SeriesMapDataOptions)>"
+    },
+    {
+      "interface": "SeriesMapbubbleOptions",
+      "dataType": "Array<(number|null|Highcharts.SeriesMapbubbleDataOptions)>"
+    },
+    {
+      "interface": "SeriesMaplineOptions",
+      "dataType": "Array<(number|[string, (number|null)]|null|SeriesMaplineDataOptions)>"
+    },
+    {
+      "interface": "SeriesMappointOptions",
+      "dataType": "Array<(number|[number, (number|null)]|null|Highcharts.SeriesMappointDataOptions)>"
+    },
+    {
+      "interface": "SeriesOrganizationOptions",
+      "dataType": "Array<SeriesSankeyPointOptionsObject>"
+    },
+    {
+      "interface": "SeriesSankeyOptions",
+      "dataType": "(Array<Array<(string|number)>>|Array<Highcharts.SeriesSankeyPointOptionsObject>)"
+    },
+    {
+      "interface": "SeriesSupertrendOptions",
+      "dataType": "undefined"
+    },
+    {
+      "interface": "SeriesXrangeOptions",
+      "dataType": "Array<XrangePointOptionsObject>"
+    }
+  ],
+  "withoutDataProperty": [
+    {
+      "interface": "SeriesAbandsOptions"
+    },
+    {
+      "interface": "SeriesAdOptions"
+    },
+    {
+      "interface": "SeriesAoOptions"
+    },
+    {
+      "interface": "SeriesApoOptions"
+    },
+    {
+      "interface": "SeriesAroonOptions"
+    },
+    {
+      "interface": "SeriesAroonoscillatorOptions"
+    },
+    {
+      "interface": "SeriesAtrOptions"
+    },
+    {
+      "interface": "SeriesBbOptions"
+    },
+    {
+      "interface": "SeriesCciOptions"
+    },
+    {
+      "interface": "SeriesChaikinOptions"
+    },
+    {
+      "interface": "SeriesCmfOptions"
+    },
+    {
+      "interface": "SeriesCmoOptions"
+    },
+    {
+      "interface": "SeriesDemaOptions"
+    },
+    {
+      "interface": "SeriesDisparityindexOptions"
+    },
+    {
+      "interface": "SeriesDmiOptions"
+    },
+    {
+      "interface": "SeriesDpoOptions"
+    },
+    {
+      "interface": "SeriesEmaOptions"
+    },
+    {
+      "interface": "SeriesIkhOptions"
+    },
+    {
+      "interface": "SeriesKeltnerchannelsOptions"
+    },
+    {
+      "interface": "SeriesKlingerOptions"
+    },
+    {
+      "interface": "SeriesLinearregressionOptions"
+    },
+    {
+      "interface": "SeriesLinearregressionangleOptions"
+    },
+    {
+      "interface": "SeriesLinearregressioninterceptOptions"
+    },
+    {
+      "interface": "SeriesLinearregressionslopeOptions"
+    },
+    {
+      "interface": "SeriesMacdOptions"
+    },
+    {
+      "interface": "SeriesMfiOptions"
+    },
+    {
+      "interface": "SeriesMomentumOptions"
+    },
+    {
+      "interface": "SeriesNatrOptions"
+    },
+    {
+      "interface": "SeriesObvOptions"
+    },
+    {
+      "interface": "SeriesPcOptions"
+    },
+    {
+      "interface": "SeriesPivotpointsOptions"
+    },
+    {
+      "interface": "SeriesPpoOptions"
+    },
+    {
+      "interface": "SeriesPriceenvelopesOptions"
+    },
+    {
+      "interface": "SeriesPsarOptions"
+    },
+    {
+      "interface": "SeriesRocOptions"
+    },
+    {
+      "interface": "SeriesRsiOptions"
+    },
+    {
+      "interface": "SeriesSlowstochasticOptions"
+    },
+    {
+      "interface": "SeriesSmaOptions"
+    },
+    {
+      "interface": "SeriesStochasticOptions"
+    },
+    {
+      "interface": "SeriesTemaOptions"
+    },
+    {
+      "interface": "SeriesTiledwebmapOptions"
+    },
+    {
+      "interface": "SeriesTrendlineOptions"
+    },
+    {
+      "interface": "SeriesTrixOptions"
+    },
+    {
+      "interface": "SeriesVbpOptions"
+    },
+    {
+      "interface": "SeriesVwapOptions"
+    },
+    {
+      "interface": "SeriesWilliamsrOptions"
+    },
+    {
+      "interface": "SeriesWmaOptions"
+    },
+    {
+      "interface": "SeriesZigzagOptions"
+    }
+  ],
+  "undeclared": []
+}

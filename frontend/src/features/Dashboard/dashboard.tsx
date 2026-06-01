@@ -1,6 +1,7 @@
 import { BarChart } from "@/shared/components/Charts/bar-chart"
 import { KPIChart } from "@/shared/components/Charts/kpi"
 import { LineChart } from "@/shared/components/Charts/line-chart"
+import { PieChart } from "@/shared/components/Charts/pie-chart"
 import { type ChartSeries } from "@/shared/models/charts/chart-series"
 
 type MockKPI = {
@@ -43,74 +44,112 @@ const mockKpis: MockKPI[] = [
 
 const mockClientsByCompany: ChartSeries[] = [
   {
-    id: "clients-by-company",
     name: "Clientes",
     type: "bar",
     color: "#3B82F6",
     unit: "clientes",
-    points: [
-      { x: "Porto", y: 1280 },
-      { x: "SulAmerica", y: 1134 },
-      { x: "Bradesco", y: 1028 },
-      { x: "Tokio Marine", y: 842 },
-      { x: "Allianz", y: 795 },
-      { x: "MAPFRE", y: 674 },
+    data: [
+      { name: "Porto", y: 1280 },
+      { name: "SulAmerica", y: 1134 },
+      { name: "Bradesco", y: 1028 },
+      { name: "Tokio Marine", y: 842 },
+      { name: "Allianz", y: 795 },
+      { name: "MAPFRE", y: 674 },
     ],
   },
 ]
 
 const mockEmploymentGrowthByArea: ChartSeries[] = [
   {
-    id: "series-installation",
     name: "Instalacao e Desenvolvimento",
     type: "line",
     color: "#2EA8FF",
     unit: "mil",
-    points: [
-      { x: "2018", y: 84 },
-      { x: "2019", y: 92 },
-      { x: "2020", y: 105 },
-      { x: "2021", y: 121 },
-      { x: "2022", y: 133 },
-      { x: "2023", y: 142 },
-      { x: "2024", y: 158 },
+    data: [
+      { name: "2018", y: 84 },
+      { name: "2019", y: 92 },
+      { name: "2020", y: 105 },
+      { name: "2021", y: 121 },
+      { name: "2022", y: 133 },
+      { name: "2023", y: 142 },
+      { name: "2024", y: 158 },
     ],
   },
   {
-    id: "series-manufacturing",
     name: "Manufacturing",
     type: "line",
     color: "#22C55E",
     unit: "mil",
-    points: [
-      { x: "2018", y: 18 },
-      { x: "2019", y: 19 },
-      { x: "2020", y: 20 },
-      { x: "2021", y: 23 },
-      { x: "2022", y: 24 },
-      { x: "2023", y: 25 },
-      { x: "2024", y: 27 },
+    data: [
+      { name: "2018", y: 18 },
+      { name: "2019", y: 19 },
+      { name: "2020", y: 20 },
+      { name: "2021", y: 23 },
+      { name: "2022", y: 24 },
+      { name: "2023", y: 25 },
+      { name: "2024", y: 27 },
     ],
   },
   {
-    id: "series-sales",
     name: "Vendas e Distribuicao",
     type: "line",
     color: "#EAB308",
     unit: "mil",
-    points: [
-      { x: "2018", y: 12 },
-      { x: "2019", y: 14 },
-      { x: "2020", y: 15 },
-      { x: "2021", y: 16 },
-      { x: "2022", y: 18 },
-      { x: "2023", y: 20 },
-      { x: "2024", y: 22 },
+    data: [
+      { name: "2018", y: 12 },
+      { name: "2019", y: 14 },
+      { name: "2020", y: 15 },
+      { name: "2021", y: 16 },
+      { name: "2022", y: 18 },
+      { name: "2023", y: 20 },
+      { name: "2024", y: 22 },
     ],
   },
 ]
 
-const mockEmptyLineChart: ChartSeries[] = []
+const mockPoliciesByType: ChartSeries[] = [
+  {
+    name: "Apolices",
+    type: "pie",
+    unit: "apolices",
+    data: [
+      { name: "Auto", y: 520 },
+      { name: "Residencial", y: 310 },
+      { name: "Vida", y: 220 },
+      { name: "Empresarial", y: 180 },
+      { name: "Saude", y: 140 },
+    ],
+  },
+]
+
+const mockInsurancePremiumByAge: ChartSeries[] = [
+  {
+    name: "Plano Basico",
+    type: "line",
+    color: "#2563EB",
+    unit: "R$",
+    data: [
+      { x: 25, name: "25 anos", y: 220 },
+      { x: 30, name: "30 anos", y: 255 },
+      { x: 35, name: "35 anos", y: 292 },
+      { x: 45, name: "45 anos", y: 388 },
+      { x: 60, name: "60 anos", y: 575 },
+    ],
+  },
+  {
+    name: "Plano Completo",
+    type: "line",
+    color: "#DC2626",
+    unit: "R$",
+    data: [
+      { x: 25, name: "25 anos", y: 340 },
+      { x: 30, name: "30 anos", y: 392 },
+      { x: 35, name: "35 anos", y: 448 },
+      { x: 45, name: "45 anos", y: 612 },
+      { x: 60, name: "60 anos", y: 890 },
+    ],
+  },
+]
 
 export const Dashboard = () => {
   return (
@@ -144,12 +183,21 @@ export const Dashboard = () => {
         showLegend={false}
       />
 
+      <PieChart
+        data={mockPoliciesByType}
+        title="Distribuicao por tipo"
+        subtitle="Mock para validacao de chart 4x4"
+        showLegend
+        donut
+      />
+
       <LineChart
-        data={mockEmptyLineChart}
-        title="Evolucao mensal"
-        subtitle="Grafico propositalmente vazio"
-        xAxisTitle="Mes"
-        yAxisTitle="Volume"
+        data={mockInsurancePremiumByAge}
+        title="Premio de seguro por idade"
+        subtitle="Exemplo com x continuo: idade do cliente"
+        xAxisTitle="Idade (anos)"
+        yAxisTitle="Premio (R$)"
+        xAxisType="linear"
         showLegend
       />
     </section>
