@@ -1,7 +1,5 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 import {
   CircleDollarSignIcon,
   FileTextIcon,
@@ -10,6 +8,8 @@ import {
   ShieldCheckIcon,
   UsersIcon,
 } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import {
   Sidebar,
@@ -28,7 +28,7 @@ import { Typography } from "@/shared/components/ui/typography"
 const mainItems = [
   {
     title: "Visao geral",
-    href: "/",
+    href: "/dashboard",
     icon: HomeIcon,
   },
   {
@@ -65,7 +65,10 @@ export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar
+      collapsible="icon"
+      variant="inset"
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -76,7 +79,10 @@ export function AppSidebar() {
               className="group-data-[collapsible=icon]:justify-center"
             >
               <Link href="/">
-                <span aria-hidden className="text-base leading-none">
+                <span
+                  aria-hidden
+                  className="text-base leading-none"
+                >
                   🛡️
                 </span>
                 <Typography
@@ -109,7 +115,10 @@ export function AppSidebar() {
                   >
                     <Link href={item.href}>
                       <item.icon />
-                      <Typography asChild variant="small">
+                      <Typography
+                        asChild
+                        variant="small"
+                      >
                         <span>{item.title}</span>
                       </Typography>
                     </Link>
@@ -136,7 +145,10 @@ export function AppSidebar() {
                   >
                     <Link href={item.href}>
                       <item.icon />
-                      <Typography asChild variant="small">
+                      <Typography
+                        asChild
+                        variant="small"
+                      >
                         <span>{item.title}</span>
                       </Typography>
                     </Link>
