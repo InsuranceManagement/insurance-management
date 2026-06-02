@@ -1,5 +1,5 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
-
+import { toast } from "sonner"
 function getErrorMessageFromMeta(meta: unknown) {
   if (typeof meta !== "object" || meta === null) {
     return undefined
@@ -16,21 +16,25 @@ function getErrorMessageFromMeta(meta: unknown) {
 export function createQueryClient() {
   return new QueryClient({
     queryCache: new QueryCache({
-      onError: (_error, query) => {
-        const message = getErrorMessageFromMeta(query.meta)
-        if (message) {
-          console.error(message)
-        }
+      onError: (error) => {
+        toast.error(getErrorMessageFromMeta(error))
       },
     }),
+
     mutationCache: new MutationCache({
-      onError: (_error, _variables, _onMutateResult, mutation) => {
-        const message = getErrorMessageFromMeta(mutation.meta)
-        if (message) {
-          console.error(message)
+      onError: (error) => {
+        toast.error(getErrorMessageFromMeta(error))
+      },
+
+      onSuccess: (_data, _variables, _context, mutation) => {
+        const successMessage = mutation.meta?.successMessage
+
+        if (typeof successMessage === "string") {
+          toast.success(successMessage)
         }
       },
     }),
+
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
