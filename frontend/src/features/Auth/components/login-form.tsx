@@ -67,6 +67,13 @@ export default function LoginForm() {
       <Button
         type="submit"
         disabled={loginMutation.isPending}
+        className="
+    w-full
+    border-0
+    text-white
+    bg-[linear-gradient(135deg,#044766_0%,#06608a_50%,#0b7fb4_100%)]
+    hover:opacity-90
+  "
       >
         {loginMutation.isPending ? "Entrando..." : "Entrar"}
       </Button>
