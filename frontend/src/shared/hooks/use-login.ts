@@ -5,5 +5,9 @@ import { login } from "@/features/Auth/auth.service"
 export function useLogin() {
   return useMutation({
     mutationFn: login,
+
+    meta: {
+      successMessage: "Login realizado com sucesso!",
+    },
   })
 }
