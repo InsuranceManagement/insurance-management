@@ -1,29 +1,48 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 import { toast } from "sonner"
-function getErrorMessageFromMeta(meta: unknown) {
-  if (typeof meta !== "object" || meta === null) {
-    return undefined
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof AxiosError) {
+    const responseData = error.response?.data
+
+    if (
+      responseData &&
+      typeof responseData === "object" &&
+      "message" in responseData
+    ) {
+      const message = responseData.message
+
+      if (Array.isArray(message)) {
+        return message.join(", ")
+      }
+
+      if (typeof message === "string") {
+        return message
+      }
+    }
+
+    return error.message
   }
 
-  const errorMessage = (meta as Record<string, unknown>).errorMessage
-  if (typeof errorMessage !== "string") {
-    return undefined
+  if (error instanceof Error) {
+    return error.message
   }
 
-  return errorMessage
+  return "Ocorreu um erro inesperado."
 }
 
 export function createQueryClient() {
   return new QueryClient({
     queryCache: new QueryCache({
       onError: (error) => {
-        toast.error(getErrorMessageFromMeta(error))
+        toast.error(getErrorMessage(error))
       },
     }),
 
     mutationCache: new MutationCache({
       onError: (error) => {
-        toast.error(getErrorMessageFromMeta(error))
+        toast.error(getErrorMessage(error))
       },
 
       onSuccess: (_data, _variables, _context, mutation) => {
