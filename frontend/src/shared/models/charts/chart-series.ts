@@ -1,14 +1,6 @@
 import { type ChartPoint } from "@/shared/models/charts/chart-point"
 
-export type ChartSeriesType =
-  | "line"
-  | "spline"
-  | "area"
-  | "column"
-  | "bar"
-  | "pie"
-  | "scatter"
-  | "kpi"
+export type ChartSeriesType = "line" | "bar" | "pie" | "donut" | "kpi"
 
 export interface ChartSeries {
   name: string
@@ -16,4 +8,5 @@ export interface ChartSeries {
   data: ChartPoint[]
   color?: string
   unit?: string
+  order?: number
 }

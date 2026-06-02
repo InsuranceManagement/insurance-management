@@ -8,15 +8,11 @@ import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
-import { type ChartSeries } from "@/shared/models/charts/chart-series"
+import { type BaseChartProps } from "@/shared/models/charts/chart-config"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-type PieChartProps = {
-  data: ChartSeries[]
+export type PieChartProps = BaseChartProps & {
   className?: string
-  title?: string
-  subtitle?: string
-  showLegend?: boolean
   donut?: boolean
   showDataLabels?: boolean
 }
@@ -34,7 +30,6 @@ export function PieChart({
     seriesType: "pie",
   })
 
-  const unit = data[0]?.unit
   const options = useMemo<ChartOptions>(
     () => ({
       chart: {
@@ -71,7 +66,7 @@ export function PieChart({
       },
       series,
     }),
-    [donut, series, showDataLabels, showLegend, subtitle, title, unit],
+    [donut, series, showDataLabels, showLegend, subtitle, title],
   )
 
   return isEmpty ? (
