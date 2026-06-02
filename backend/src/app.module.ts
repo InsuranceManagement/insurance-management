@@ -4,6 +4,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthGuard } from './common/auth/auth.guard'
 import { AuthModule } from './common/auth/auth.module'
+import { DashboardModule } from '@/modules/dashboard/dashboard.module'
 import { ChartTypeModule } from './modules/chart-type/chart-type.module'
 import { ChartModule } from './modules/chart/chart.module'
 import { ClientModule } from './modules/client/client.module'
@@ -24,6 +25,7 @@ import { UserModule } from './modules/user/user.module'
     ProductTypeModule,
     ChartTypeModule,
     ChartModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],

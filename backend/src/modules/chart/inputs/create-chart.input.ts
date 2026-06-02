@@ -3,4 +3,5 @@ export interface CreateChartInput {
   description: string
   apiRoute: string
   chartTypeId: string
+  order: number
 }

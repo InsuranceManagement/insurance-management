@@ -145,6 +145,38 @@ export const seedData = {
       insuranceCompanyId: '8f6b7a21-0e3c-4c0f-9f12-7d8e9a0b1c03',
     },
   ],
+  chartType: [
+    {
+      id: 'line',
+      name: 'Line',
+      description: 'Grafico de linha',
+      size: '4x4',
+    },
+    {
+      id: 'bar',
+      name: 'Bar',
+      description: 'Grafico de barras/colunas',
+      size: '4x4',
+    },
+    {
+      id: 'pie',
+      name: 'Pie',
+      description: 'Grafico de pizza',
+      size: '4x4',
+    },
+    {
+      id: 'donut',
+      name: 'Donut',
+      description: 'Grafico de rosca',
+      size: '4x4',
+    },
+    {
+      id: 'kpi',
+      name: 'KPI',
+      description: 'Card de indicador',
+      size: '1x1',
+    },
+  ],
   client: [
     {
       id: '0d2a7a1f-5c31-4f5e-8f12-6f53e6e6c101',
