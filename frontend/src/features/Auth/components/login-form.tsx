@@ -11,6 +11,7 @@ import { Label } from "@/shared/components/ui/label"
 import { loginSchema, type LoginFormValues } from "../schema"
 
 import { useLogin } from "@/shared/hooks/use-login"
+import Link from "next/dist/client/link"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -77,6 +78,16 @@ export default function LoginForm() {
       >
         {loginMutation.isPending ? "Entrando..." : "Entrar"}
       </Button>
+
+      <p className="text-center text-sm text-muted-foreground">
+        Não possui uma conta?{" "}
+        <Link
+          href="/register"
+          className="font-medium text-[#06608a] hover:underline"
+        >
+          Cadastre-se
+        </Link>
+      </p>
     </form>
   )
 }
