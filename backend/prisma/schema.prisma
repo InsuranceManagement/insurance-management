@@ -96,7 +96,7 @@ model ChartType {
   id          String   @id
   name        String   @unique
   description String
-  size        String   @default("1x1")
+  size        String   @default("4x4")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -108,6 +108,7 @@ model Chart {
   name        String   @unique
   description String
   apiRoute    String
+  order       Int
   chartTypeId String
   chartType   ChartType @relation(fields: [chartTypeId], references: [id])
   createdAt   DateTime @default(now())

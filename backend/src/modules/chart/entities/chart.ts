@@ -6,6 +6,7 @@ export class Chart {
     public readonly name: string,
     public readonly description: string,
     public readonly apiRoute: string,
+    public readonly order: number,
     public readonly chartTypeId: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
@@ -13,13 +14,14 @@ export class Chart {
 
   static fromPrisma(chart: PrismaChart): Chart {
     return new Chart(
-      chart.id as string,
-      chart.name as string,
-      chart.description as string,
-      chart.apiRoute as string,
-      chart.chartTypeId as string,
-      chart.createdAt as Date,
-      chart.updatedAt as Date,
+      chart.id,
+      chart.name,
+      chart.description,
+      chart.apiRoute,
+      chart.order as number,
+      chart.chartTypeId,
+      chart.createdAt,
+      chart.updatedAt,
     )
   }
 }
