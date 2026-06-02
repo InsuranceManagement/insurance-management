@@ -8,10 +8,11 @@ import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
 
-import { loginSchema, type LoginFormValues } from "../schema"
-
 import { useLogin } from "@/shared/hooks/use-login"
+import { Eye, EyeOff } from "lucide-react"
 import Link from "next/dist/client/link"
+import { useState } from "react"
+import { loginSchema, type LoginFormValues } from "../schema"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -25,6 +26,8 @@ export default function LoginForm() {
       password: "",
     },
   })
+
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
@@ -58,11 +61,26 @@ export default function LoginForm() {
       <div className="flex flex-col gap-2">
         <Label htmlFor="password">Senha</Label>
 
-        <Input
-          id="password"
-          type="password"
-          {...form.register("password")}
-        />
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            {...form.register("password")}
+            className="pr-10"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
+          </button>
+        </div>
       </div>
 
       <Button
