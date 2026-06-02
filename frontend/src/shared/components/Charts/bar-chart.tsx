@@ -8,21 +8,12 @@ import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
-import { type ChartSeries } from "@/shared/models/charts/chart-series"
+import { type BaseChartProps } from "@/shared/models/charts/chart-config"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-type BarChartOrientation = "bar" | "column"
-
-type BarChartProps = {
-  data: ChartSeries[]
+export type BarChartProps = BaseChartProps & {
   className?: string
-  title?: string
-  subtitle?: string
-  xAxisTitle?: string
-  yAxisTitle?: string
-  orientation?: BarChartOrientation
   stacked?: boolean
-  showLegend?: boolean
 }
 
 export function BarChart({
@@ -32,19 +23,18 @@ export function BarChart({
   subtitle,
   xAxisTitle,
   yAxisTitle,
-  orientation = "bar",
   stacked = false,
   showLegend = true,
 }: Readonly<BarChartProps>) {
   const { series, isEmpty } = useHighchartsSeriesData({
     data,
-    seriesType: orientation,
+    seriesType: "column",
   })
 
   const options = useMemo<ChartOptions>(
     () => ({
       chart: {
-        type: orientation,
+        type: "column",
         backgroundColor: "transparent",
       },
       title: {
@@ -90,7 +80,6 @@ export function BarChart({
       series,
     }),
     [
-      orientation,
       series,
       showLegend,
       stacked,

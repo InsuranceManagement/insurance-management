@@ -8,17 +8,11 @@ import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
-import { type ChartSeries } from "@/shared/models/charts/chart-series"
+import { type BaseChartProps } from "@/shared/models/charts/chart-config"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-type LineChartProps = {
-  data: ChartSeries[]
+export type LineChartProps = BaseChartProps & {
   className?: string
-  title?: string
-  subtitle?: string
-  xAxisTitle?: string
-  yAxisTitle?: string
-  showLegend?: boolean
   smooth?: boolean
   xAxisType?: "category" | "linear"
 }

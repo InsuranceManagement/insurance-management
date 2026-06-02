@@ -1,7 +1,8 @@
-import { BarChart } from "@/shared/components/Charts/bar-chart"
 import { KPIChart } from "@/shared/components/Charts/kpi"
-import { LineChart } from "@/shared/components/Charts/line-chart"
-import { PieChart } from "@/shared/components/Charts/pie-chart"
+import {
+  renderChartByType,
+  type ChartRendererConfig,
+} from "@/shared/lib/chart-renderer"
 import { type ChartSeries } from "@/shared/models/charts/chart-series"
 
 type MockKPI = {
@@ -46,6 +47,7 @@ const mockClientsByCompany: ChartSeries[] = [
   {
     name: "Clientes",
     type: "bar",
+    order: 2,
     color: "#3B82F6",
     unit: "clientes",
     data: [
@@ -63,6 +65,7 @@ const mockEmploymentGrowthByArea: ChartSeries[] = [
   {
     name: "Instalacao e Desenvolvimento",
     type: "line",
+    order: 1,
     color: "#2EA8FF",
     unit: "mil",
     data: [
@@ -78,6 +81,7 @@ const mockEmploymentGrowthByArea: ChartSeries[] = [
   {
     name: "Manufacturing",
     type: "line",
+    order: 1,
     color: "#22C55E",
     unit: "mil",
     data: [
@@ -93,6 +97,7 @@ const mockEmploymentGrowthByArea: ChartSeries[] = [
   {
     name: "Vendas e Distribuicao",
     type: "line",
+    order: 1,
     color: "#EAB308",
     unit: "mil",
     data: [
@@ -111,6 +116,7 @@ const mockPoliciesByType: ChartSeries[] = [
   {
     name: "Apolices",
     type: "pie",
+    order: 3,
     unit: "apolices",
     data: [
       { name: "Auto", y: 520 },
@@ -126,6 +132,7 @@ const mockInsurancePremiumByAge: ChartSeries[] = [
   {
     name: "Plano Basico",
     type: "line",
+    order: 4,
     color: "#2563EB",
     unit: "R$",
     data: [
@@ -139,6 +146,7 @@ const mockInsurancePremiumByAge: ChartSeries[] = [
   {
     name: "Plano Completo",
     type: "line",
+    order: 4,
     color: "#DC2626",
     unit: "R$",
     data: [
@@ -151,7 +159,55 @@ const mockInsurancePremiumByAge: ChartSeries[] = [
   },
 ]
 
+const dashboardCharts: ChartRendererConfig[] = [
+  {
+    id: "employment-growth",
+    type: "line",
+    data: mockEmploymentGrowthByArea,
+    title: "Evolucao por area",
+    subtitle: "Mock para validacao de chart 4x4",
+    xAxisTitle: "Ano",
+    yAxisTitle: "Volume (mil)",
+    showLegend: true,
+  },
+  {
+    id: "clients-by-company",
+    type: "bar",
+    data: mockClientsByCompany,
+    title: "Clientes por seguradora",
+    subtitle: "Base mockada para validar visualizacao",
+    xAxisTitle: "Quantidade de clientes",
+    yAxisTitle: "Seguradoras",
+    showLegend: false,
+  },
+  {
+    id: "policies-by-type",
+    type: "donut",
+    data: mockPoliciesByType,
+    title: "Distribuicao por tipo",
+    subtitle: "Mock para validacao de chart 4x4",
+    showLegend: true,
+  },
+  {
+    id: "insurance-premium-by-age",
+    type: "line",
+    data: mockInsurancePremiumByAge,
+    title: "Premio de seguro por idade",
+    subtitle: "Exemplo com x continuo: idade do cliente",
+    xAxisTitle: "Idade (anos)",
+    yAxisTitle: "Premio (R$)",
+    xAxisType: "linear",
+    showLegend: true,
+  },
+]
+
 export const Dashboard = () => {
+  const orderedCharts = [...dashboardCharts].sort(
+    (a, b) =>
+      (a.data[0]?.order ?? Number.MAX_SAFE_INTEGER) -
+      (b.data[0]?.order ?? Number.MAX_SAFE_INTEGER),
+  )
+
   return (
     <section className="relative grid grid-cols-8 auto-rows-[6rem] gap-4">
       {mockKpis.map((kpi) => (
@@ -164,42 +220,7 @@ export const Dashboard = () => {
         />
       ))}
 
-      <LineChart
-        data={mockEmploymentGrowthByArea}
-        title="Evolucao por area"
-        subtitle="Mock para validacao de chart 4x4"
-        xAxisTitle="Ano"
-        yAxisTitle="Volume (mil)"
-        showLegend
-      />
-
-      <BarChart
-        data={mockClientsByCompany}
-        title="Clientes por seguradora"
-        subtitle="Base mockada para validar visualizacao"
-        xAxisTitle="Quantidade de clientes"
-        yAxisTitle="Seguradoras"
-        orientation="column"
-        showLegend={false}
-      />
-
-      <PieChart
-        data={mockPoliciesByType}
-        title="Distribuicao por tipo"
-        subtitle="Mock para validacao de chart 4x4"
-        showLegend
-        donut
-      />
-
-      <LineChart
-        data={mockInsurancePremiumByAge}
-        title="Premio de seguro por idade"
-        subtitle="Exemplo com x continuo: idade do cliente"
-        xAxisTitle="Idade (anos)"
-        yAxisTitle="Premio (R$)"
-        xAxisType="linear"
-        showLegend
-      />
+      {orderedCharts.map((chart) => renderChartByType(chart))}
     </section>
   )
 }
