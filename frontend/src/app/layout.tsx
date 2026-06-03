@@ -1,5 +1,6 @@
 import { QueryProvider } from "@/shared/components/QueryProvider/query-provider"
 import { TooltipProvider } from "@/shared/components/ui/tooltip"
+import { AuthProvider } from "@/shared/context/auth-context"
 import { cn } from "@/shared/lib/utils"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
@@ -46,7 +47,9 @@ export default function RootLayout({
     >
       <body className="min-h-full">
         <QueryProvider>
-          <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+          <AuthProvider>
+            <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+          </AuthProvider>
         </QueryProvider>
 
         <Toaster

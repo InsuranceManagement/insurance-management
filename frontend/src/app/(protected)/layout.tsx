@@ -1,5 +1,6 @@
 import { AppHeader } from "@/shared/components/AppHeader/app-header"
 import { AppSidebar } from "@/shared/components/AppSidebar/app-sidebar"
+import { AuthGuard } from "@/shared/components/AuthGuard/auth-guard"
 import { Box } from "@/shared/components/ui/box"
 import { SidebarInset, SidebarProvider } from "@/shared/components/ui/sidebar"
 import type { Metadata } from "next"
@@ -18,12 +19,14 @@ export default function RootLayout(props: Readonly<RootLayoutProps>) {
   const { children } = props
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <AppHeader />
-        <Box className="flex-1 flex-col">{children}</Box>
-      </SidebarInset>
-    </SidebarProvider>
+    <AuthGuard>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <AppHeader />
+          <Box className="flex-1 flex-col">{children}</Box>
+        </SidebarInset>
+      </SidebarProvider>
+    </AuthGuard>
   )
 }

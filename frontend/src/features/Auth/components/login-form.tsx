@@ -8,6 +8,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
 
+import { useAuth } from "@/shared/context/auth-context"
 import { useLogin } from "@/shared/hooks/use-login"
 import { Eye, EyeOff } from "lucide-react"
 import Link from "next/dist/client/link"
@@ -16,7 +17,7 @@ import { loginSchema, type LoginFormValues } from "../schema"
 
 export default function LoginForm() {
   const router = useRouter()
-
+  const { login } = useAuth()
   const loginMutation = useLogin()
 
   const form = useForm<LoginFormValues>({
@@ -33,9 +34,7 @@ export default function LoginForm() {
     try {
       const result = await loginMutation.mutateAsync(values)
 
-      localStorage.setItem("accessToken", result.accessToken)
-
-      localStorage.setItem("user", JSON.stringify(result.user))
+      login(result.accessToken, result.user)
 
       router.push("/dashboard")
     } catch (error) {
