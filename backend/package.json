@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
+    "prisma:migrate:reset": "npx prisma migrate reset",
     "prisma:seed": "npx prisma db seed",
     "gen:module": "nest g resource",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\""
