@@ -28,3 +28,11 @@ export const productTypeUpsertSchema = z.object({
 export type ProductTypeUpsertFormValues = z.infer<
   typeof productTypeUpsertSchema
 >;
+
+export const productUpsertSchema = z.object({
+  name: z.string().min(1, "O nome é obrigatório"),
+  productTypeId: z.string().min(1, "Selecione um tipo de produto"),
+  insuranceCompanyId: z.string().min(1, "Selecione uma seguradora"),
+});
+
+export type ProductUpsertFormValues = z.infer<typeof productUpsertSchema>;
