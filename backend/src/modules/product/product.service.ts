@@ -57,6 +57,8 @@ export class ProductService {
       name: product.name,
       productTypeId: product.productTypeId,
       insuranceCompanyId: product.insuranceCompanyId,
+      productType: product.productType,
+      insuranceCompany: product.insuranceCompany,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
     }
