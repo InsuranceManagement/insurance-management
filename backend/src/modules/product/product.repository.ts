@@ -13,6 +13,8 @@ type ProductRecord = {
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
+  productType?: { id: string; name: string; description: string } | null
+  insuranceCompany?: { id: string; name: string; color: string } | null
 }
 
 @Injectable()
@@ -27,6 +29,10 @@ export class ProductRepository {
         productTypeId: input.productTypeId,
         insuranceCompanyId: input.insuranceCompanyId,
       },
+      include: {
+        productType: true,
+        insuranceCompany: true,
+      },
     })
 
     return this.toEntity(product)
@@ -37,6 +43,10 @@ export class ProductRepository {
       where: {
         id: productId,
         deletedAt: null,
+      },
+      include: {
+        productType: true,
+        insuranceCompany: true,
       },
     })
 
@@ -70,6 +80,10 @@ export class ProductRepository {
       where: {
         deletedAt: null,
       },
+      include: {
+        productType: true,
+        insuranceCompany: true,
+      },
       orderBy: { createdAt: 'desc' },
     })
 
@@ -85,6 +99,8 @@ export class ProductRepository {
       product.createdAt,
       product.updatedAt,
       product.deletedAt,
+      product.productType ?? undefined,
+      product.insuranceCompany ?? undefined,
     )
   }
 }
