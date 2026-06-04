@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsOptional } from 'class-validator'
 
 export class ChartResponseDto {
   @ApiProperty()
@@ -7,8 +8,9 @@ export class ChartResponseDto {
   @ApiProperty()
   name!: string
 
-  @ApiProperty()
-  description!: string
+  @ApiPropertyOptional()
+  @IsOptional()
+  description?: string
 
   @ApiProperty()
   apiRoute!: string
@@ -16,7 +18,8 @@ export class ChartResponseDto {
   @ApiProperty()
   order!: number
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   unit?: string
 
   @ApiProperty()
