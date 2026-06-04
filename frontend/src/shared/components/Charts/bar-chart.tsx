@@ -21,6 +21,7 @@ export function BarChart({
   dataUrl,
   series: inputSeries,
   className,
+  unit,
   title,
   subtitle,
   xAxisTitle,
@@ -45,6 +46,7 @@ export function BarChart({
   const { series, isEmpty } = useHighchartsSeriesData({
     data: chartData,
     seriesType: "column",
+    unit,
   })
 
   const options = useMemo<ChartOptions>(

@@ -10,6 +10,7 @@ export class Chart {
     public readonly chartTypeId: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
+    public readonly unit?: string,
   ) {}
 
   static fromPrisma(chart: PrismaChart): Chart {
@@ -22,6 +23,7 @@ export class Chart {
       chart.chartTypeId,
       chart.createdAt,
       chart.updatedAt,
+      chart.unit ?? undefined,
     )
   }
 }

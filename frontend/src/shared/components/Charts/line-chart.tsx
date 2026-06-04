@@ -22,6 +22,7 @@ export function LineChart({
   dataUrl,
   series: inputSeries,
   className,
+  unit,
   title,
   subtitle,
   xAxisTitle,
@@ -47,6 +48,7 @@ export function LineChart({
   const { series, isEmpty } = useHighchartsSeriesData({
     data: chartData,
     seriesType: "line",
+    unit,
   })
 
   const options = useMemo<ChartOptions>(

@@ -5,6 +5,7 @@ export interface BaseChartProps {
   series: ChartSeries
   title: string
   subtitle: string
+  unit?: string
   xAxisTitle?: string
   yAxisTitle?: string
   showLegend?: boolean

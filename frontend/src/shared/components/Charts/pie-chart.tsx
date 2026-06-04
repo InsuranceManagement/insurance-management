@@ -21,6 +21,7 @@ export function PieChart({
   dataUrl,
   series: inputSeries,
   className,
+  unit,
   title,
   subtitle,
   showLegend = true,
@@ -44,6 +45,7 @@ export function PieChart({
   const { series, isEmpty } = useHighchartsSeriesData({
     data: chartData,
     seriesType: "pie",
+    unit,
   })
 
   const options = useMemo<ChartOptions>(

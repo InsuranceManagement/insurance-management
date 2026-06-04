@@ -17,6 +17,9 @@ export class ChartResponseDto {
   order!: number
 
   @ApiProperty()
+  unit?: string
+
+  @ApiProperty()
   chartTypeId!: string
 
   @ApiProperty()

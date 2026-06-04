@@ -6,19 +6,20 @@ import { type ChartRendererConfig } from "@/shared/lib/chart-renderer"
 import { type ChartSeriesType } from "@/shared/models/charts/chart-series"
 import { Kpi } from "@/shared/models/charts/kpi"
 
-type ChartConfigResponse = {
+type ChartApiResponse = {
   id: string
   name: string
   description: string
   apiRoute: string
   order: number
+  unit?: string
   chartTypeId: ChartSeriesType
   createdAt: string
   updatedAt: string
 }
 
 export function useDashboard() {
-  const chartConfigsQuery = useApiQuery<ChartConfigResponse[]>({
+  const chartConfigsQuery = useApiQuery<ChartApiResponse[]>({
     route: routes.charts.list,
     queryKey: ["dashboard", "chart-configs"],
   })
@@ -51,6 +52,7 @@ export function useDashboard() {
             order: config.order,
             data: [],
           },
+          unit: config.unit,
           title: config.name,
           subtitle: config.description,
         } as ChartRendererConfig
@@ -62,6 +64,7 @@ export function useDashboard() {
         id: config.id,
         type: "kpi",
         title: config.name,
+        unit: config.unit,
         subtitle: config.description,
         valueUrl: config.apiRoute,
       }))
