@@ -18,7 +18,7 @@ export class Chart {
       chart.name,
       chart.description,
       chart.apiRoute,
-      chart.order as number,
+      chart.order,
       chart.chartTypeId,
       chart.createdAt,
       chart.updatedAt,

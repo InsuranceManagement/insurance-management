@@ -6,6 +6,7 @@ import { Chart, type ChartOptions } from "@highcharts/react"
 
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
+import { useChartData } from "@/shared/hooks/use-chart-data"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
 import { type BaseChartProps } from "@/shared/models/charts/chart-config"
@@ -17,7 +18,8 @@ export type PieChartProps = BaseChartProps & {
   showDataLabels?: boolean
 }
 export function PieChart({
-  data,
+  dataUrl,
+  series: inputSeries,
   className,
   title,
   subtitle,
@@ -25,8 +27,22 @@ export function PieChart({
   donut = false,
   showDataLabels = true,
 }: Readonly<PieChartProps>) {
+  const { data: points } = useChartData({
+    dataUrl,
+  })
+
+  const chartData = useMemo(
+    () => [
+      {
+        ...inputSeries,
+        data: points,
+      },
+    ],
+    [inputSeries, points],
+  )
+
   const { series, isEmpty } = useHighchartsSeriesData({
-    data,
+    data: chartData,
     seriesType: "pie",
   })
 

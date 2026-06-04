@@ -177,6 +177,16 @@ export const seedData = {
       size: '1x1',
     },
   ],
+  chart: [
+    {
+      id: 'clients-by-insurance-company',
+      name: 'Clientes por Seguradora',
+      description: 'Grafico com quantidade de clientes unicos por seguradora',
+      apiRoute: '/dashboard/clients-by-insurance-company',
+      order: 4,
+      chartTypeId: 'bar',
+    },
+  ],
   client: [
     {
       id: '0d2a7a1f-5c31-4f5e-8f12-6f53e6e6c101',
@@ -186,6 +196,12 @@ export const seedData = {
       cnpj: '31012826000102',
       phoneNumber: '11987654321',
       birthDate: '1987-02-21T00:00:00.000Z',
+      products: {
+        connect: [
+          { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000001' },
+          { id: 'b2e4d3c5-2222-4b3b-9d2b-000000000001' },
+        ],
+      },
       createdAt: '2026-05-10T19:12:00.000Z',
       updatedAt: '2026-05-10T19:12:00.000Z',
     },
@@ -197,6 +213,12 @@ export const seedData = {
       cnpj: '45037813000194',
       phoneNumber: '21999887766',
       birthDate: '1992-08-05T00:00:00.000Z',
+      products: {
+        connect: [
+          { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000002' },
+          { id: 'c3f5e4d6-3333-4c4c-9e3c-000000000001' },
+        ],
+      },
       createdAt: '2026-05-10T19:13:00.000Z',
       updatedAt: '2026-05-10T19:13:00.000Z',
     },
@@ -208,6 +230,12 @@ export const seedData = {
       cnpj: '35606602000171',
       phoneNumber: '31988776655',
       birthDate: '1985-11-30T00:00:00.000Z',
+      products: {
+        connect: [
+          { id: 'b2e4d3c5-2222-4b3b-9d2b-000000000002' },
+          { id: 'c3f5e4d6-3333-4c4c-9e3c-000000000002' },
+        ],
+      },
       createdAt: '2026-05-10T19:14:00.000Z',
       updatedAt: '2026-05-10T19:14:00.000Z',
     },
@@ -219,6 +247,12 @@ export const seedData = {
       cnpj: '07886095000131',
       phoneNumber: '11994561234',
       birthDate: '1995-03-12T00:00:00.000Z',
+      products: {
+        connect: [
+          { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000003' },
+          { id: 'b2e4d3c5-2222-4b3b-9d2b-000000000003' },
+        ],
+      },
       createdAt: '2026-05-10T19:15:00.000Z',
       updatedAt: '2026-05-10T19:15:00.000Z',
     },
@@ -230,6 +264,12 @@ export const seedData = {
       cnpj: '12775849000116',
       phoneNumber: '21991234567',
       birthDate: '1991-07-19T00:00:00.000Z',
+      products: {
+        connect: [
+          { id: 'c3f5e4d6-3333-4c4c-9e3c-000000000003' },
+          { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000001' },
+        ],
+      },
       createdAt: '2026-05-10T19:16:00.000Z',
       updatedAt: '2026-05-10T19:16:00.000Z',
     },

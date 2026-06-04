@@ -6,6 +6,7 @@ import { Chart, type ChartOptions } from "@highcharts/react"
 
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
+import { useChartData } from "@/shared/hooks/use-chart-data"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
 import { type BaseChartProps } from "@/shared/models/charts/chart-config"
@@ -17,7 +18,8 @@ export type BarChartProps = BaseChartProps & {
 }
 
 export function BarChart({
-  data,
+  dataUrl,
+  series: inputSeries,
   className,
   title,
   subtitle,
@@ -26,8 +28,22 @@ export function BarChart({
   stacked = false,
   showLegend = true,
 }: Readonly<BarChartProps>) {
+  const { data: points } = useChartData({
+    dataUrl,
+  })
+
+  const chartData = useMemo(
+    () => [
+      {
+        ...inputSeries,
+        data: points,
+      },
+    ],
+    [inputSeries, points],
+  )
+
   const { series, isEmpty } = useHighchartsSeriesData({
-    data,
+    data: chartData,
     seriesType: "column",
   })
 
@@ -79,15 +95,7 @@ export function BarChart({
       },
       series,
     }),
-    [
-      series,
-      showLegend,
-      stacked,
-      subtitle,
-      title,
-      xAxisTitle,
-      yAxisTitle,
-    ],
+    [series, showLegend, stacked, subtitle, title, xAxisTitle, yAxisTitle],
   )
 
   return isEmpty ? (

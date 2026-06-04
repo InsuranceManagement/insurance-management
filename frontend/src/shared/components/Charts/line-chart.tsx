@@ -6,6 +6,7 @@ import { Chart, type ChartOptions } from "@highcharts/react"
 
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
+import { useChartData } from "@/shared/hooks/use-chart-data"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
 import { type BaseChartProps } from "@/shared/models/charts/chart-config"
@@ -18,7 +19,8 @@ export type LineChartProps = BaseChartProps & {
 }
 
 export function LineChart({
-  data,
+  dataUrl,
+  series: inputSeries,
   className,
   title,
   subtitle,
@@ -28,8 +30,22 @@ export function LineChart({
   smooth = false,
   xAxisType = "category",
 }: Readonly<LineChartProps>) {
+  const { data: points } = useChartData({
+    dataUrl,
+  })
+
+  const chartData = useMemo(
+    () => [
+      {
+        ...inputSeries,
+        data: points,
+      },
+    ],
+    [inputSeries, points],
+  )
+
   const { series, isEmpty } = useHighchartsSeriesData({
-    data,
+    data: chartData,
     seriesType: "line",
   })
 
