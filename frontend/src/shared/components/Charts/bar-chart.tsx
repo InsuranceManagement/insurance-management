@@ -37,7 +37,7 @@ export function BarChart({
     () => [
       {
         ...inputSeries,
-        data: points,
+        data: points ?? [],
       },
     ],
     [inputSeries, points],

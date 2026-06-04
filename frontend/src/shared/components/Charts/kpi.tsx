@@ -1,5 +1,3 @@
-import { useMemo } from "react"
-
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { Box } from "@/shared/components/ui/box"
 import { Typography } from "@/shared/components/ui/typography"
@@ -24,12 +22,9 @@ export function KPIChart({
   suffix,
   className,
 }: Readonly<KPIChartProps>) {
-  const { data } = useChartData({ dataUrl: valueUrl })
+  const { data: value } = useChartData<number>({ dataUrl: valueUrl })
 
-  const value = useMemo(() => data[0]?.y, [data])
-
-  const formattedValue =
-    typeof value === "number" ? `${prefix ?? ""}${value}${suffix ?? ""}` : "--"
+  const formattedValue = value ? `${prefix ?? ""}${value}${suffix ?? ""}` : "--"
 
   return (
     <ChartCard

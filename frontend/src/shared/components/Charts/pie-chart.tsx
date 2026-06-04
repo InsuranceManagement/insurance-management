@@ -36,7 +36,7 @@ export function PieChart({
     () => [
       {
         ...inputSeries,
-        data: points,
+        data: points ?? [],
       },
     ],
     [inputSeries, points],

@@ -189,7 +189,7 @@ export const seedData = {
     {
       id: 'total-clients-kpi',
       name: 'Total de Clientes',
-      apiRoute: '/dashboard/kpi-total-clientes',
+      apiRoute: '/dashboard/kpi-total-clients',
       order: 1,
       chartTypeId: 'kpi',
     },

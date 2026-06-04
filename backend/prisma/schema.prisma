@@ -106,7 +106,7 @@ model ChartType {
 model Chart {
   id          String   @id
   name        String   @unique
-  description String
+  description String?
   apiRoute    String
   order       Int
   unit        String?

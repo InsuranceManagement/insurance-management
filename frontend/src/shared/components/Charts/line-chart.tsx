@@ -39,7 +39,7 @@ export function LineChart({
     () => [
       {
         ...inputSeries,
-        data: points,
+        data: points ?? [],
       },
     ],
     [inputSeries, points],

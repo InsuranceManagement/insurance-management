@@ -1,5 +1,3 @@
-import { useMemo } from "react"
-
 import { useApiQuery } from "@/shared/hooks/use-api-query"
 import { type ChartPoint } from "@/shared/models/charts/chart-point"
 
@@ -7,16 +5,16 @@ type UseChartDataParams = {
   dataUrl?: string
 }
 
-type UseChartDataResult = {
-  data: ChartPoint[]
+type UseChartDataResult<T> = {
+  data?: T
   isLoading: boolean
   isError: boolean
 }
 
-export function useChartData({
+export function useChartData<T = ChartPoint[]>({
   dataUrl,
-}: Readonly<UseChartDataParams>): UseChartDataResult {
-  const query = useApiQuery<ChartPoint[]>({
+}: Readonly<UseChartDataParams>): UseChartDataResult<T> {
+  const query = useApiQuery<T>({
     route: {
       method: "GET",
       path: dataUrl ?? "",
@@ -25,12 +23,8 @@ export function useChartData({
     enabled: !!dataUrl,
   })
 
-  const data = useMemo<ChartPoint[]>(() => {
-    return query.data ?? []
-  }, [query.data])
-
   return {
-    data,
+    data: query.data,
     isLoading: query.isLoading,
     isError: query.isError,
   }
