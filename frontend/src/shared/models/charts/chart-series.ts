@@ -7,6 +7,5 @@ export interface ChartSeries {
   type: ChartSeriesType
   data: ChartPoint[]
   color?: string
-  unit?: string
   order?: number
 }

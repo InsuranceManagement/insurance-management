@@ -39,4 +39,12 @@ export class DashboardRepository {
 
     return ChartPoint.fromInsuranceCompanyWithClientsPrisma(companies)
   }
+
+  async getTotalClients(): Promise<number> {
+    return await this.prismaService.client.count({
+      where: {
+        deletedAt: null,
+      },
+    })
+  }
 }
