@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class ProductResponseDto {
   @ApiProperty()
@@ -12,6 +12,12 @@ export class ProductResponseDto {
 
   @ApiProperty()
   insuranceCompanyId!: string
+
+  @ApiPropertyOptional()
+  productType?: Record<string, any>
+
+  @ApiPropertyOptional()
+  insuranceCompany?: Record<string, any>
 
   @ApiProperty()
   createdAt!: Date
