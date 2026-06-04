@@ -1,6 +1,6 @@
 import { UpdateChartInput } from '@/modules/chart/inputs/update-chart.input'
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsOptional, IsString } from 'class-validator'
+import { IsInt, IsOptional, IsString, Min } from 'class-validator'
 
 export class UpdateChartDto implements UpdateChartInput {
   @ApiPropertyOptional({ description: 'Chart name' })
@@ -22,4 +22,10 @@ export class UpdateChartDto implements UpdateChartInput {
   @IsOptional()
   @IsString()
   chartTypeId?: string
+
+  @ApiPropertyOptional({ description: 'Display order in dashboard' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  order?: number
 }

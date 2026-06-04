@@ -14,6 +14,9 @@ export class ChartResponseDto {
   apiRoute!: string
 
   @ApiProperty()
+  order!: number
+
+  @ApiProperty()
   chartTypeId!: string
 
   @ApiProperty()

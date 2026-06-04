@@ -11,30 +11,29 @@ import { cn } from "@/shared/lib/utils"
 import { type BaseChartProps } from "@/shared/models/charts/chart-config"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-export type BarChartProps = BaseChartProps & {
+export type PieChartProps = BaseChartProps & {
   className?: string
-  stacked?: boolean
+  donut?: boolean
+  showDataLabels?: boolean
 }
-
-export function BarChart({
+export function PieChart({
   data,
   className,
   title,
   subtitle,
-  xAxisTitle,
-  yAxisTitle,
-  stacked = false,
   showLegend = true,
-}: Readonly<BarChartProps>) {
+  donut = false,
+  showDataLabels = true,
+}: Readonly<PieChartProps>) {
   const { series, isEmpty } = useHighchartsSeriesData({
     data,
-    seriesType: "column",
+    seriesType: "pie",
   })
 
   const options = useMemo<ChartOptions>(
     () => ({
       chart: {
-        type: "column",
+        type: "pie",
         backgroundColor: "transparent",
       },
       title: {
@@ -48,46 +47,26 @@ export function BarChart({
       },
       legend: {
         enabled: showLegend,
-      },
-      xAxis: {
-        type: "category",
-        title: {
-          text: xAxisTitle,
-        },
-      },
-      yAxis: {
-        min: 0,
-        allowDecimals: false,
-        title: {
-          text: yAxisTitle,
-        },
-      },
-      tooltip: {
-        shared: true,
+        align: "center",
+        verticalAlign: "bottom",
+        layout: "horizontal",
       },
       plotOptions: {
-        series: {
+        pie: {
           animation: false,
-          borderRadius: 6,
-        },
-        bar: {
-          stacking: stacked ? "normal" : undefined,
-        },
-        column: {
-          stacking: stacked ? "normal" : undefined,
+          allowPointSelect: true,
+          cursor: "pointer",
+          borderWidth: 0,
+          innerSize: donut ? "45%" : "0%",
+          dataLabels: {
+            enabled: showDataLabels,
+            format: "{point.name}: {point.percentage:.1f}%",
+          },
         },
       },
       series,
     }),
-    [
-      series,
-      showLegend,
-      stacked,
-      subtitle,
-      title,
-      xAxisTitle,
-      yAxisTitle,
-    ],
+    [donut, series, showDataLabels, showLegend, subtitle, title],
   )
 
   return isEmpty ? (

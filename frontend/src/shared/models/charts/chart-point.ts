@@ -1,5 +1,8 @@
+export type ChartPointX = number | string
+
 export interface ChartPoint {
-  x: string
+  name?: string
+  x?: ChartPointX
   y: number
-  time?: number
+  color?: string
 }

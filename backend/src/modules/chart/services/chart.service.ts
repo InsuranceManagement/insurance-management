@@ -33,6 +33,7 @@ export class ChartService {
       name: input.name,
       description: input.description,
       apiRoute: input.apiRoute,
+      order: input.order,
       chartTypeId: input.chartTypeId,
     })
 
@@ -100,6 +101,7 @@ export class ChartService {
       name: chart.name,
       description: chart.description,
       apiRoute: chart.apiRoute,
+      order: chart.order,
       chartTypeId: chart.chartTypeId,
       createdAt: chart.createdAt,
       updatedAt: chart.updatedAt,

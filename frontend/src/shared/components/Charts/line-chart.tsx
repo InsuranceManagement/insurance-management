@@ -2,27 +2,19 @@
 
 import { useMemo } from "react"
 
-import { type Options } from "highcharts"
+import { Chart, type ChartOptions } from "@highcharts/react"
 
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
-import {
-  useCategoricalChartData,
-  useHighchartsChart,
-} from "@/shared/hooks/use-categorical-chart-data"
+import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
-import { type ChartSeries } from "@/shared/models/charts/chart-series"
+import { type BaseChartProps } from "@/shared/models/charts/chart-config"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
-type LineChartProps = {
-  data: ChartSeries[]
+export type LineChartProps = BaseChartProps & {
   className?: string
-  title?: string
-  subtitle?: string
-  xAxisTitle?: string
-  yAxisTitle?: string
-  showLegend?: boolean
   smooth?: boolean
+  xAxisType?: "category" | "linear"
 }
 
 export function LineChart({
@@ -34,13 +26,14 @@ export function LineChart({
   yAxisTitle,
   showLegend = true,
   smooth = false,
+  xAxisType = "category",
 }: Readonly<LineChartProps>) {
-  const { categories, series, isEmpty } = useCategoricalChartData({
+  const { series, isEmpty } = useHighchartsSeriesData({
     data,
-    orientation: "line",
+    seriesType: "line",
   })
 
-  const options = useMemo<Options>(
+  const options = useMemo<ChartOptions>(
     () => ({
       chart: {
         type: "line",
@@ -62,7 +55,7 @@ export function LineChart({
         layout: "horizontal",
       },
       xAxis: {
-        categories,
+        type: xAxisType,
         title: {
           text: xAxisTitle,
         },
@@ -93,7 +86,6 @@ export function LineChart({
       series,
     }),
     [
-      categories,
       series,
       showLegend,
       smooth,
@@ -101,9 +93,9 @@ export function LineChart({
       title,
       xAxisTitle,
       yAxisTitle,
+      xAxisType,
     ],
   )
-  const containerRef = useHighchartsChart({ options, isEmpty })
 
   return isEmpty ? (
     <EmptyChartCard
@@ -112,7 +104,12 @@ export function LineChart({
     />
   ) : (
     <ChartCard preset={ChartTypeSizePreset.FOUR_BY_FOUR}>
-      <div ref={containerRef} className={cn("h-full w-full", className)} />
+      <Chart
+        options={options}
+        containerProps={{
+          className: cn("h-full w-full", className),
+        }}
+      />
     </ChartCard>
   )
 }
