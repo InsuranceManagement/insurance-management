@@ -1,19 +1,23 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 import {
   CircleDollarSignIcon,
   FileTextIcon,
   HomeIcon,
   LifeBuoyIcon,
+  LogOutIcon,
   ShieldCheckIcon,
   UsersIcon,
 } from "lucide-react"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+
+import { useAuth } from "@/shared/context/auth-context"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -27,12 +31,12 @@ import { Typography } from "@/shared/components/ui/typography"
 
 const mainItems = [
   {
-    title: "Visao geral",
-    href: "/",
+    title: "Visão geral",
+    href: "/dashboard",
     icon: HomeIcon,
   },
   {
-    title: "Apolices",
+    title: "Apólices",
     href: "#",
     icon: FileTextIcon,
   },
@@ -63,9 +67,20 @@ const supportItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const { logout, user } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    router.replace("/login")
+  }
 
   return (
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar
+      collapsible="icon"
+      variant="inset"
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -75,10 +90,14 @@ export function AppSidebar() {
               tooltip="Gerenciamento de seguros"
               className="group-data-[collapsible=icon]:justify-center"
             >
-              <Link href="/">
-                <span aria-hidden className="text-base leading-none">
+              <Link href="/dashboard">
+                <span
+                  aria-hidden
+                  className="text-base leading-none"
+                >
                   🛡️
                 </span>
+
                 <Typography
                   asChild
                   variant="small"
@@ -95,21 +114,26 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Principal</SidebarGroupLabel>
+
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
+                    tooltip={item.title}
                     isActive={
                       pathname === item.href ||
                       (item.href !== "/" && pathname?.startsWith(item.href))
                     }
-                    tooltip={item.title}
                   >
                     <Link href={item.href}>
                       <item.icon />
-                      <Typography asChild variant="small">
+
+                      <Typography
+                        asChild
+                        variant="small"
+                      >
                         <span>{item.title}</span>
                       </Typography>
                     </Link>
@@ -122,6 +146,7 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel>Operação</SidebarGroupLabel>
+
           <SidebarGroupContent>
             <SidebarMenu>
               {supportItems.map((item) => (
@@ -136,7 +161,11 @@ export function AppSidebar() {
                   >
                     <Link href={item.href}>
                       <item.icon />
-                      <Typography asChild variant="small">
+
+                      <Typography
+                        asChild
+                        variant="small"
+                      >
                         <span>{item.title}</span>
                       </Typography>
                     </Link>
@@ -147,6 +176,26 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Sair"
+              onClick={handleLogout}
+            >
+              <LogOutIcon />
+
+              <Typography
+                asChild
+                variant="small"
+              >
+                <span>Sair</span>
+              </Typography>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>

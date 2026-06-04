@@ -1,12 +1,10 @@
-import { cn } from "@/shared/lib/utils"
-import { AppHeader } from "@/shared/components/AppHeader/app-header"
 import { QueryProvider } from "@/shared/components/QueryProvider/query-provider"
-import { AppSidebar } from "@/shared/components/AppSidebar/app-sidebar"
-import { Box } from "@/shared/components/ui/box"
-import { SidebarInset, SidebarProvider } from "@/shared/components/ui/sidebar"
 import { TooltipProvider } from "@/shared/components/ui/tooltip"
+import { AuthProvider } from "@/shared/context/auth-context"
+import { cn } from "@/shared/lib/utils"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Toaster } from "sonner"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -30,33 +28,35 @@ type RootLayoutProps = {
   children: React.ReactNode
 }
 
-export default function RootLayout(props: Readonly<RootLayoutProps>) {
-  const { children } = props
-
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
     <html
-      lang="en"
+      lang="pt-BR"
       className={cn(
         "h-full",
         "antialiased",
         geistSans.variable,
         geistMono.variable,
-        "font-sans",
         inter.variable,
+        "font-sans",
       )}
     >
       <body className="min-h-full">
         <QueryProvider>
-          <TooltipProvider delayDuration={0}>
-            <SidebarProvider>
-              <AppSidebar />
-              <SidebarInset>
-                <AppHeader />
-                <Box className="flex-1 flex-col">{children}</Box>
-              </SidebarInset>
-            </SidebarProvider>
-          </TooltipProvider>
+          <AuthProvider>
+            <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+          </AuthProvider>
         </QueryProvider>
+
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+        />
       </body>
     </html>
   )

@@ -32,6 +32,21 @@ export const axiosClient = axios.create({
   },
 })
 
+axiosClient.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken")
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    }
+
+    return config
+  },
+  (error) => Promise.reject(error),
+)
+
 export async function apiClient<TResponse, TBody = unknown>({
   route,
   routeParams,
