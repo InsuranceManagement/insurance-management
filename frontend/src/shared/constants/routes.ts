@@ -30,6 +30,15 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "DELETE",
       path: (id: string) => `/users/${id}`,
     },
+    forgotPassword: {
+      method: "POST",
+      path: "/users/forgot-password",
+    },
+
+    resetPassword: {
+      method: "POST",
+      path: "/users/reset-password",
+    },
   },
   insuranceCompanies: {
     list: {
