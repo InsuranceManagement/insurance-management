@@ -1,6 +1,6 @@
 import { environment } from '@/common/config/environment'
 import { User } from '@/modules/user/entities/user'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { createHash, randomBytes } from 'crypto'
 
@@ -29,23 +29,32 @@ export class PasswordResetService {
 
     const resetUrl = this.buildPasswordResetUrl(token)
     const expiresAtText = expiresAt.toISOString()
+
     const emailBody = resetUrl
       ? `<div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #111827;">
-  <h2 style="margin: 0 0 8px; color: #1d4ed8;">Reset your password</h2>
-  <p style="margin: 0 0 16px;">Hello ${user.name},</p>
-  <p style="margin: 0 0 20px;">Click the button below to reset your password.</p>
-  <div style="text-align: center; margin: 24px 0;">
-    <a href="${resetUrl}" style="background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 6px; display: inline-block;">Reset password</a>
-  </div>
-  <p style="margin: 16px 0 0; color: #6b7280; font-size: 12px;">This link expires at ${expiresAtText}.</p>
-</div>`
+          <h2 style="margin: 0 0 8px; color: #1d4ed8;">Reset your password</h2>
+          <p style="margin: 0 0 16px;">Hello ${user.name},</p>
+          <p style="margin: 0 0 20px;">Click the button below to reset your password.</p>
+          <div style="text-align: center; margin: 24px 0;">
+            <a href="${resetUrl}" style="background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 6px; display: inline-block;">
+              Reset password
+            </a>
+          </div>
+          <p style="margin: 16px 0 0; color: #6b7280; font-size: 12px;">
+            This link expires at ${expiresAtText}.
+          </p>
+        </div>`
       : `<div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #111827;">
-  <h2 style="margin: 0 0 8px; color: #1d4ed8;">Reset your password</h2>
-  <p style="margin: 0 0 16px;">Hello ${user.name},</p>
-  <p style="margin: 0 0 8px;">Use the code below to reset your password:</p>
-  <div style="font-family: 'Courier New', monospace; background: #f3f4f6; padding: 12px; border-radius: 6px; word-break: break-all;">${token}</div>
-  <p style="margin: 16px 0 0; color: #6b7280; font-size: 12px;">This code expires at ${expiresAtText}.</p>
-</div>`
+          <h2 style="margin: 0 0 8px; color: #1d4ed8;">Reset your password</h2>
+          <p style="margin: 0 0 16px;">Hello ${user.name},</p>
+          <p style="margin: 0 0 8px;">Use the code below to reset your password:</p>
+          <div style="font-family: 'Courier New', monospace; background: #f3f4f6; padding: 12px; border-radius: 6px; word-break: break-all;">
+            ${token}
+          </div>
+          <p style="margin: 16px 0 0; color: #6b7280; font-size: 12px;">
+            This code expires at ${expiresAtText}.
+          </p>
+        </div>`
 
     const payload = {
       type: 'BrevoEmail',
@@ -54,25 +63,51 @@ export class PasswordResetService {
       subject: 'Reset password',
     }
 
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    }
+
     const authHeader = await this.buildNotificationsAuthorization()
+
     if (authHeader) {
       headers.Authorization = authHeader
     }
+
+    const controller = new AbortController()
+
+    const timeout = setTimeout(() => {
+      controller.abort()
+    }, 7000)
 
     try {
       const response = await fetch(`${environment.NOTIFICATIONS_API_URL}/notifications/send`, {
         method: 'POST',
         headers,
         body: JSON.stringify(payload),
+        signal: controller.signal,
       })
+
+      clearTimeout(timeout)
 
       if (!response.ok) {
         const responseBody = await response.text()
+
         this.logger.warn(`Notification service responded with ${response.status}: ${responseBody}`)
+
+        throw new ServiceUnavailableException('Notification service unavailable')
       }
     } catch (error) {
+      clearTimeout(timeout)
+
+      if (error instanceof Error && error.name === 'AbortError') {
+        this.logger.warn('Notification service timeout after 7 seconds')
+
+        throw new ServiceUnavailableException('Notification service timeout')
+      }
+
       this.logger.warn(`Failed to call notification service: ${String(error)}`)
+
+      throw error
     }
   }
 
