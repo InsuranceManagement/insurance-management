@@ -18,13 +18,19 @@ import { useEffect, useState } from "react"
 type ForgotPasswordFormProps = {
   emailSent: boolean
   email: string
+  resendAvailableAt: number | null
+  setResendAvailableAt: (value: number | null) => void
   onSuccess: (email: string) => void
+  onCooldownFinished: () => void
 }
 
 export default function ForgotPasswordForm({
   emailSent,
   email,
+  resendAvailableAt,
+  setResendAvailableAt,
   onSuccess,
+  onCooldownFinished,
 }: ForgotPasswordFormProps) {
   const forgotPasswordMutation = useForgotPassword()
   const [cooldown, setCooldown] = useState(0)
@@ -41,7 +47,7 @@ export default function ForgotPasswordForm({
       body: values,
     })
 
-    setCooldown(60)
+    setResendAvailableAt(Date.now() + 60_000)
     onSuccess(values.email)
   })
 
@@ -56,20 +62,38 @@ export default function ForgotPasswordForm({
       },
     })
 
-    setCooldown(60)
+    const resendAt = Date.now() + 60_000
+
+    setResendAvailableAt(resendAt)
+
+    sessionStorage.setItem("forgot-password-resend-at", resendAt.toString())
   }
 
   useEffect(() => {
-    if (cooldown <= 0) {
+    if (!resendAvailableAt) {
+      setCooldown(0)
       return
     }
 
-    const interval = setInterval(() => {
-      setCooldown((current) => current - 1)
-    }, 1000)
+    const updateCooldown = () => {
+      const remaining = Math.max(
+        0,
+        Math.ceil((resendAvailableAt - Date.now()) / 1000),
+      )
+
+      setCooldown(remaining)
+
+      if (remaining === 0) {
+        emailSent = true
+      }
+    }
+
+    updateCooldown()
+
+    const interval = setInterval(updateCooldown, 1000)
 
     return () => clearInterval(interval)
-  }, [cooldown])
+  }, [resendAvailableAt, onCooldownFinished])
 
   if (emailSent) {
     return (
