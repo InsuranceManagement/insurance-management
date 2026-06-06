@@ -1,3 +1,5 @@
+import { InsuranceCompanyResponseDto } from '@/modules/insurance-company/dto/insurance-company-response.dto'
+import { ProductTypeResponseDto } from '@/modules/product-type/dto/product-type-response.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class ProductResponseDto {
@@ -13,11 +15,11 @@ export class ProductResponseDto {
   @ApiProperty()
   insuranceCompanyId!: string
 
-  @ApiPropertyOptional()
-  productType?: Record<string, any>
+  @ApiPropertyOptional({ type: () => ProductTypeResponseDto })
+  productType?: ProductTypeResponseDto
 
-  @ApiPropertyOptional()
-  insuranceCompany?: Record<string, any>
+  @ApiPropertyOptional({ type: () => InsuranceCompanyResponseDto })
+  insuranceCompany?: InsuranceCompanyResponseDto
 
   @ApiProperty()
   createdAt!: Date

@@ -16,13 +16,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
 import { Typography } from "@/shared/components/ui/typography"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select"
+import { SelectInput } from "@/shared/components/ui/select-input" // Importação nova!
 import { routes } from "@/shared/constants/routes"
 
 type ProductFormProps = {
@@ -46,7 +40,6 @@ export function ProductForm({
   submitLabel = "Salvar",
   isSubmitting = false,
 }: Readonly<ProductFormProps>) {
-  // Buscando os dados para os dropdowns
   const { rows: productTypes, areRowsLoading: isLoadingTypes } =
     useListEntity<ProductType>({
       title: "Tipos de Produto",
@@ -58,6 +51,16 @@ export function ProductForm({
       title: "Seguradoras",
       listRoute: routes.insuranceCompanies.list,
     })
+
+  const productTypeOptions = useMemo(
+    () => productTypes.map((pt) => ({ label: pt.name, value: pt.id })),
+    [productTypes],
+  )
+
+  const insuranceCompanyOptions = useMemo(
+    () => insuranceCompanies.map((ic) => ({ label: ic.name, value: ic.id })),
+    [insuranceCompanies],
+  )
 
   const normalizedInitialValues = useMemo(
     () => ({
@@ -121,29 +124,17 @@ export function ProductForm({
             control={form.control}
             name="productTypeId"
             render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
+              <SelectInput
+                id="product-type"
                 value={field.value}
+                onChange={field.onChange}
+                options={productTypeOptions}
+                placeholder={
+                  isLoadingTypes ? "Carregando..." : "Selecione o tipo"
+                }
                 disabled={isLoadingTypes}
-              >
-                <SelectTrigger
-                  id="product-type"
-                  aria-invalid={!!form.formState.errors.productTypeId}
-                >
-                  <SelectValue
-                    placeholder={
-                      isLoadingTypes ? "Carregando..." : "Selecione o tipo"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {productTypes.map((type) => (
-                    <SelectItem key={type.id} value={type.id}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                isInvalid={!!form.formState.errors.productTypeId}
+              />
             )}
           />
           {form.formState.errors.productTypeId && (
@@ -159,31 +150,19 @@ export function ProductForm({
             control={form.control}
             name="insuranceCompanyId"
             render={({ field }) => (
-              <Select
-                onValueChange={field.onChange}
+              <SelectInput
+                id="insurance-company"
                 value={field.value}
+                onChange={field.onChange}
+                options={insuranceCompanyOptions}
+                placeholder={
+                  isLoadingCompanies
+                    ? "Carregando..."
+                    : "Selecione a seguradora"
+                }
                 disabled={isLoadingCompanies}
-              >
-                <SelectTrigger
-                  id="insurance-company"
-                  aria-invalid={!!form.formState.errors.insuranceCompanyId}
-                >
-                  <SelectValue
-                    placeholder={
-                      isLoadingCompanies
-                        ? "Carregando..."
-                        : "Selecione a seguradora"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {insuranceCompanies.map((company) => (
-                    <SelectItem key={company.id} value={company.id}>
-                      {company.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                isInvalid={!!form.formState.errors.insuranceCompanyId}
+              />
             )}
           />
           {form.formState.errors.insuranceCompanyId && (
