@@ -2,17 +2,13 @@
 
 import { useEffect, useState } from "react"
 
-import { BrandPanel } from "./components/brand-panel"
 import ForgotPasswordForm from "./components/forgot-password-form"
 
 import { Box } from "@/shared/components/ui/box"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card"
+import { Skeleton } from "@/shared/components/ui/skeleton"
+
+import { AuthCard } from "@/features/Auth/components/auth-card"
+import { AuthLayoutSplit } from "@/features/Auth/components/auth-layout-split"
 
 const STORAGE_EMAIL_KEY = "forgot-password-email"
 const STORAGE_RESEND_AT_KEY = "forgot-password-resend-at"
@@ -23,25 +19,26 @@ export default function ForgotPasswordScreen() {
   const [resendAvailableAt, setResendAvailableAt] = useState<number | null>(
     null,
   )
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const savedEmail = sessionStorage.getItem(STORAGE_EMAIL_KEY)
     const savedResendAt = sessionStorage.getItem(STORAGE_RESEND_AT_KEY)
 
-    if (!savedEmail || !savedResendAt) {
-      return
+    if (savedEmail && savedResendAt) {
+      const resendAt = Number(savedResendAt)
+
+      if (Date.now() < resendAt) {
+        setEmail(savedEmail)
+        setEmailSent(true)
+        setResendAvailableAt(resendAt)
+      } else {
+        sessionStorage.removeItem(STORAGE_EMAIL_KEY)
+        sessionStorage.removeItem(STORAGE_RESEND_AT_KEY)
+      }
     }
 
-    const resendAt = Number(savedResendAt)
-
-    if (Date.now() < resendAt) {
-      setEmail(savedEmail)
-      setEmailSent(true)
-      setResendAvailableAt(resendAt)
-    } else {
-      sessionStorage.removeItem(STORAGE_EMAIL_KEY)
-      sessionStorage.removeItem(STORAGE_RESEND_AT_KEY)
-    }
+    setIsLoading(false)
   }, [])
 
   const handleSuccess = (email: string) => {
@@ -64,37 +61,43 @@ export default function ForgotPasswordScreen() {
     setResendAvailableAt(null)
   }
 
+  if (isLoading) {
+    return (
+      <AuthLayoutSplit>
+        <Box className="w-full max-w-md">
+          <AuthCard title="">
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </AuthCard>
+        </Box>
+      </AuthLayoutSplit>
+    )
+  }
+
   return (
-    <Box className="grid min-h-screen lg:grid-cols-2">
-      <BrandPanel />
-
-      <Box className="flex items-center justify-center bg-background p-6 lg:p-12">
-        <Card className="w-full max-w-md">
-          <CardHeader className="gap-2">
-            <CardTitle className="text-2xl">
-              {emailSent ? "Verifique seu email" : "Recuperar Senha"}
-            </CardTitle>
-
-            {!emailSent && (
-              <CardDescription>
-                Informe seu email para receber instruções de recuperação de
-                senha.
-              </CardDescription>
-            )}
-          </CardHeader>
-
-          <CardContent>
-            <ForgotPasswordForm
-              emailSent={emailSent}
-              email={email}
-              resendAvailableAt={resendAvailableAt}
-              setResendAvailableAt={setResendAvailableAt}
-              onSuccess={handleSuccess}
-              onCooldownFinished={handleCooldownFinished}
-            />
-          </CardContent>
-        </Card>
-      </Box>
-    </Box>
+    <AuthLayoutSplit>
+      <AuthCard
+        title={emailSent ? "Verifique seu email" : "Recuperar senha"}
+        description={
+          emailSent
+            ? undefined
+            : "Informe seu email para receber instruções de recuperação de senha."
+        }
+      >
+        <ForgotPasswordForm
+          emailSent={emailSent}
+          email={email}
+          resendAvailableAt={resendAvailableAt}
+          setResendAvailableAt={setResendAvailableAt}
+          onSuccess={handleSuccess}
+          onCooldownFinished={handleCooldownFinished}
+        />
+      </AuthCard>
+    </AuthLayoutSplit>
   )
 }
