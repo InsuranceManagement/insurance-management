@@ -30,6 +30,7 @@ type BuildSeriesDataFn = (
 type UseHighchartsSeriesDataParams = {
   data: ChartSeries[]
   seriesType: HighchartsSeriesType
+  unit?: string
   buildSeriesData?: BuildSeriesDataFn
 }
 
@@ -41,6 +42,7 @@ type UseHighchartsSeriesDataResult = {
 export function useHighchartsSeriesData({
   data,
   seriesType,
+  unit,
   buildSeriesData,
 }: Readonly<UseHighchartsSeriesDataParams>): UseHighchartsSeriesDataResult {
   const series = useMemo(() => {
@@ -60,12 +62,12 @@ export function useHighchartsSeriesData({
           name: item.name,
           data: pointOptions,
           color: item.color,
-          tooltip: { valueSuffix: item.unit ? ` ${item.unit}` : undefined },
+          tooltip: { valueSuffix: unit ? ` ${unit}` : undefined },
         }
       })
 
     return series
-  }, [buildSeriesData, data, seriesType])
+  }, [buildSeriesData, data, seriesType, unit])
 
   const isEmpty = useMemo(
     () =>
