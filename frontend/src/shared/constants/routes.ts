@@ -1,8 +1,8 @@
 export type ApiRouteType = {
-  method: "GET" | "POST" | "PATCH" | "DELETE"
+  method: "GET" | "POST" | "PATCH" | "DELETE";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  path: string | ((...args: any[]) => string)
-}
+  path: string | ((...args: any[]) => string);
+};
 
 export const routes: Record<string, Record<string, ApiRouteType>> = {
   users: {
@@ -59,4 +59,17 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       path: "/charts",
     },
   },
-} as const
+  productTypes: {
+    list: { method: "GET", path: "/product-types" },
+    create: { method: "POST", path: "/product-types" },
+    getById: { method: "GET", path: (id: string) => `/product-types/${id}` },
+    updateById: {
+      method: "PATCH",
+      path: (id: string) => `/product-types/${id}`,
+    },
+    deleteById: {
+      method: "DELETE",
+      path: (id: string) => `/product-types/${id}`,
+    },
+  },
+} as const;
