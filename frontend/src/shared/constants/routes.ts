@@ -53,6 +53,12 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       path: (id: string) => `/insurance-companies/${id}`,
     },
   },
+  charts: {
+    list: {
+      method: "GET",
+      path: "/charts",
+    },
+  },
   productTypes: {
     list: { method: "GET", path: "/product-types" },
     create: { method: "POST", path: "/product-types" },

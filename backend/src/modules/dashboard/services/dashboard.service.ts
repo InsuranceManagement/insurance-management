@@ -9,4 +9,8 @@ export class DashboardService {
   async getClientsByInsuranceCompany(): Promise<ChartPoint[]> {
     return this.dashboardRepository.getClientsByInsuranceCompanyPoints()
   }
+
+  async getTotalClients(): Promise<number> {
+    return this.dashboardRepository.getTotalClients()
+  }
 }

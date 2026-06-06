@@ -12,4 +12,9 @@ export class DashboardController {
   getClientsByInsuranceCompany() {
     return this.dashboardService.getClientsByInsuranceCompany()
   }
+
+  @Get('kpi-total-clients')
+  async getTotalClients() {
+    return this.dashboardService.getTotalClients()
+  }
 }

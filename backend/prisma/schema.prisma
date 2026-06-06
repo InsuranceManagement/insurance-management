@@ -106,9 +106,10 @@ model ChartType {
 model Chart {
   id          String   @id
   name        String   @unique
-  description String
+  description String?
   apiRoute    String
   order       Int
+  unit        String?
   chartTypeId String
   chartType   ChartType @relation(fields: [chartTypeId], references: [id])
   createdAt   DateTime @default(now())
