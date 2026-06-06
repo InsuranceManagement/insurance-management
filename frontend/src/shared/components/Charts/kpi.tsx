@@ -1,12 +1,13 @@
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { Box } from "@/shared/components/ui/box"
 import { Typography } from "@/shared/components/ui/typography"
+import { useChartData } from "@/shared/hooks/use-chart-data"
 import { cn } from "@/shared/lib/utils"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 
 type KPIChartProps = {
   title: string
-  value?: number
+  valueUrl: string
   unit?: string
   prefix?: string
   suffix?: string
@@ -15,14 +16,15 @@ type KPIChartProps = {
 
 export function KPIChart({
   title,
-  value,
+  valueUrl,
   unit,
   prefix,
   suffix,
   className,
 }: Readonly<KPIChartProps>) {
-  const formattedValue =
-    typeof value === "number" ? `${prefix ?? ""}${value}${suffix ?? ""}` : "--"
+  const { data: value } = useChartData<number>({ dataUrl: valueUrl })
+
+  const formattedValue = value ? `${prefix ?? ""}${value}${suffix ?? ""}` : "--"
 
   return (
     <ChartCard

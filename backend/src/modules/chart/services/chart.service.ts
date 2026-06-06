@@ -29,12 +29,8 @@ export class ChartService {
     const id = this.buildIdFromName(input.name)
 
     const chart = await this.chartRepository.create({
+      ...input,
       id,
-      name: input.name,
-      description: input.description,
-      apiRoute: input.apiRoute,
-      order: input.order,
-      chartTypeId: input.chartTypeId,
     })
 
     return this.toResponse(chart)
@@ -104,6 +100,7 @@ export class ChartService {
       description: chart.description,
       apiRoute: chart.apiRoute,
       order: chart.order,
+      unit: chart.unit,
       chartTypeId: chart.chartTypeId,
       createdAt: chart.createdAt,
       updatedAt: chart.updatedAt,

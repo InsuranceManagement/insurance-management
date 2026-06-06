@@ -36,3 +36,4 @@ export const productUpsertSchema = z.object({
 });
 
 export type ProductUpsertFormValues = z.infer<typeof productUpsertSchema>;
+
