@@ -1,5 +1,5 @@
-import { InsuranceCompany } from "@/modules/insurance-company/entities/insurance-company";
-import { ProductType } from "@/modules/product-type/entities/product-type";
+import { InsuranceCompany } from '@/modules/insurance-company/entities/insurance-company'
+import { ProductType } from '@/modules/product-type/entities/product-type'
 
 export class Product {
   constructor(
