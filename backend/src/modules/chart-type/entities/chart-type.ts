@@ -13,12 +13,12 @@ export class ChartType {
 
   static fromPrisma(chartType: PrismaChartType): ChartType {
     return new ChartType(
-      chartType.id as string,
-      chartType.name as string,
-      chartType.description as string,
-      this.toSizePreset(chartType.size as string),
-      chartType.createdAt as Date,
-      chartType.updatedAt as Date,
+      chartType.id,
+      chartType.name,
+      chartType.description,
+      this.toSizePreset(chartType.size),
+      chartType.createdAt,
+      chartType.updatedAt,
     )
   }
 

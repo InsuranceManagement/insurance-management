@@ -60,9 +60,18 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     },
   },
   productTypes: {
-    list: { method: "GET", path: "/product-types" },
-    create: { method: "POST", path: "/product-types" },
-    getById: { method: "GET", path: (id: string) => `/product-types/${id}` },
+    list: { 
+      method: "GET",
+      path: "/product-types" 
+    },
+    create: { 
+      method: "POST",
+      path: "/product-types"
+    },
+    getById: { 
+      method: "GET",
+      path: (id: string) => `/product-types/${id}` 
+    },
     updateById: {
       method: "PATCH",
       path: (id: string) => `/product-types/${id}`,
@@ -70,6 +79,28 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     deleteById: {
       method: "DELETE",
       path: (id: string) => `/product-types/${id}`,
+    },
+  },
+  products: {
+    list: {
+      method: "GET",
+      path: "/products",
+    },
+    create: {
+      method: "POST",
+      path: "/products",
+    },
+    getById: {
+      method: "GET",
+      path: (id: string) => `/products/${id}`,
+    },
+    updateById: {
+      method: "PATCH",
+      path: (id: string) => `/products/${id}`,
+    },
+    deleteById: {
+      method: "DELETE",
+      path: (id: string) => `/products/${id}`,
     },
   },
 } as const;
