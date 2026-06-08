@@ -9,8 +9,8 @@ import { Controller, useForm } from "react-hook-form"
 
 import { loginSchema, type LoginFormValues } from "../schema"
 
+import { useLogin } from "@/features/Auth/hooks/use-login"
 import { useAuth } from "@/shared/context/auth-context"
-import { useLogin } from "@/shared/hooks/use-login"
 
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"
@@ -82,13 +82,22 @@ export default function LoginForm() {
         </Box>
 
         <Box className="flex-col gap-1.5">
-          <Typography
-            asChild
-            variant="small"
-            className="font-medium"
-          >
-            <label htmlFor="password">Senha</label>
-          </Typography>
+          <Box className="items-center justify-between">
+            <Typography
+              asChild
+              variant="small"
+              className="font-medium"
+            >
+              <label htmlFor="password">Senha</label>
+            </Typography>
+
+            <Link
+              href="/forgot-password"
+              className="text-sm font-medium text-[#06608a] hover:underline"
+            >
+              Esqueceu sua senha?
+            </Link>
+          </Box>
 
           <Controller
             control={form.control}
