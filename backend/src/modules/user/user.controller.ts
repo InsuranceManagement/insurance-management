@@ -5,6 +5,7 @@ import { UpdateUserDto } from '@/modules/user/dto/update-user.dto'
 import { UserService } from '@/modules/user/services/user.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import { ForgotPasswordDto } from './dto/forgot-password.dto'
 import { ResetPasswordDto } from './dto/reset-password.dto'
 
@@ -14,24 +15,28 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post()
   create(@Body() input: CreateUserDto) {
     return this.userService.create(input)
   }
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('login')
   login(@Body() input: LoginDto) {
     return this.userService.login(input)
   }
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('forgot-password')
   forgotPassword(@Body() input: ForgotPasswordDto) {
     return this.userService.requestPasswordReset(input)
   }
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('reset-password')
   resetPassword(@Body() input: ResetPasswordDto) {
     return this.userService.resetPassword(input)
