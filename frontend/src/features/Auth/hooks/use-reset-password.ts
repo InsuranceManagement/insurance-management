@@ -4,7 +4,7 @@ import {
 } from "@/features/Auth/models/auth"
 
 import { routes } from "@/shared/constants/routes"
-import { useApiMutation } from "./use-api-mutation"
+import { useApiMutation } from "../../../shared/hooks/use-api-mutation"
 
 export function useResetPassword() {
   return useApiMutation<ResetPasswordResponse, ResetPasswordRequest>({

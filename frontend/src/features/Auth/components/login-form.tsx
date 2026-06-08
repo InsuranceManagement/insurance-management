@@ -9,8 +9,8 @@ import { Controller, useForm } from "react-hook-form"
 
 import { loginSchema, type LoginFormValues } from "../schema"
 
+import { useLogin } from "@/features/Auth/hooks/use-login"
 import { useAuth } from "@/shared/context/auth-context"
-import { useLogin } from "@/shared/hooks/use-login"
 
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"

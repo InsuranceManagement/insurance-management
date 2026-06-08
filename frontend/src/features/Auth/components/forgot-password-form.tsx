@@ -7,7 +7,7 @@ import { Controller, useForm } from "react-hook-form"
 
 import { forgotPasswordSchema, type ForgotPasswordFormValues } from "../schema"
 
-import { useForgotPassword } from "@/shared/hooks/use-forgot-password"
+import { useForgotPassword } from "@/features/Auth/hooks/use-forgot-password"
 
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"

@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import { useResetPassword } from "@/shared/hooks/use-reset-password"
+import { useResetPassword } from "@/features/Auth/hooks/use-reset-password"
 import { resetPasswordSchema, type ResetPasswordFormValues } from "../schema"
 
 import { Box } from "@/shared/components/ui/box"
