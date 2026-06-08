@@ -1,10 +1,13 @@
+import { DashboardModule } from '@/modules/dashboard/dashboard.module'
 import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
+
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+
 import { AuthGuard } from './common/auth/auth.guard'
 import { AuthModule } from './common/auth/auth.module'
-import { DashboardModule } from '@/modules/dashboard/dashboard.module'
+
 import { ChartTypeModule } from './modules/chart-type/chart-type.module'
 import { ChartModule } from './modules/chart/chart.module'
 import { ClientModule } from './modules/client/client.module'
@@ -14,8 +17,17 @@ import { ProductTypeModule } from './modules/product-type/product-type.module'
 import { ProductModule } from './modules/product/product.module'
 import { UserModule } from './modules/user/user.module'
 
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
+
     PrismaModule,
     AuthModule,
     UserModule,
@@ -28,6 +40,18 @@ import { UserModule } from './modules/user/user.module'
     DashboardModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [
+    AppService,
+
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
