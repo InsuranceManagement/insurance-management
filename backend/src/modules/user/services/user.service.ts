@@ -114,11 +114,20 @@ export class UserService {
 
     if (existingUser?.isActive()) {
       const lastRequest = existingUser.passwordResetRequestedAt
-      if (lastRequest && Date.now() - lastRequest.getTime() < 60_000) {
-        throw new HttpException(
-          'Aguarde 60 segundos antes de solicitar uma nova recuperação de senha.',
-          HttpStatus.TOO_MANY_REQUESTS,
-        )
+
+      if (lastRequest) {
+        const elapsed = Date.now() - lastRequest.getTime()
+        const remainingMs = 60_000 - elapsed
+
+        if (remainingMs > 0) {
+          throw new HttpException(
+            {
+              message: 'Cooldown ativo',
+              remainingSeconds: Math.ceil(remainingMs / 1000),
+            },
+            HttpStatus.TOO_MANY_REQUESTS,
+          )
+        }
       }
 
       const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
