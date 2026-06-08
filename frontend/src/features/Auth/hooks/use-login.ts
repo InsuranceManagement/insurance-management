@@ -1,6 +1,6 @@
 import { AuthResponse, LoginRequest } from "@/features/Auth/models/auth"
 import { routes } from "@/shared/constants/routes"
-import { useApiMutation } from "./use-api-mutation"
+import { useApiMutation } from "../../../shared/hooks/use-api-mutation"
 
 export function useLogin() {
   return useApiMutation<AuthResponse, LoginRequest>({
