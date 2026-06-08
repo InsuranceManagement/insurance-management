@@ -19,6 +19,7 @@ model User {
   password  String
   passwordResetTokenHash String?
   passwordResetExpiresAt DateTime?
+  passwordRequestedAt    DateTime?
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   deletedAt DateTime? 
