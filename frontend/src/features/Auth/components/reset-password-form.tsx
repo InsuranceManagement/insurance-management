@@ -93,7 +93,6 @@ export default function ResetPasswordForm({
     onSuccess()
   })
 
-  // ✅ SUCESSO
   if (success) {
     return (
       <Box className="flex-col items-center gap-4 py-6 text-center">
@@ -151,6 +150,7 @@ export default function ResetPasswordForm({
                   id="password"
                   type={showPassword ? "text" : "password"}
                   className="pr-10"
+                  aria-invalid={!!form.formState.errors.password}
                 />
 
                 <button
@@ -167,6 +167,15 @@ export default function ResetPasswordForm({
               </Box>
             )}
           />
+
+          {form.formState.errors.password?.message && (
+            <Typography
+              variant="small"
+              className="text-destructive"
+            >
+              {form.formState.errors.password.message}
+            </Typography>
+          )}
         </Box>
 
         <Box className="flex-col gap-1.5">
@@ -188,6 +197,7 @@ export default function ResetPasswordForm({
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   className="pr-10"
+                  aria-invalid={!!form.formState.errors.confirmPassword}
                 />
 
                 <button
@@ -204,6 +214,15 @@ export default function ResetPasswordForm({
               </Box>
             )}
           />
+
+          {form.formState.errors.confirmPassword?.message && (
+            <Typography
+              variant="small"
+              className="text-destructive"
+            >
+              {form.formState.errors.confirmPassword.message}
+            </Typography>
+          )}
         </Box>
 
         <Button
