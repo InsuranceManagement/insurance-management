@@ -11,6 +11,8 @@ import { PasswordResetService } from '@/modules/user/services/passwordReset.serv
 import { UserRepository } from '@/modules/user/user.repository'
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -111,13 +113,22 @@ export class UserService {
     const existingUser = await this.userRepository.findByEmail(input.email)
 
     if (existingUser?.isActive()) {
+      const lastRequest = existingUser.passwordResetRequestedAt
+      if (lastRequest && Date.now() - lastRequest.getTime() < 60_000) {
+        throw new HttpException(
+          'Aguarde 60 segundos antes de solicitar uma nova recuperação de senha.',
+          HttpStatus.TOO_MANY_REQUESTS,
+        )
+      }
+
       const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
 
       await this.userRepository.setPasswordResetToken(existingUser.id, tokenHash, expiresAt)
+      await this.userRepository.updatePasswordResetRequestedAt(existingUser.id)
       await this.passwordResetService.sendPasswordResetNotification(existingUser, token, expiresAt)
     }
 
-    return { message: 'If the email exists, reset instructions will be sent.' }
+    return { message: 'Se o email existir, instruções de redefinição de senha serão enviadas.' }
   }
 
   async resetPassword(input: ResetPasswordDto): Promise<{ message: string }> {
