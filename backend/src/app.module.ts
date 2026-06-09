@@ -17,7 +17,8 @@ import { ProductTypeModule } from './modules/product-type/product-type.module'
 import { ProductModule } from './modules/product/product.module'
 import { UserModule } from './modules/user/user.module'
 
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { ThrottlerModule } from '@nestjs/throttler'
+import { CustomThrottlerGuard } from './common/auth/custom-throttler.guard'
 
 @Module({
   imports: [
@@ -50,7 +51,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: CustomThrottlerGuard,
     },
   ],
 })
