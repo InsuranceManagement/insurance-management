@@ -42,7 +42,9 @@ export function EntityViewModal<TData>({
   const subtitleContent =
     entity && typeof subtitle === "function"
       ? subtitle(entity)
-      : (subtitle as ReactNode)
+      : typeof subtitle === "function"
+        ? null
+        : subtitle
 
   const renderFieldValue = (value: ReactNode) => {
     if (

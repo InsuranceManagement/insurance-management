@@ -6,8 +6,10 @@ import {
   HomeIcon,
   LifeBuoyIcon,
   LogOutIcon,
+  PackageIcon,
   ShieldCheckIcon,
   UsersIcon,
+  TagsIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -52,6 +54,16 @@ const supportItems = [
     title: "Seguradoras",
     href: "/seguradoras",
     icon: CircleDollarSignIcon,
+  },
+  {
+    title: "Produtos",
+    href: "/produtos",
+    icon: PackageIcon,
+  },
+  {
+    title: "Tipos de produto",
+    href: "/tipos-de-produto",
+    icon: TagsIcon,
   },
   {
     title: "Clientes",

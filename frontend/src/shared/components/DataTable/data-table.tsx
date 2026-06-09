@@ -4,12 +4,19 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
   type OnChangeFn,
   type RowSelectionState,
+  type SortingState,
   useReactTable,
 } from "@tanstack/react-table"
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { useState } from "react"
 
+import { Box } from "@/shared/components/ui/box"
 import { Checkbox } from "@/shared/components/ui/checkbox"
+import { Input } from "@/shared/components/ui/input"
 import {
   Table,
   TableBody,
@@ -19,7 +26,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/ui/table"
-import { Box } from "@/shared/components/ui/box"
 import { cn } from "@/shared/lib/utils"
 
 type DataTableProps<TData, TValue> = {
@@ -30,6 +36,7 @@ type DataTableProps<TData, TValue> = {
   caption?: string
   emptyMessage?: string
   className?: string
+  searchPlaceholder?: string
 }
 
 function DataTable<TData, TValue>({
@@ -40,21 +47,41 @@ function DataTable<TData, TValue>({
   caption,
   emptyMessage = "Sem dados para exibir.",
   className,
+  searchPlaceholder = "Buscar em todas as colunas...",
 }: Readonly<DataTableProps<TData, TValue>>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [globalFilter, setGlobalFilter] = useState("")
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     enableRowSelection: true,
+    enableSortingRemoval: true,
     onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
     state: {
+      sorting,
+      globalFilter,
       rowSelection,
     },
   })
 
   return (
     <Box className={cn("flex-col rounded-xl border bg-card", className)}>
+      <Box className="border-b p-4">
+        <Input
+          value={globalFilter ?? ""}
+          onChange={(event) => setGlobalFilter(event.target.value)}
+          placeholder={searchPlaceholder}
+          className="max-w-md"
+        />
+      </Box>
+
       <Table>
         {caption ? (
           <TableCaption className="sr-only">{caption}</TableCaption>
@@ -79,14 +106,26 @@ function DataTable<TData, TValue>({
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                  className={cn(
+                    "text-xs font-semibold tracking-wide uppercase text-muted-foreground",
+                    header.column.getCanSort() && "cursor-pointer select-none",
+                  )}
+                  onClick={header.column.getToggleSortingHandler()}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
+                  {header.isPlaceholder ? null : (
+                    <Box className="items-center gap-1">
+                      {flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
+
+                      {header.column.getIsSorted() === "asc"
+                        ? <ChevronUpIcon className="size-3" />
+                        : header.column.getIsSorted() === "desc"
+                          ? <ChevronDownIcon className="size-3" />
+                          : null}
+                    </Box>
+                  )}
                 </TableHead>
               ))}
             </TableRow>
