@@ -30,7 +30,8 @@ const chartRendererByType: {
   line: (chart) => (
     <LineChart
       key={chart.id}
-      data={chart.data}
+      dataUrl={chart.dataUrl}
+      series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
       xAxisTitle={chart.xAxisTitle}
@@ -42,7 +43,8 @@ const chartRendererByType: {
   bar: (chart) => (
     <BarChart
       key={chart.id}
-      data={chart.data}
+      dataUrl={chart.dataUrl}
+      series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
       xAxisTitle={chart.xAxisTitle}
@@ -53,7 +55,8 @@ const chartRendererByType: {
   pie: (chart) => (
     <PieChart
       key={chart.id}
-      data={chart.data}
+      dataUrl={chart.dataUrl}
+      series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
       showLegend={chart.showLegend}
@@ -62,7 +65,8 @@ const chartRendererByType: {
   donut: (chart) => (
     <PieChart
       key={chart.id}
-      data={chart.data}
+      dataUrl={chart.dataUrl}
+      series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
       showLegend={chart.showLegend}

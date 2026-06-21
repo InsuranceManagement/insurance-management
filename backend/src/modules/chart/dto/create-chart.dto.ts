@@ -1,6 +1,6 @@
 import { CreateChartInput } from '@/modules/chart/inputs/create-chart.input'
-import { ApiProperty } from '@nestjs/swagger'
-import { IsInt, IsString, Min } from 'class-validator'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IsInt, IsOptional, IsString, Min } from 'class-validator'
 
 export class CreateChartDto implements CreateChartInput {
   @ApiProperty({ description: 'Chart name' })
@@ -23,4 +23,9 @@ export class CreateChartDto implements CreateChartInput {
   @IsInt()
   @Min(0)
   order!: number
+
+  @ApiPropertyOptional({ description: 'Chart unit' })
+  @IsString()
+  @IsOptional()
+  unit?: string
 }

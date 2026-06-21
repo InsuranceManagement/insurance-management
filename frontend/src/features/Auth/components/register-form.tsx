@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import { useRegister } from "@/shared/hooks/use-register"
+import { useRegister } from "@/features/Auth/hooks/use-register"
 
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"

@@ -30,6 +30,15 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "DELETE",
       path: "/users",
     },
+    forgotPassword: {
+      method: "POST",
+      path: "/users/forgot-password",
+    },
+
+    resetPassword: {
+      method: "POST",
+      path: "/users/reset-password",
+    },
   },
   insuranceCompanies: {
     list: {
@@ -51,6 +60,56 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     deleteMany: {
       method: "DELETE",
       path: "/insurance-companies",
+    },
+  },
+  charts: {
+    list: {
+      method: "GET",
+      path: "/charts",
+    },
+  },
+  productTypes: {
+    list: {
+      method: "GET",
+      path: "/product-types",
+    },
+    create: {
+      method: "POST",
+      path: "/product-types",
+    },
+    getById: {
+      method: "GET",
+      path: (id: string) => `/product-types/${id}`,
+    },
+    updateById: {
+      method: "PATCH",
+      path: (id: string) => `/product-types/${id}`,
+    },
+    deleteById: {
+      method: "DELETE",
+      path: (id: string) => `/product-types/${id}`,
+    },
+  },
+  products: {
+    list: {
+      method: "GET",
+      path: "/products",
+    },
+    create: {
+      method: "POST",
+      path: "/products",
+    },
+    getById: {
+      method: "GET",
+      path: (id: string) => `/products/${id}`,
+    },
+    updateById: {
+      method: "PATCH",
+      path: (id: string) => `/products/${id}`,
+    },
+    deleteById: {
+      method: "DELETE",
+      path: (id: string) => `/products/${id}`,
     },
   },
 } as const;

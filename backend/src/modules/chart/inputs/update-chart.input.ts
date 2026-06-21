@@ -1,3 +1,3 @@
 import { CreateChartInput } from './create-chart.input'
 
-export interface UpdateChartInput extends Partial<CreateChartInput> {}
+export type UpdateChartInput = Partial<CreateChartInput>
