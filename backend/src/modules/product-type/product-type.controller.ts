@@ -1,3 +1,4 @@
+import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { CreateProductTypeDto } from '@/modules/product-type/dto/create-product-type.dto'
 import { UpdateProductTypeDto } from '@/modules/product-type/dto/update-product-type.dto'
 import { ProductTypeService } from '@/modules/product-type/services/product-type.service'
@@ -30,8 +31,8 @@ export class ProductTypeController {
     return this.productTypeService.update(id, input)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.productTypeService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.productTypeService.delete(input.ids)
   }
 }

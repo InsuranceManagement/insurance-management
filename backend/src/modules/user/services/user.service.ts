@@ -97,14 +97,12 @@ export class UserService {
     await this.userRepository.update(userId, updateData)
   }
 
-  async delete(userId: string): Promise<void> {
-    const existingUser = await this.userRepository.findById(userId)
+  async delete(userIds: string[]): Promise<void> {
+    const deletedCount = await this.userRepository.softDeleteMany(userIds)
 
-    if (!existingUser?.isActive()) {
+    if (deletedCount === 0) {
       throw new NotFoundException('User not found')
     }
-
-    await this.userRepository.softDelete(userId)
   }
 
   async requestPasswordReset(input: ForgotPasswordDto): Promise<{ message: string }> {

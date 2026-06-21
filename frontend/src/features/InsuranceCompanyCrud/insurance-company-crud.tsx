@@ -1,15 +1,15 @@
-"use client"
-import { type ColumnDef } from "@tanstack/react-table"
+"use client";
+import { type ColumnDef } from "@tanstack/react-table";
 
-import { InsuranceCompanyForm } from "@/features/InsuranceCompanyCrud/components/form"
-import { type InsuranceCompany } from "@/features/InsuranceCompanyCrud/models/insurance-company"
-import { type InsuranceCompanyUpsertFormValues } from "@/features/schema"
-import { type EntityViewField } from "@/shared/components/CrudScreen/components/EntityViewModal"
-import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen"
-import { Box } from "@/shared/components/ui/box"
-import { Typography } from "@/shared/components/ui/typography"
-import { routes } from "@/shared/constants/routes"
-import { formatDate } from "@/shared/lib/date-format"
+import { InsuranceCompanyForm } from "@/features/InsuranceCompanyCrud/components/form";
+import { type InsuranceCompany } from "@/features/InsuranceCompanyCrud/models/insurance-company";
+import { type InsuranceCompanyUpsertFormValues } from "@/features/schema";
+import { type EntityViewField } from "@/shared/components/CrudScreen/components/EntityViewModal";
+import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen";
+import { Box } from "@/shared/components/ui/box";
+import { Typography } from "@/shared/components/ui/typography";
+import { routes } from "@/shared/constants/routes";
+import { formatDate } from "@/shared/lib/date-format";
 
 const columns: ColumnDef<InsuranceCompany>[] = [
   {
@@ -50,7 +50,7 @@ const columns: ColumnDef<InsuranceCompany>[] = [
       </Typography>
     ),
   },
-]
+];
 
 const viewFields: EntityViewField<InsuranceCompany>[] = [
   {
@@ -91,7 +91,7 @@ const viewFields: EntityViewField<InsuranceCompany>[] = [
       </Typography>
     ),
   },
-]
+];
 
 export default function InsuranceCompanyCrud() {
   return (
@@ -113,8 +113,8 @@ export default function InsuranceCompanyCrud() {
         list: routes.insuranceCompanies.list,
         create: routes.insuranceCompanies.create,
         edit: routes.insuranceCompanies.updateById,
-        delete: routes.insuranceCompanies.deleteById,
+        delete: routes.insuranceCompanies.deleteMany,
       }}
     />
-  )
+  );
 }

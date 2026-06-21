@@ -1,3 +1,4 @@
+import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { CreateInsuranceCompanyDto } from '@/modules/insurance-company/dto/create-insurance-company.dto'
 import { UpdateInsuranceCompanyDto } from '@/modules/insurance-company/dto/update-insurance-company.dto'
 import { InsuranceCompanyService } from '@/modules/insurance-company/services/insurance-company.service'
@@ -30,8 +31,8 @@ export class InsuranceCompanyController {
     return this.insuranceCompanyService.update(id, input)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.insuranceCompanyService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.insuranceCompanyService.delete(input.ids)
   }
 }

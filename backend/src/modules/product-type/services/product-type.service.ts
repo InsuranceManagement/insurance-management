@@ -59,14 +59,12 @@ export class ProductTypeService {
     await this.productTypeRepository.update(productTypeId, input)
   }
 
-  async delete(productTypeId: string): Promise<void> {
-    const existingProductType = await this.productTypeRepository.findById(productTypeId)
+  async delete(productTypeIds: string[]): Promise<void> {
+    const deletedCount = await this.productTypeRepository.softDeleteMany(productTypeIds)
 
-    if (!existingProductType?.isActive()) {
+    if (deletedCount === 0) {
       throw new NotFoundException('Product type not found')
     }
-
-    await this.productTypeRepository.softDelete(productTypeId)
   }
 
   private toResponse(productType: ProductType): ProductTypeResponseDto {

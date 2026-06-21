@@ -26,9 +26,9 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/users/${id}`,
     },
-    deleteById: {
+    deleteMany: {
       method: "DELETE",
-      path: (id: string) => `/users/${id}`,
+      path: "/users",
     },
     forgotPassword: {
       method: "POST",
@@ -57,9 +57,9 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/insurance-companies/${id}`,
     },
-    deleteById: {
+    deleteMany: {
       method: "DELETE",
-      path: (id: string) => `/insurance-companies/${id}`,
+      path: "/insurance-companies",
     },
   },
   charts: {
@@ -69,17 +69,17 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     },
   },
   productTypes: {
-    list: { 
+    list: {
       method: "GET",
-      path: "/product-types" 
+      path: "/product-types",
     },
-    create: { 
+    create: {
       method: "POST",
-      path: "/product-types"
+      path: "/product-types",
     },
-    getById: { 
+    getById: {
       method: "GET",
-      path: (id: string) => `/product-types/${id}` 
+      path: (id: string) => `/product-types/${id}`,
     },
     updateById: {
       method: "PATCH",

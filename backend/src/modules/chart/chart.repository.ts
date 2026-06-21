@@ -65,6 +65,22 @@ export class ChartRepository {
     })
   }
 
+  async deleteMany(chartIds: string[]): Promise<number> {
+    if (chartIds.length === 0) {
+      return 0
+    }
+
+    const { count } = await this.prismaService.chart.deleteMany({
+      where: {
+        id: {
+          in: chartIds,
+        },
+      },
+    })
+
+    return count
+  }
+
   async list(): Promise<Chart[]> {
     const charts = await this.prismaService.chart.findMany({
       orderBy: { createdAt: 'desc' },

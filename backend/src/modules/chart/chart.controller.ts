@@ -1,3 +1,4 @@
+import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { CreateChartDto } from '@/modules/chart/dto/create-chart.dto'
 import { UpdateChartDto } from '@/modules/chart/dto/update-chart.dto'
 import { ChartService } from '@/modules/chart/services/chart.service'
@@ -30,8 +31,8 @@ export class ChartController {
     return this.chartService.update(id, input)
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.chartService.delete(id)
+  @Delete()
+  delete(@Body() input: DeleteManyDto) {
+    return this.chartService.delete(input.ids)
   }
 }

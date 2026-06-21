@@ -54,14 +54,12 @@ export class InsuranceCompanyService {
     await this.insuranceCompanyRepository.update(companyId, input)
   }
 
-  async delete(companyId: string): Promise<void> {
-    const existingCompany = await this.insuranceCompanyRepository.findById(companyId)
+  async delete(companyIds: string[]): Promise<void> {
+    const deletedCount = await this.insuranceCompanyRepository.softDeleteMany(companyIds)
 
-    if (!existingCompany?.isActive()) {
+    if (deletedCount === 0) {
       throw new NotFoundException('Insurance company not found')
     }
-
-    await this.insuranceCompanyRepository.softDelete(companyId)
   }
 
   private toResponse(company: InsuranceCompany): InsuranceCompanyResponseDto {
