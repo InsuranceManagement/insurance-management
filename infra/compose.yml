@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:17-alpine
+    env_file:
+      - ../backend/.env.docker
+    ports:
+      - "5435:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - insurance-management-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  api:
+    build:
+      context: ../backend
+      dockerfile: ../infra/backend/Dockerfile
+    env_file:
+      - ../backend/.env.docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - insurance-management-network
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../infra/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - insurance-management-network
+volumes:
+  db_data:
+networks:
+  insurance-management-network:
+    driver: bridge

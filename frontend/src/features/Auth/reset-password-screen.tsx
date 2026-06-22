@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 
 import ResetPasswordForm from "./components/reset-password-form"
 
@@ -16,7 +16,9 @@ export default function ResetPasswordScreen() {
         title={success ? "Senha redefinida" : "Redefinir senha"}
         description={success ? undefined : "Informe sua nova senha."}
       >
-        <ResetPasswordForm onSuccess={() => setSuccess(true)} />
+        <Suspense fallback={null}>
+          <ResetPasswordForm onSuccess={() => setSuccess(true)} />
+        </Suspense>
       </AuthCard>
     </AuthLayoutCentered>
   )
