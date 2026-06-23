@@ -17,3 +17,11 @@ output "frontend_vm_ssh_command" {
 output "frontend_url" {
   value = module.compute.frontend_url
 }
+
+output "aks_cluster_name" {
+  value = module.kubernetes.cluster_name
+}
+
+output "aks_kube_config_command" {
+  value = module.kubernetes.kube_config_command
+}

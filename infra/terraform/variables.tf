@@ -32,3 +32,23 @@ variable "admin_ssh_public_key" {
   type        = string
   description = "Public SSH key allowed to access the frontend VM."
 }
+
+variable "aks_cluster_name" {
+  type    = string
+  default = "aks-insurance-backend"
+}
+
+variable "aks_dns_prefix" {
+  type    = string
+  default = "insurance-backend"
+}
+
+variable "aks_node_count" {
+  type    = number
+  default = 2
+}
+
+variable "aks_node_vm_size" {
+  type    = string
+  default = "Standard_B2s"
+}

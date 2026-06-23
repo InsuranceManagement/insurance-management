@@ -36,3 +36,14 @@ module "compute" {
   admin_username       = var.admin_username
   admin_ssh_public_key = var.admin_ssh_public_key
 }
+
+module "kubernetes" {
+  source = "./modules/kubernetes"
+
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  cluster_name        = var.aks_cluster_name
+  dns_prefix          = var.aks_dns_prefix
+  node_count          = var.aks_node_count
+  node_vm_size        = var.aks_node_vm_size
+}
