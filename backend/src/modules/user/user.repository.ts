@@ -11,6 +11,7 @@ type UserRecord = {
   password: string
   passwordResetTokenHash: string | null
   passwordResetExpiresAt: Date | null
+  passwordResetRequestedAt: Date | null
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -132,6 +133,17 @@ export class UserRepository {
     })
   }
 
+  async updatePasswordResetRequestedAt(userId: string): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        passwordResetRequestedAt: new Date(),
+      },
+    })
+  }
+
   async updatePasswordWithResetToken(userId: string, newPassword: string): Promise<void> {
     await this.prismaService.user.update({
       where: {
@@ -153,6 +165,7 @@ export class UserRepository {
       user.password,
       user.passwordResetTokenHash,
       user.passwordResetExpiresAt,
+      user.passwordResetRequestedAt,
       user.createdAt,
       user.updatedAt,
       user.deletedAt,
