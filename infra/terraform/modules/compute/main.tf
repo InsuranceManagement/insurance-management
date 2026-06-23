@@ -1,27 +1,27 @@
 resource "azurerm_virtual_network" "main" {
-  name                = "vnet-insurance-backend"
+  name                = "vnet-insurance-frontend"
   address_space       = ["10.10.0.0/16"]
   location            = var.location
   resource_group_name = var.resource_group_name
 }
 
-resource "azurerm_subnet" "backend" {
-  name                 = "snet-backend"
+resource "azurerm_subnet" "frontend" {
+  name                 = "snet-frontend"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.10.1.0/24"]
 }
 
-resource "azurerm_public_ip" "backend" {
-  name                = "pip-insurance-backend"
+resource "azurerm_public_ip" "frontend" {
+  name                = "pip-insurance-frontend"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
-resource "azurerm_network_security_group" "backend" {
-  name                = "nsg-insurance-backend"
+resource "azurerm_network_security_group" "frontend" {
+  name                = "nsg-insurance-frontend"
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -50,45 +50,45 @@ resource "azurerm_network_security_group" "backend" {
   }
 
   security_rule {
-    name                       = "AllowBackendApi"
+    name                       = "AllowFrontend"
     priority                   = 120
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "8080"
+    destination_port_range     = "3000"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 }
 
-resource "azurerm_network_interface" "backend" {
-  name                = "nic-insurance-backend"
+resource "azurerm_network_interface" "frontend" {
+  name                = "nic-insurance-frontend"
   location            = var.location
   resource_group_name = var.resource_group_name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.backend.id
+    subnet_id                     = azurerm_subnet.frontend.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.backend.id
+    public_ip_address_id          = azurerm_public_ip.frontend.id
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "backend" {
-  network_interface_id      = azurerm_network_interface.backend.id
-  network_security_group_id = azurerm_network_security_group.backend.id
+resource "azurerm_network_interface_security_group_association" "frontend" {
+  network_interface_id      = azurerm_network_interface.frontend.id
+  network_security_group_id = azurerm_network_security_group.frontend.id
 }
 
-resource "azurerm_linux_virtual_machine" "backend" {
-  name                = "vm-insurance-backend"
+resource "azurerm_linux_virtual_machine" "frontend" {
+  name                = "vm-insurance-frontend"
   location            = var.location
   resource_group_name = var.resource_group_name
   size                = "Standard_B1s"
   admin_username      = var.admin_username
 
   network_interface_ids = [
-    azurerm_network_interface.backend.id,
+    azurerm_network_interface.frontend.id,
   ]
 
   admin_ssh_key {

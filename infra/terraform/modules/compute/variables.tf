@@ -12,5 +12,5 @@ variable "admin_username" {
 
 variable "admin_ssh_public_key" {
   type        = string
-  description = "Public SSH key allowed to access the backend VM."
+  description = "Public SSH key allowed to access the frontend VM."
 }
