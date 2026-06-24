@@ -6,19 +6,24 @@ function getErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
     const responseData = error.response?.data
 
-    if (
-      responseData &&
-      typeof responseData === "object" &&
-      "message" in responseData
-    ) {
-      const message = responseData.message
-
-      if (Array.isArray(message)) {
-        return message.join(", ")
+    if (responseData && typeof responseData === "object") {
+      if (
+        error.response?.status === 429 &&
+        "remainingSeconds" in responseData
+      ) {
+        return `Você poderá solicitar um novo email em ${responseData.remainingSeconds}s`
       }
 
-      if (typeof message === "string") {
-        return message
+      if ("message" in responseData) {
+        const message = responseData.message
+
+        if (Array.isArray(message)) {
+          return message.join(", ")
+        }
+
+        if (typeof message === "string") {
+          return message
+        }
       }
     }
 

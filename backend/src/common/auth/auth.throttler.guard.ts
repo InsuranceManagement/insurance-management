@@ -5,13 +5,13 @@ import { ThrottlerGuard, ThrottlerLimitDetail } from '@nestjs/throttler'
 export class CustomThrottlerGuard extends ThrottlerGuard {
   protected throwThrottlingException(
     _context: ExecutionContext,
-    throttlerLimitDetail: ThrottlerLimitDetail,
+    detail: ThrottlerLimitDetail,
   ): Promise<void> {
     return Promise.reject(
       new HttpException(
         {
           message: 'Muitas tentativas realizadas. Aguarde alguns instantes e tente novamente.',
-          retryAfterSeconds: throttlerLimitDetail.timeToBlockExpire,
+          remainingSeconds: detail.timeToBlockExpire,
         },
         HttpStatus.TOO_MANY_REQUESTS,
       ),
