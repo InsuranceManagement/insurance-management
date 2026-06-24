@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 1, ttl: AUTH_RATE_LIMIT_WINDOW } })
+  @Throttle({ default: { limit: 3, ttl: AUTH_RATE_LIMIT_WINDOW } })
   @Post('forgot-password')
   forgotPassword(@Body() input: ForgotPasswordDto) {
     return this.userService.requestPasswordReset(input)
