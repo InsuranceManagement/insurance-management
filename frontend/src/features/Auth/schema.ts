@@ -4,8 +4,8 @@ const passwordSchema = z
   .string()
   .min(8, "A senha deve ter pelo menos 8 caracteres")
   .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
-    "A senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número",
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/,
+    "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial",
   )
 
 export const loginSchema = z.object({
