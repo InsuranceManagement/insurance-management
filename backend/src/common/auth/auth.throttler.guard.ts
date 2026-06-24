@@ -1,20 +1,11 @@
-import { ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { ThrottlerGuard, ThrottlerLimitDetail } from '@nestjs/throttler'
+import { ExecutionContext, Injectable } from '@nestjs/common'
+import { ThrottlerException, ThrottlerGuard } from '@nestjs/throttler'
 
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
-  protected throwThrottlingException(
-    _context: ExecutionContext,
-    detail: ThrottlerLimitDetail,
-  ): Promise<void> {
-    return Promise.reject(
-      new HttpException(
-        {
-          message: 'Muitas tentativas realizadas. Aguarde alguns instantes e tente novamente.',
-          remainingSeconds: detail.timeToBlockExpire,
-        },
-        HttpStatus.TOO_MANY_REQUESTS,
-      ),
+  protected async throwThrottlingException(_context: ExecutionContext): Promise<void> {
+    throw new ThrottlerException(
+      'Muitas tentativas realizadas. Aguarde alguns instantes e tente novamente.',
     )
   }
 }
