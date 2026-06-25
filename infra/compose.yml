@@ -15,6 +15,7 @@ services:
       timeout: 5s
       retries: 20
   api:
+    image: lucascastelano/insurance-management-backend:1.0.0
     build:
       context: ../backend
       dockerfile: ../infra/backend/Dockerfile
@@ -28,6 +29,7 @@ services:
     networks:
       - insurance-management-network
   frontend:
+    image: lucascastelano/insurance-management-frontend:1.0.0
     build:
       context: ../frontend
       dockerfile: ../infra/frontend/Dockerfile
