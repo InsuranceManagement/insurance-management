@@ -11,12 +11,14 @@ export class CreateUserDto implements CreateUserInput {
   @IsEmail()
   email!: string
 
-  @ApiProperty({ description: 'Password (min 8, uppercase, lowercase and number)' })
+  @ApiProperty({
+    description: 'Password (min 8, uppercase, lowercase, number and special character)',
+  })
   @IsString()
   @MinLength(8)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, {
     message:
-      'password must contain at least one uppercase letter, one lowercase letter and one number',
+      'password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
   })
   password!: string
 }
