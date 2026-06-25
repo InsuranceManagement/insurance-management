@@ -1,0 +1,17 @@
+---
+- name: Deploy backend manifests to AKS
+  hosts: kubernetes_deployer
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Validate deployment environment
+      ansible.builtin.assert:
+        that:
+          - deploy_environment in ["homolog", "prod"]
+        fail_msg: "deploy_environment must be homolog or prod"
+
+    - name: Apply backend Kubernetes manifests
+      ansible.builtin.command:
+        cmd: "kubectl apply -f {{ kubernetes_backend_path }}"
+      changed_when: true
