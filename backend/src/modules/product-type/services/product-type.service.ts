@@ -13,7 +13,7 @@ export class ProductTypeService {
     const existingByName = await this.productTypeRepository.findByName(input.name)
 
     if (existingByName) {
-      throw new BadRequestException('Product type name already in use')
+      throw new BadRequestException('Nome do tipo de produto já está em uso')
     }
 
     const id = this.buildIdFromName(input.name)
@@ -30,7 +30,7 @@ export class ProductTypeService {
     const productType = await this.productTypeRepository.findById(productTypeId)
 
     if (!productType?.isActive()) {
-      throw new NotFoundException('Product type not found')
+      throw new NotFoundException('Tipo de produto não encontrado')
     }
 
     return this.toResponse(productType)
@@ -46,13 +46,13 @@ export class ProductTypeService {
     const existingProductType = await this.productTypeRepository.findById(productTypeId)
 
     if (!existingProductType?.isActive()) {
-      throw new NotFoundException('Product type not found')
+      throw new NotFoundException('Tipo de produto não encontrado')
     }
 
     if (input.name && input.name !== existingProductType.name) {
       const nameInUse = await this.productTypeRepository.findByName(input.name)
       if (nameInUse && nameInUse.id !== productTypeId) {
-        throw new BadRequestException('Product type name already in use')
+        throw new BadRequestException('Nome do tipo de produto já está em uso')
       }
     }
 
@@ -63,7 +63,7 @@ export class ProductTypeService {
     const deletedCount = await this.productTypeRepository.softDeleteMany(productTypeIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('Product type not found')
+      throw new NotFoundException('Tipo de produto não encontrado')
     }
   }
 

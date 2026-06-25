@@ -5,23 +5,23 @@ import { IsEmail, IsOptional, IsString, Matches, MinLength } from 'class-validat
 export class UpdateUserDto implements UpdateUserInput {
   @ApiPropertyOptional({ description: 'User name' })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O nome do usuário deve ser um texto.' })
   name?: string
 
   @ApiPropertyOptional({ description: 'User e-mail' })
   @IsOptional()
-  @IsEmail()
+  @IsEmail({}, { message: 'Informe um e-mail válido.' })
   email?: string
 
   @ApiPropertyOptional({
     description: 'Password (min 8, uppercase, lowercase, number and special character)',
   })
   @IsOptional()
-  @IsString()
-  @MinLength(8)
+  @IsString({ message: 'A senha deve ser um texto.' })
+  @MinLength(8, { message: 'A senha deve ter pelo menos 8 caracteres.' })
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, {
     message:
-      'password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
+      'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.',
   })
   password?: string
 }

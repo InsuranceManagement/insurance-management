@@ -4,10 +4,10 @@ import { IsEmail, IsString } from 'class-validator'
 
 export class LoginDto implements LoginInput {
   @ApiProperty({ description: 'User e-mail' })
-  @IsEmail()
+  @IsEmail({}, { message: 'Informe um e-mail válido.' })
   email!: string
 
   @ApiProperty({ description: 'User password' })
-  @IsString()
+  @IsString({ message: 'A senha deve ser um texto.' })
   password!: string
 }

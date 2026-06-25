@@ -17,13 +17,13 @@ export class ChartService {
     const existingByName = await this.chartRepository.findByName(input.name)
 
     if (existingByName) {
-      throw new BadRequestException('Chart name already in use')
+      throw new BadRequestException('Nome do gráfico já está em uso')
     }
 
     const chartTypeExists = await this.chartTypeService.exists(input.chartTypeId)
 
     if (!chartTypeExists) {
-      throw new NotFoundException('Chart type not found')
+      throw new NotFoundException('Tipo de gráfico não encontrado')
     }
 
     const id = this.buildIdFromName(input.name)
@@ -40,7 +40,7 @@ export class ChartService {
     const chart = await this.chartRepository.findById(chartId)
 
     if (!chart) {
-      throw new NotFoundException('Chart not found')
+      throw new NotFoundException('Gráfico não encontrado')
     }
 
     return this.toResponse(chart)
@@ -56,7 +56,7 @@ export class ChartService {
     const existingChart = await this.chartRepository.findById(chartId)
 
     if (!existingChart) {
-      throw new NotFoundException('Chart not found')
+      throw new NotFoundException('Gráfico não encontrado')
     }
 
     let nextId: string | undefined
@@ -64,7 +64,7 @@ export class ChartService {
     if (input.name && input.name !== existingChart.name) {
       const nameInUse = await this.chartRepository.findByName(input.name)
       if (nameInUse && nameInUse.id !== chartId) {
-        throw new BadRequestException('Chart name already in use')
+        throw new BadRequestException('Nome do gráfico já está em uso')
       }
 
       nextId = this.buildIdFromName(input.name)
@@ -73,7 +73,7 @@ export class ChartService {
     if (input.chartTypeId) {
       const chartTypeExists = await this.chartTypeService.exists(input.chartTypeId)
       if (!chartTypeExists) {
-        throw new NotFoundException('Chart type not found')
+        throw new NotFoundException('Tipo de gráfico não encontrado')
       }
     }
 
@@ -87,7 +87,7 @@ export class ChartService {
     const deletedCount = await this.chartRepository.deleteMany(chartIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('Chart not found')
+      throw new NotFoundException('Gráfico não encontrado')
     }
   }
 

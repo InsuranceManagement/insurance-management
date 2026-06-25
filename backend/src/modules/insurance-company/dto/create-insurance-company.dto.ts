@@ -4,13 +4,13 @@ import { IsString, Matches } from 'class-validator'
 
 export class CreateInsuranceCompanyDto implements CreateInsuranceCompanyInput {
   @ApiProperty({ description: 'Company name' })
-  @IsString()
+  @IsString({ message: 'O nome da seguradora deve ser um texto.' })
   name!: string
 
   @ApiProperty({ description: 'Company color' })
-  @IsString()
+  @IsString({ message: 'A cor da seguradora deve ser um texto.' })
   @Matches(/^#([0-9a-fA-F]{6})$/, {
-    message: 'color must be a hex value like #RRGGBB',
+    message: 'A cor deve estar no formato hexadecimal #RRGGBB.',
   })
   color!: string
 }
