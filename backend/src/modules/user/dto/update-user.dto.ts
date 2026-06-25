@@ -13,13 +13,15 @@ export class UpdateUserDto implements UpdateUserInput {
   @IsEmail()
   email?: string
 
-  @ApiPropertyOptional({ description: 'Password (min 8, uppercase, lowercase and number)' })
+  @ApiPropertyOptional({
+    description: 'Password (min 8, uppercase, lowercase, number and special character)',
+  })
   @IsOptional()
   @IsString()
   @MinLength(8)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, {
     message:
-      'password must contain at least one uppercase letter, one lowercase letter and one number',
+      'password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
   })
   password?: string
 }
