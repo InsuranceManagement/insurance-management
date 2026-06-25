@@ -94,7 +94,9 @@ export class PasswordResetService {
 
         this.logger.warn(`Notification service responded with ${response.status}: ${responseBody}`)
 
-        throw new ServiceUnavailableException('Notification service unavailable')
+        throw new ServiceUnavailableException(
+          'Não foi possível enviar o e-mail de recuperação. Tente novamente mais tarde.',
+        )
       }
     } catch (error) {
       clearTimeout(timeout)
@@ -102,12 +104,20 @@ export class PasswordResetService {
       if (error instanceof Error && error.name === 'AbortError') {
         this.logger.warn('Notification service timeout after 7 seconds')
 
-        throw new ServiceUnavailableException('Notification service timeout')
+        throw new ServiceUnavailableException(
+          'O serviço de notificações demorou para responder. Tente novamente mais tarde.',
+        )
       }
 
       this.logger.warn(`Failed to call notification service: ${String(error)}`)
 
-      throw error
+      if (error instanceof ServiceUnavailableException) {
+        throw error
+      }
+
+      throw new ServiceUnavailableException(
+        'Não foi possível comunicar com o serviço de notificações. Tente novamente mais tarde.',
+      )
     }
   }
 

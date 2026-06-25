@@ -4,28 +4,28 @@ import { IsInt, IsOptional, IsString, Min } from 'class-validator'
 
 export class CreateChartDto implements CreateChartInput {
   @ApiProperty({ description: 'Chart name' })
-  @IsString()
+  @IsString({ message: 'O nome do gráfico deve ser um texto.' })
   name!: string
 
   @ApiProperty({ description: 'Chart description' })
-  @IsString()
+  @IsString({ message: 'A descrição do gráfico deve ser um texto.' })
   description!: string
 
   @ApiProperty({ description: 'Chart API route' })
-  @IsString()
+  @IsString({ message: 'A rota da API do gráfico deve ser um texto.' })
   apiRoute!: string
 
   @ApiProperty({ description: 'Chart type id' })
-  @IsString()
+  @IsString({ message: 'O ID do tipo de gráfico deve ser um texto.' })
   chartTypeId!: string
 
   @ApiProperty({ description: 'Display order in dashboard' })
-  @IsInt()
-  @Min(0)
+  @IsInt({ message: 'A ordem de exibição deve ser um número inteiro.' })
+  @Min(0, { message: 'A ordem de exibição não pode ser negativa.' })
   order!: number
 
   @ApiPropertyOptional({ description: 'Chart unit' })
-  @IsString()
+  @IsString({ message: 'A unidade do gráfico deve ser um texto.' })
   @IsOptional()
   unit?: string
 }

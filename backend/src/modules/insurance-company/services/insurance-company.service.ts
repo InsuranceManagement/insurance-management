@@ -13,7 +13,7 @@ export class InsuranceCompanyService {
     const existingCompany = await this.insuranceCompanyRepository.findByName(input.name)
 
     if (existingCompany) {
-      throw new BadRequestException('Insurance company name already in use')
+      throw new BadRequestException('Nome da seguradora já está em uso')
     }
 
     const company = await this.insuranceCompanyRepository.create(input)
@@ -25,7 +25,7 @@ export class InsuranceCompanyService {
     const company = await this.insuranceCompanyRepository.findById(companyId)
 
     if (!company?.isActive()) {
-      throw new NotFoundException('Insurance company not found')
+      throw new NotFoundException('Seguradora não encontrada')
     }
 
     return this.toResponse(company)
@@ -41,13 +41,13 @@ export class InsuranceCompanyService {
     const existingCompany = await this.insuranceCompanyRepository.findById(companyId)
 
     if (!existingCompany?.isActive()) {
-      throw new NotFoundException('Insurance company not found')
+      throw new NotFoundException('Seguradora não encontrada')
     }
 
     if (input.name && input.name !== existingCompany.name) {
       const nameInUse = await this.insuranceCompanyRepository.findByName(input.name)
       if (nameInUse && nameInUse.id !== companyId) {
-        throw new BadRequestException('Insurance company name already in use')
+        throw new BadRequestException('Nome da seguradora já está em uso')
       }
     }
 
@@ -58,7 +58,7 @@ export class InsuranceCompanyService {
     const deletedCount = await this.insuranceCompanyRepository.softDeleteMany(companyIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('Insurance company not found')
+      throw new NotFoundException('Seguradora não encontrada')
     }
   }
 

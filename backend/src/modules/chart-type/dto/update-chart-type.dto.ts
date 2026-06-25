@@ -6,12 +6,12 @@ import { IsEnum, IsOptional, IsString } from 'class-validator'
 export class UpdateChartTypeDto implements UpdateChartTypeInput {
   @ApiPropertyOptional({ description: 'Chart type name' })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O nome do tipo de gráfico deve ser um texto.' })
   name?: string
 
   @ApiPropertyOptional({ description: 'Chart type description' })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'A descrição do tipo de gráfico deve ser um texto.' })
   description?: string
 
   @ApiPropertyOptional({
@@ -20,6 +20,8 @@ export class UpdateChartTypeDto implements UpdateChartTypeInput {
     enumName: 'ChartTypeSizePreset',
   })
   @IsOptional()
-  @IsEnum(ChartTypeSizePreset)
+  @IsEnum(ChartTypeSizePreset, {
+    message: 'O tamanho do gráfico deve ser um dos valores permitidos.',
+  })
   size?: ChartTypeSizePreset
 }

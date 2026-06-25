@@ -4,32 +4,32 @@ import { IsOptional, IsString, Matches } from 'class-validator'
 export class CreateAddressDto {
   @ApiPropertyOptional({ description: 'Address CEP (numbers only)' })
   @IsOptional()
-  @IsString()
-  @Matches(/^\d{8}$/, { message: 'cep must contain 8 digits (numbers only)' })
+  @IsString({ message: 'O CEP deve ser um texto.' })
+  @Matches(/^\d{8}$/, { message: 'O CEP deve conter exatamente 8 números. (somente números)' })
   cep?: string
 
   @ApiProperty({ description: 'Street name' })
-  @IsString()
+  @IsString({ message: 'O nome da rua deve ser um texto.' })
   street!: string
 
   @ApiProperty({ description: 'District / neighborhood' })
-  @IsString()
+  @IsString({ message: 'O bairro deve ser um texto.' })
   district!: string
 
   @ApiProperty({ description: 'State code/name' })
-  @IsString()
+  @IsString({ message: 'O estado deve ser um texto.' })
   state!: string
 
   @ApiProperty({ description: 'City name' })
-  @IsString()
+  @IsString({ message: 'A cidade deve ser um texto.' })
   city!: string
 
   @ApiProperty({ description: 'Address number' })
-  @IsString()
+  @IsString({ message: 'O número do endereço deve ser um texto.' })
   number!: string
 
   @ApiPropertyOptional({ description: 'Address complement' })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O complemento do endereço deve ser um texto.' })
   complement?: string
 }

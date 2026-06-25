@@ -53,6 +53,6 @@ export class CpfValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'cpf is invalid'
+    return 'Informe um CPF válido.'
   }
 }

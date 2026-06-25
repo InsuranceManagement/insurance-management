@@ -13,7 +13,7 @@ export class ChartTypeService {
     const existingByName = await this.chartTypeRepository.findByName(input.name)
 
     if (existingByName) {
-      throw new BadRequestException('Chart type name already in use')
+      throw new BadRequestException('Nome do tipo de gráfico já está em uso')
     }
 
     const id = this.buildIdFromName(input.name)
@@ -31,7 +31,7 @@ export class ChartTypeService {
     const chartType = await this.chartTypeRepository.findById(chartTypeId)
 
     if (!chartType) {
-      throw new NotFoundException('Chart type not found')
+      throw new NotFoundException('Tipo de gráfico não encontrado')
     }
 
     return this.toResponse(chartType)
@@ -47,7 +47,7 @@ export class ChartTypeService {
     const existingChartType = await this.chartTypeRepository.findById(chartTypeId)
 
     if (!existingChartType) {
-      throw new NotFoundException('Chart type not found')
+      throw new NotFoundException('Tipo de gráfico não encontrado')
     }
 
     let nextId: string | undefined
@@ -55,7 +55,7 @@ export class ChartTypeService {
     if (input.name && input.name !== existingChartType.name) {
       const nameInUse = await this.chartTypeRepository.findByName(input.name)
       if (nameInUse && nameInUse.id !== chartTypeId) {
-        throw new BadRequestException('Chart type name already in use')
+        throw new BadRequestException('Nome do tipo de gráfico já está em uso')
       }
 
       nextId = this.buildIdFromName(input.name)
@@ -71,7 +71,7 @@ export class ChartTypeService {
     const deletedCount = await this.chartTypeRepository.deleteMany(chartTypeIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('Chart type not found')
+      throw new NotFoundException('Tipo de gráfico não encontrado')
     }
   }
 

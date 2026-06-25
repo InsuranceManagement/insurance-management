@@ -32,7 +32,7 @@ export class UserService {
     const existingUser = await this.userRepository.findByEmail(input.email)
 
     if (existingUser) {
-      throw new BadRequestException('E-mail already in use')
+      throw new BadRequestException('E-mail já está em uso')
     }
 
     const hashedPassword = await this.passwordService.hash(input.password)
@@ -46,13 +46,13 @@ export class UserService {
     const user = await this.userRepository.findByEmail(input.email)
 
     if (!user?.isActive()) {
-      throw new UnauthorizedException('Invalid credentials')
+      throw new UnauthorizedException('E-mail ou senha inválidos')
     }
 
     const isPasswordValid = await this.passwordService.compare(input.password, user.password)
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials')
+      throw new UnauthorizedException('E-mail ou senha inválidos')
     }
 
     const accessToken = await this.signToken(user)
@@ -64,7 +64,7 @@ export class UserService {
     const user = await this.userRepository.findById(userId)
 
     if (!user?.isActive()) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException('Usuário não encontrado')
     }
 
     return this.toUserResponse(user)
@@ -80,13 +80,13 @@ export class UserService {
     const existingUser = await this.userRepository.findById(userId)
 
     if (!existingUser?.isActive()) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException('Usuário não encontrado')
     }
 
     if (input.email && input.email !== existingUser.email) {
       const emailInUse = await this.userRepository.findByEmail(input.email)
       if (emailInUse && emailInUse.id !== userId) {
-        throw new BadRequestException('E-mail already in use')
+        throw new BadRequestException('E-mail já está em uso')
       }
     }
 
@@ -103,7 +103,7 @@ export class UserService {
     const deletedCount = await this.userRepository.softDeleteMany(userIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException('Usuário não encontrado')
     }
   }
 
@@ -120,7 +120,7 @@ export class UserService {
         if (remainingMs > 0) {
           throw new HttpException(
             {
-              message: 'Cooldown ativo',
+              message: 'Aguarde antes de solicitar um novo e-mail de recuperação',
               remainingSeconds: Math.ceil(remainingMs / 1000),
             },
             HttpStatus.TOO_MANY_REQUESTS,
@@ -135,7 +135,9 @@ export class UserService {
       await this.userRepository.updatePasswordResetRequestedAt(existingUser.id)
     }
 
-    return { message: 'Se o email existir, instruções de redefinição de senha serão enviadas.' }
+    return {
+      message: 'Se o e-mail estiver cadastrado, enviaremos as instruções para redefinir a senha.',
+    }
   }
 
   async resetPassword(input: ResetPasswordDto): Promise<{ message: string }> {
@@ -143,17 +145,17 @@ export class UserService {
     const user = await this.userRepository.findByPasswordResetTokenHash(tokenHash)
 
     if (!user?.isActive()) {
-      throw new BadRequestException('Invalid or expired token')
+      throw new BadRequestException('Token de redefinição de senha inválido ou expirado')
     }
 
     if (!user.passwordResetExpiresAt || user.passwordResetExpiresAt < new Date()) {
-      throw new BadRequestException('Invalid or expired token')
+      throw new BadRequestException('Token de redefinição de senha inválido ou expirado')
     }
 
     const hashedPassword = await this.passwordService.hash(input.password)
     await this.userRepository.updatePasswordWithResetToken(user.id, hashedPassword)
 
-    return { message: 'Password updated successfully.' }
+    return { message: 'Senha redefinida com sucesso.' }
   }
 
   private async signToken(user: User): Promise<string> {

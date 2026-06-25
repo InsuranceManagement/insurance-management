@@ -16,19 +16,19 @@ export class AuthService {
 
   async validateToken(authorization?: string): Promise<JwtPayload> {
     if (!authorization || !authorization.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Token missing or malformed')
+      throw new UnauthorizedException('Token de autenticação ausente ou malformado')
     }
 
     const token = authorization.slice('Bearer '.length).trim()
 
     if (!token) {
-      throw new UnauthorizedException('Token missing or malformed')
+      throw new UnauthorizedException('Token de autenticação ausente ou malformado')
     }
 
     try {
       return await this.jwtService.verifyAsync<JwtPayload>(token)
     } catch {
-      throw new UnauthorizedException('Invalid or expired token')
+      throw new UnauthorizedException('Token de autenticação inválido ou expirado')
     }
   }
 }
