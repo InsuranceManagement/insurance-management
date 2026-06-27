@@ -1,2 +1,3 @@
 deploy_environment: prod
+kubernetes_database_path: "{{ playbook_dir }}/../../kubernetes/database/{{ deploy_environment }}"
 kubernetes_backend_path: "{{ playbook_dir }}/../../kubernetes/backend/{{ deploy_environment }}"
