@@ -2,6 +2,14 @@ output "api_management_gateway_url" {
   value = module.gateway.api_management_gateway_url
 }
 
+output "frontend_gateway_url" {
+  value = module.gateway.frontend_gateway_url
+}
+
+output "backend_gateway_url" {
+  value = "${module.gateway.api_management_gateway_url}/api"
+}
+
 output "resource_group_name" {
   value = azurerm_resource_group.main.name
 }

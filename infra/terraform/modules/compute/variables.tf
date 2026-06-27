@@ -6,6 +6,10 @@ variable "location" {
   type = string
 }
 
+variable "frontend_vm_size" {
+  type = string
+}
+
 variable "admin_username" {
   type = string
 }

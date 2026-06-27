@@ -84,7 +84,7 @@ resource "azurerm_linux_virtual_machine" "frontend" {
   name                = "vm-insurance-frontend"
   location            = var.location
   resource_group_name = var.resource_group_name
-  size                = "Standard_B1s"
+  size                = var.frontend_vm_size
   admin_username      = var.admin_username
 
   network_interface_ids = [

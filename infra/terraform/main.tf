@@ -26,13 +26,16 @@ module "gateway" {
   api_management_name = var.api_management_name
   publisher_name      = var.publisher_name
   publisher_email     = var.publisher_email
+  frontend_url        = module.compute.frontend_url
+  backend_url         = var.backend_url
 }
 
 module "compute" {
   source = "./modules/compute"
 
   resource_group_name  = azurerm_resource_group.main.name
-  location             = azurerm_resource_group.main.location
+  location             = var.compute_location
+  frontend_vm_size     = var.frontend_vm_size
   admin_username       = var.admin_username
   admin_ssh_public_key = var.admin_ssh_public_key
 }
@@ -41,7 +44,7 @@ module "kubernetes" {
   source = "./modules/kubernetes"
 
   resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
+  location            = var.aks_location
   cluster_name        = var.aks_cluster_name
   dns_prefix          = var.aks_dns_prefix
   node_count          = var.aks_node_count

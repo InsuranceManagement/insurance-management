@@ -1,3 +1,7 @@
 deploy_environment: prod
+aks_resource_group: rg-insurance-management
+aks_cluster_name: aks-insurance-backend
+ingress_nginx_namespace: ingress-nginx
+ingress_nginx_manifest_url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 kubernetes_database_path: "{{ playbook_dir }}/../../kubernetes/database/{{ deploy_environment }}"
 kubernetes_backend_path: "{{ playbook_dir }}/../../kubernetes/backend/{{ deploy_environment }}"

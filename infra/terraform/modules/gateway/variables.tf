@@ -17,3 +17,11 @@ variable "publisher_name" {
 variable "publisher_email" {
   type = string
 }
+
+variable "frontend_url" {
+  type = string
+}
+
+variable "backend_url" {
+  type = string
+}
