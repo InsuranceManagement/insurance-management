@@ -10,7 +10,7 @@ class UpdateClientBaseDto extends PartialType(OmitType(CreateClientDto, ['addres
 export class UpdateClientDto extends UpdateClientBaseDto implements UpdateClientInput {
   @ApiPropertyOptional({ type: UpdateAddressDto })
   @IsOptional()
-  @ValidateNested()
+  @ValidateNested({ message: 'O endereço informado é inválido.' })
   @Type(() => UpdateAddressDto)
   address?: UpdateAddressDto
 }

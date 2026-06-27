@@ -32,7 +32,7 @@ export class Client {
 
   static fromPrisma(client: PrismaClientWithAddress | PrismaClientWithAddressAndProducts): Client {
     if (client.address?.deletedAt !== null) {
-      throw new Error('Client address is missing')
+      throw new Error('O endereço do cliente não foi encontrado')
     }
 
     const products: ClientProduct[] =

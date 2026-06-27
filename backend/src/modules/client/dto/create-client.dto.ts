@@ -19,33 +19,33 @@ import { CreateAddressDto } from './adress/create-address.dto'
 
 export class CreateClientDto implements CreateClientInput {
   @ApiProperty({ description: 'Client name' })
-  @IsString()
+  @IsString({ message: 'O nome do cliente deve ser um texto.' })
   name!: string
 
   @ApiProperty({ description: 'Client e-mail' })
-  @IsEmail()
+  @IsEmail({}, { message: 'Informe um e-mail válido.' })
   email!: string
 
   @ApiPropertyOptional({ description: 'Client CPF' })
   @IsOptional()
   @ValidateIf((_, value: unknown) => value !== undefined && value !== null && value !== '')
-  @IsString()
-  @Matches(/^\d{11}$/, { message: 'cpf must contain 11 digits (numbers only)' })
-  @Validate(CpfValidator)
+  @IsString({ message: 'O CPF deve ser um texto.' })
+  @Matches(/^\d{11}$/, { message: 'O CPF deve conter exatamente 11 números. (somente números)' })
+  @Validate(CpfValidator, { message: 'Informe um CPF válido.' })
   cpf?: string
 
   @ApiPropertyOptional({ description: 'Client CNPJ' })
   @IsOptional()
   @ValidateIf((_, value: unknown) => value !== undefined && value !== null && value !== '')
-  @IsString()
-  @Matches(/^\d{14}$/, { message: 'cnpj must contain 14 digits (numbers only)' })
-  @Validate(CnpjValidator)
+  @IsString({ message: 'O CNPJ deve ser um texto.' })
+  @Matches(/^\d{14}$/, { message: 'O CNPJ deve conter exatamente 14 números. (somente números)' })
+  @Validate(CnpjValidator, { message: 'Informe um CNPJ válido.' })
   cnpj?: string
 
   @ApiProperty({ description: 'Client phone number' })
-  @IsString()
+  @IsString({ message: 'O telefone deve ser um texto.' })
   @Matches(/^\d{10,15}$/, {
-    message: 'phoneNumber must contain 10 to 15 digits (numbers only)',
+    message: 'O telefone deve conter entre 10 e 15 números. (somente números)',
   })
   phoneNumber!: string
 
@@ -55,24 +55,24 @@ export class CreateClientDto implements CreateClientInput {
       ? `${value}T00:00:00.000Z`
       : value,
   )
-  @IsDateString()
+  @IsDateString({}, { message: 'Informe uma data de nascimento válida no formato ISO 8601.' })
   birthDate!: string
 
   @ApiProperty({ type: CreateAddressDto })
-  @ValidateNested()
+  @ValidateNested({ message: 'O endereço informado é inválido.' })
   @Type(() => CreateAddressDto)
   address!: CreateAddressDto
 
   @ApiPropertyOptional({ description: 'Product ids linked to the client' })
   @IsOptional()
-  @IsArray()
-  @ArrayUnique()
-  @IsString({ each: true })
+  @IsArray({ message: 'Os IDs dos produtos devem ser enviados em uma lista.' })
+  @ArrayUnique({ message: 'A lista de produtos não pode conter IDs duplicados.' })
+  @IsString({ each: true, message: 'Cada ID de produto deve ser um texto válido.' })
   productIds?: string[]
 
   @ValidateIf((obj: CreateClientDto) => !obj.cpf && !obj.cnpj)
   @Matches(/^never$/, {
-    message: 'CPF ou CNPJ são obrigatórios',
+    message: 'Informe pelo menos um CPF ou CNPJ.',
   })
   private readonly cpfOrCnpjRequiredValidation?: string
 }

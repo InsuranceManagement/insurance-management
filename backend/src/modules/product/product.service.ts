@@ -19,7 +19,7 @@ export class ProductService {
     const product = await this.productRepository.findById(productId)
 
     if (!product?.isActive()) {
-      throw new NotFoundException('Product not found')
+      throw new NotFoundException('Produto não encontrado')
     }
 
     return this.toResponse(product)
@@ -35,7 +35,7 @@ export class ProductService {
     const existingProduct = await this.productRepository.findById(productId)
 
     if (!existingProduct?.isActive()) {
-      throw new NotFoundException('Product not found')
+      throw new NotFoundException('Produto não encontrado')
     }
 
     await this.productRepository.update(productId, input)
@@ -45,7 +45,7 @@ export class ProductService {
     const deletedCount = await this.productRepository.softDeleteMany(productIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('Product not found')
+      throw new NotFoundException('Produto não encontrado')
     }
   }
 

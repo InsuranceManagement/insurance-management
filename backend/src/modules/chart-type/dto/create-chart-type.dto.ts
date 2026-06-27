@@ -5,11 +5,11 @@ import { IsEnum, IsString } from 'class-validator'
 
 export class CreateChartTypeDto implements CreateChartTypeInput {
   @ApiProperty({ description: 'Chart type name' })
-  @IsString()
+  @IsString({ message: 'O nome do tipo de gráfico deve ser um texto.' })
   name!: string
 
   @ApiProperty({ description: 'Chart type description' })
-  @IsString()
+  @IsString({ message: 'A descrição do tipo de gráfico deve ser um texto.' })
   description!: string
 
   @ApiProperty({
@@ -17,6 +17,8 @@ export class CreateChartTypeDto implements CreateChartTypeInput {
     enum: ChartTypeSizePreset,
     enumName: 'ChartTypeSizePreset',
   })
-  @IsEnum(ChartTypeSizePreset)
+  @IsEnum(ChartTypeSizePreset, {
+    message: 'O tamanho do gráfico deve ser um dos valores permitidos.',
+  })
   size!: ChartTypeSizePreset
 }

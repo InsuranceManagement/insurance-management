@@ -33,7 +33,7 @@ export class ClientService {
     if (input.cnpj) {
       const existingCnpj = await this.clientRepository.findByCnpj(input.cnpj)
       if (existingCnpj) {
-        throw new BadRequestException('CNPJ already in use')
+        throw new BadRequestException('CNPJ já está em uso')
       }
     }
 
@@ -49,7 +49,7 @@ export class ClientService {
     const client = await this.clientRepository.findByIdWithProducts(clientId)
 
     if (!client?.isActive()) {
-      throw new NotFoundException('Client not found')
+      throw new NotFoundException('Cliente não encontrado')
     }
 
     return this.toResponseWithProducts(client)
@@ -65,27 +65,27 @@ export class ClientService {
     const existingClient = await this.clientRepository.findById(clientId)
 
     if (!existingClient?.isActive()) {
-      throw new NotFoundException('Client not found')
+      throw new NotFoundException('Cliente não encontrado')
     }
 
     if (input.email && input.email !== existingClient.email) {
       const emailInUse = await this.clientRepository.findByEmail(input.email)
       if (emailInUse && emailInUse.id !== clientId) {
-        throw new BadRequestException('E-mail already in use')
+        throw new BadRequestException('E-mail já está em uso')
       }
     }
 
     if (input.cpf && input.cpf !== existingClient.cpf) {
       const cpfInUse = await this.clientRepository.findByCpf(input.cpf)
       if (cpfInUse && cpfInUse.id !== clientId) {
-        throw new BadRequestException('CPF already in use')
+        throw new BadRequestException('CPF já está em uso')
       }
     }
 
     if (input.cnpj && input.cnpj !== existingClient.cnpj) {
       const cnpjInUse = await this.clientRepository.findByCnpj(input.cnpj)
       if (cnpjInUse && cnpjInUse.id !== clientId) {
-        throw new BadRequestException('CNPJ already in use')
+        throw new BadRequestException('CNPJ já está em uso')
       }
     }
 
@@ -102,7 +102,7 @@ export class ClientService {
     const client = await this.clientRepository.findByIdWithProducts(clientId)
 
     if (!client?.isActive()) {
-      throw new NotFoundException('Client not found')
+      throw new NotFoundException('Cliente não encontrado')
     }
 
     return client.products.map((product) => ({
@@ -119,7 +119,7 @@ export class ClientService {
     const deletedCount = await this.clientRepository.softDeleteMany(clientIds)
 
     if (deletedCount === 0) {
-      throw new NotFoundException('Client not found')
+      throw new NotFoundException('Cliente não encontrado')
     }
   }
 
@@ -172,7 +172,7 @@ export class ClientService {
   private async ensureProductsExist(productIds: string[]): Promise<void> {
     const products = await this.clientRepository.findActiveProductsByIds(productIds)
     if (products.length !== productIds.length) {
-      throw new NotFoundException('Product not found')
+      throw new NotFoundException('Um ou mais produtos não foram encontrados')
     }
   }
 }
