@@ -1,0 +1,71 @@
+name: cd
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: cd-main
+  cancel-in-progress: true
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+          ansible-galaxy collection install community.docker
+
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s' "${{ secrets.FRONTEND_SSH_PRIVATE_KEY }}" > ~/.ssh/frontend_vm_key
+          chmod 600 ~/.ssh/frontend_vm_key
+
+      - name: Create inventory
+        working-directory: infra/ansible
+        run: |
+          printf '[frontend_vm]\n%s ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/frontend_vm_key\n\n[kubernetes_deployer]\nlocalhost ansible_connection=local\n' "${{ secrets.FRONTEND_VM_IP }}" > hosts.ci.ini
+
+      - name: Deploy frontend container
+        working-directory: infra/ansible
+        env:
+          ANSIBLE_INVENTORY: hosts.ci.ini
+          DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        run: |
+          ansible-playbook -i hosts.ci.ini playbooks/deploy-docker.yml
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          printf '%s' "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Deploy AKS manifests
+        working-directory: infra/ansible
+        env:
+          ANSIBLE_INVENTORY: hosts.ini
+        run: |
+          ansible-playbook -i hosts.ini playbooks/deploy-k8s.yml

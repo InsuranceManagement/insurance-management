@@ -1,4 +1,4 @@
-frontend_image: lucascastelano/insurance-management-frontend:latest
+frontend_image: lucascastelano/insurance-management-frontend:1.0.0
 frontend_container_name: insurance-management-frontend
 frontend_host_port: 3000
 frontend_container_port: 3000
