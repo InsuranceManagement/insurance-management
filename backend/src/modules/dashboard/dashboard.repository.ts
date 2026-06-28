@@ -48,6 +48,14 @@ export class DashboardRepository {
     })
   }
 
+  async getTotalProducts(): Promise<number> {
+    return await this.prismaService.products.count({
+      where: {
+        deletedAt: null,
+      },
+    })
+  }
+
   async getClientsGrowthByMonthPoints(): Promise<ChartPoint[]> {
     const clients = await this.prismaService.client.findMany({
       where: {

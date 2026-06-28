@@ -14,6 +14,10 @@ export class DashboardService {
     return this.dashboardRepository.getTotalClients()
   }
 
+  async getTotalProducts(): Promise<number> {
+    return this.dashboardRepository.getTotalProducts()
+  }
+
   async getClientsGrowthByMonth(): Promise<ChartPoint[]> {
     return this.dashboardRepository.getClientsGrowthByMonthPoints()
   }

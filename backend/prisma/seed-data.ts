@@ -201,6 +201,13 @@ export const seedData = {
       order: 1,
       chartTypeId: 'kpi',
     },
+    {
+      id: 'total-products-kpi',
+      name: 'Total de Produtos',
+      apiRoute: '/dashboard/kpi-total-products',
+      order: 2,
+      chartTypeId: 'kpi',
+    },
   ],
   client: [
     {

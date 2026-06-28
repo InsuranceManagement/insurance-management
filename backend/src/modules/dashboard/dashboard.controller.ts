@@ -18,6 +18,11 @@ export class DashboardController {
     return this.dashboardService.getTotalClients()
   }
 
+  @Get('kpi-total-products')
+  async getTotalProducts() {
+    return this.dashboardService.getTotalProducts()
+  }
+
   @Get('clients-growth-by-month')
   getClientsGrowthByMonth() {
     return this.dashboardService.getClientsGrowthByMonth()
