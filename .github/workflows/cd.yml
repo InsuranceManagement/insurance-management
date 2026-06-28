@@ -29,30 +29,6 @@ jobs:
           printf '%s' "${{ secrets.FRONTEND_SSH_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/frontend_vm_key
           chmod 600 ~/.ssh/frontend_vm_key
 
-      - name: Check SSH key fingerprint
-        run: |
-          ssh-keygen -lf ~/.ssh/frontend_vm_key
-
-      - name: Validate frontend connection inputs
-        run: |
-          if [ -z "${{ secrets.FRONTEND_VM_IP }}" ]; then
-            echo "FRONTEND_VM_IP secret is empty"
-            exit 1
-          fi
-
-          if [ -z "${{ secrets.FRONTEND_SSH_PRIVATE_KEY_B64 }}" ]; then
-            echo "FRONTEND_SSH_PRIVATE_KEY_B64 secret is empty"
-            exit 1
-          fi
-
-      - name: Test SSH connection to frontend VM
-        run: |
-          ssh -i ~/.ssh/frontend_vm_key \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=no \
-            azureuser@${{ secrets.FRONTEND_VM_IP }} \
-            "echo SSH_OK"
-
       - name: Create inventory
         working-directory: infra/ansible
         run: |
