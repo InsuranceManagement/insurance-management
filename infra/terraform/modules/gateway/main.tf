@@ -15,7 +15,7 @@ resource "azurerm_api_management_api" "frontend" {
   api_management_name   = azurerm_api_management.gateway.name
   revision              = "1"
   display_name          = "Frontend"
-  path                  = "frontend"
+  path                  = ""
   protocols             = ["http", "https"]
   service_url           = var.frontend_url
   subscription_required = false
@@ -38,7 +38,7 @@ resource "azurerm_api_management_api_operation" "frontend" {
   resource_group_name = var.resource_group_name
   display_name        = "Frontend"
   method              = "GET"
-  url_template        = "/{path}"
+  url_template        = "/{*path}"
 
   template_parameter {
     name     = "path"

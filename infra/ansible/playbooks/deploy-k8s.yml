@@ -34,6 +34,16 @@
         cmd: "kubectl apply -f {{ kubernetes_backend_path }}"
       changed_when: true
 
+    - name: Restart backend deployment
+      ansible.builtin.command:
+        cmd: "kubectl rollout restart deployment/backend -n insurance-management-{{ deploy_environment }}"
+      changed_when: true
+
+    - name: Wait for backend rollout
+      ansible.builtin.command:
+        cmd: "kubectl rollout status deployment/backend -n insurance-management-{{ deploy_environment }} --timeout=600s"
+      changed_when: false
+
     - name: Wait for ingress external address
       ansible.builtin.command:
         cmd: >-

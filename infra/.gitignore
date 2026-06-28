@@ -1,2 +1,10 @@
-.terraform
+.terraform/
+**/.terraform/
+
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+
 kubeconfig-aks.yaml
+kubeconfig*.yaml
+*.kubeconfig

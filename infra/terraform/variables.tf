@@ -46,6 +46,7 @@ variable "frontend_vm_size" {
 variable "admin_ssh_public_key" {
   type        = string
   description = "Public SSH key allowed to access the frontend VM."
+  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM+s4N4m/gEBlMVW+Ac8MHVmez+xv6FoGPCu31WdufJl radixengrj\\lucas.castelano@NX4XLFD33"
 }
 
 variable "backend_url" {
