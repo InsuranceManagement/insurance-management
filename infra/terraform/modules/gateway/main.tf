@@ -9,6 +9,10 @@ resource "azurerm_api_management" "gateway" {
   sku_name = "Developer_1"
 }
 
+locals {
+  backend_extra_methods = toset(["POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+}
+
 resource "azurerm_api_management_api" "frontend" {
   name                  = "frontend"
   resource_group_name   = var.resource_group_name
@@ -76,6 +80,24 @@ resource "azurerm_api_management_api_operation" "backend" {
   resource_group_name = var.resource_group_name
   display_name        = "Backend"
   method              = "GET"
+  url_template        = "/{*path}"
+
+  template_parameter {
+    name     = "path"
+    required = true
+    type     = "string"
+  }
+}
+
+resource "azurerm_api_management_api_operation" "backend_extra_methods" {
+  for_each = local.backend_extra_methods
+
+  operation_id        = "backend-${lower(each.value)}"
+  api_name            = azurerm_api_management_api.backend.name
+  api_management_name = azurerm_api_management.gateway.name
+  resource_group_name = var.resource_group_name
+  display_name        = "Backend ${each.value}"
+  method              = each.value
   url_template        = "/{*path}"
 
   template_parameter {
