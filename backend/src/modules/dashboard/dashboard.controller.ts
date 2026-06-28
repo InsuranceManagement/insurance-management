@@ -27,4 +27,9 @@ export class DashboardController {
   getClientsGrowthByMonth() {
     return this.dashboardService.getClientsGrowthByMonth()
   }
+
+  @Get('client-document-distribution')
+  getClientDocumentDistribution() {
+    return this.dashboardService.getClientDocumentDistribution()
+  }
 }

@@ -71,4 +71,18 @@ export class DashboardRepository {
 
     return ChartPoint.fromClientsGrowthByMonthPrisma(clients)
   }
+
+  async getClientDocumentDistributionPoints(): Promise<ChartPoint[]> {
+    const clients = await this.prismaService.client.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        cpf: true,
+        cnpj: true,
+      },
+    })
+
+    return ChartPoint.fromClientDocumentDistributionPrisma(clients)
+  }
 }
