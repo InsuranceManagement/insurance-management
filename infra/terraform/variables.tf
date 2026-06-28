@@ -45,7 +45,6 @@ variable "frontend_vm_size" {
 
 variable "admin_ssh_public_key" {
   type        = string
-  default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDmQMY/jFHoafFftEe/2zYVziKq6cWDoo8+SYh9FyY3KaX867PLAi5yw+ZhykohmIKlnQuZIA3So04UhtGvkdp1RQxsD/sCLyxSqThXiIMHA4M3XDL3HqJrPz53J09DXgtTa4k8/P7JPQMFdHO48X1mMNyfaRD0cChcyWw9w9TDWnl86gzy2RJpeCHIAuf+/cZlE6e87IpE4lzvjvrI8mijuzJ+r1WYSSI3CngGFHvDfPN0/5uZj+tylqSz/DpazKtTUXyngr1o1uNAChWH6LVcSu+JLdM3/cpPBr8GMooceF1AiWtRjqwxuOcGBKYheZjz94xvozsvKhZohoFC2PU7RXfEJwllzBzp5JhmO5Dx/dQmfC0w8MDQbapy+PKx31zmdDB7wBuA/EmBPucP9hyXTmpzP9DQekCqvzcnypWuUZZkHB8+i4b9kH38LrYLHKObbt2TDhDbQlFc3p5Jcn4H9BDVSjOOi4DTveDvWzp1p1hTUnj8MmIuUpV0tV7ITD1/RRlq7SD+lZSvtLes7uKpEnzuJ813sizCSucqb/Ma70DSiLjdzp5PPkpxM23FfPsd18S+ki0O8n7dkBiRerCjfC/3ukfYf9p7axb0c1DG7sSZudnt/eZUVL8HYj0voxlakEpCb6JXnYpl1NTBGOXgteAeTqkG5XE8qTIGkjbbRw== lucas.castelano@radixeng.com"
   description = "Public SSH key allowed to access the frontend VM."
 }
 

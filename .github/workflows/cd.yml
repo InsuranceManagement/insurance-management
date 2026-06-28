@@ -26,7 +26,7 @@ jobs:
       - name: Prepare SSH key
         run: |
           mkdir -p ~/.ssh
-          printf '%s' "${{ secrets.FRONTEND_SSH_PRIVATE_KEY }}" > ~/.ssh/frontend_vm_key
+          printf '%s' "${{ secrets.FRONTEND_SSH_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/frontend_vm_key
           chmod 600 ~/.ssh/frontend_vm_key
 
       - name: Validate frontend connection inputs
@@ -36,8 +36,8 @@ jobs:
             exit 1
           fi
 
-          if [ -z "${{ secrets.FRONTEND_SSH_PRIVATE_KEY }}" ]; then
-            echo "FRONTEND_SSH_PRIVATE_KEY secret is empty"
+          if [ -z "${{ secrets.FRONTEND_SSH_PRIVATE_KEY_B64 }}" ]; then
+            echo "FRONTEND_SSH_PRIVATE_KEY_B64 secret is empty"
             exit 1
           fi
 
