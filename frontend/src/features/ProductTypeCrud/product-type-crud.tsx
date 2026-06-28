@@ -89,7 +89,7 @@ export default function ProductTypeCrud() {
         list: routes.productTypes.list,
         create: routes.productTypes.create,
         edit: routes.productTypes.updateById,
-        delete: routes.productTypes.deleteById,
+        delete: routes.productTypes.deleteMany,
       }}
     />
   );

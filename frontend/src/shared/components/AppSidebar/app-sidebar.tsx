@@ -2,18 +2,18 @@
 
 import {
   CircleDollarSignIcon,
-  FileTextIcon,
   HomeIcon,
-  LifeBuoyIcon,
   LogOutIcon,
   PackageIcon,
-  ShieldCheckIcon,
-  UsersIcon,
   TagsIcon,
+  UsersIcon,
 } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 
+import logoBranca from "@/shared/assets/logo_branca.png"
+import logoWm from "@/shared/assets/logo_wm.png"
 import { useAuth } from "@/shared/context/auth-context"
 
 import {
@@ -36,16 +36,6 @@ const mainItems = [
     title: "Visão geral",
     href: "/dashboard",
     icon: HomeIcon,
-  },
-  {
-    title: "Apólices",
-    href: "#",
-    icon: FileTextIcon,
-  },
-  {
-    title: "Sinistros",
-    href: "#",
-    icon: ShieldCheckIcon,
   },
 ]
 
@@ -70,18 +60,13 @@ const supportItems = [
     href: "/clientes",
     icon: UsersIcon,
   },
-  {
-    title: "Suporte",
-    href: "#",
-    icon: LifeBuoyIcon,
-  },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
 
-  const { logout, user } = useAuth()
+  const { logout } = useAuth()
 
   const handleLogout = () => {
     logout()
@@ -91,7 +76,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      variant="inset"
+      className="border-none"
     >
       <SidebarHeader>
         <SidebarMenu>
@@ -99,24 +84,22 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               size="lg"
-              tooltip="Gerenciamento de seguros"
-              className="group-data-[collapsible=icon]:justify-center"
+              tooltip="Mainiere"
+              className="h-24 group-data-[collapsible=icon]:justify-center"
             >
               <Link href="/dashboard">
-                <span
-                  aria-hidden
-                  className="text-base leading-none"
-                >
-                  🛡️
-                </span>
-
-                <Typography
-                  asChild
-                  variant="small"
-                  className="group-data-[collapsible=icon]:hidden"
-                >
-                  <span>Gerenciamento de seguros</span>
-                </Typography>
+                <Image
+                  src={logoBranca}
+                  alt="Mainiere"
+                  priority
+                  className="w-48 max-w-none shrink-0 group-data-[collapsible=icon]:hidden"
+                />
+                <Image
+                  src={logoWm}
+                  alt="Mainiere"
+                  priority
+                  className="hidden w-24 max-w-none shrink-0 group-data-[collapsible=icon]:block"
+                />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -125,7 +108,9 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Principal</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/90">
+            Principal
+          </SidebarGroupLabel>
 
           <SidebarGroupContent>
             <SidebarMenu>
@@ -134,6 +119,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
+                    className="text-sidebar-foreground"
                     isActive={
                       pathname === item.href ||
                       (item.href !== "/" && pathname?.startsWith(item.href))
@@ -145,6 +131,7 @@ export function AppSidebar() {
                       <Typography
                         asChild
                         variant="small"
+                        className="text-sidebar-foreground"
                       >
                         <span>{item.title}</span>
                       </Typography>
@@ -157,7 +144,9 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Operação</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground/90">
+            Operação
+          </SidebarGroupLabel>
 
           <SidebarGroupContent>
             <SidebarMenu>
@@ -166,6 +155,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
+                    className="text-sidebar-foreground"
                     isActive={
                       pathname === item.href ||
                       (item.href !== "/" && pathname?.startsWith(item.href))
@@ -177,6 +167,7 @@ export function AppSidebar() {
                       <Typography
                         asChild
                         variant="small"
+                        className="text-sidebar-foreground"
                       >
                         <span>{item.title}</span>
                       </Typography>
@@ -195,12 +186,14 @@ export function AppSidebar() {
             <SidebarMenuButton
               tooltip="Sair"
               onClick={handleLogout}
+              className="text-sidebar-foreground"
             >
               <LogOutIcon />
 
               <Typography
                 asChild
                 variant="small"
+                className="text-sidebar-foreground"
               >
                 <span>Sair</span>
               </Typography>

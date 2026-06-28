@@ -1,12 +1,18 @@
 "use client"
 
 import { type ColumnDef } from "@tanstack/react-table"
+import { useMemo } from "react"
 
 import { ClientForm } from "@/features/ClientCrud/components/form"
 import { type Client } from "@/features/ClientCrud/models/client"
+import {
+  formatProductLabel,
+  type Product,
+} from "@/features/ProductCrud/models/product"
 import { type ClientUpsertFormValues } from "@/features/schema"
 import { type EntityViewField } from "@/shared/components/CrudScreen/components/EntityViewModal"
 import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen"
+import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
 import { Box } from "@/shared/components/ui/box"
 import { Typography } from "@/shared/components/ui/typography"
 import { routes } from "@/shared/constants/routes"
@@ -75,7 +81,9 @@ const columns: ColumnDef<Client>[] = [
   },
 ]
 
-const viewFields: EntityViewField<Client>[] = [
+const createViewFields = (
+  productLabelsById: ReadonlyMap<string, string>,
+): EntityViewField<Client>[] => [
   {
     accessorKey: "name",
     label: "Nome",
@@ -107,7 +115,7 @@ const viewFields: EntityViewField<Client>[] = [
   },
   {
     accessorKey: "address",
-    label: "Endereco",
+    label: "Endereço",
     cell: ({ entity }) => (
       <Typography asChild variant="small">
         <span>{formatAddress(entity)}</span>
@@ -122,7 +130,7 @@ const viewFields: EntityViewField<Client>[] = [
         {entity.products.length > 0 ? (
           entity.products.map((product) => (
             <Typography key={product.id} asChild variant="small">
-              <span>{product.name}</span>
+              <span>{productLabelsById.get(product.id) ?? product.name}</span>
             </Typography>
           ))
         ) : (
@@ -154,6 +162,19 @@ const viewFields: EntityViewField<Client>[] = [
 ]
 
 export default function ClientCrud() {
+  const { rows: products } = useListEntity<Product>({
+    title: "Produtos",
+    listRoute: routes.products.list,
+  })
+
+  const viewFields = useMemo(() => {
+    const productLabelsById = new Map(
+      products.map((product) => [product.id, formatProductLabel(product)]),
+    )
+
+    return createViewFields(productLabelsById)
+  }, [products])
+
   return (
     <CrudScreen<Client, ClientUpsertFormValues>
       title="Clientes"
@@ -161,8 +182,10 @@ export default function ClientCrud() {
       createForm={ClientForm}
       createFormTitle="Novo cliente"
       editFormTitle="Editar cliente"
+      formModalContentClassName="sm:max-w-3xl"
       viewModalTitle="Detalhes do Cliente"
       viewModalSubtitle={(entity) => `#Id ${entity.id}`}
+      viewModalContentClassName="sm:max-w-3xl"
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

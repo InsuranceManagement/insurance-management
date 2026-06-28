@@ -33,6 +33,7 @@ export function useEditEntity<
     queryKeyToSync: listQueryKey,
     meta: {
       errorMessage: `Erro ao editar registros em ${title}.`,
+      successMessage: "Alterações salvas com sucesso.",
     },
   })
 
