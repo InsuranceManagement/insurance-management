@@ -45,12 +45,14 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   createForm: ComponentType<CrudFormProps<TCreatePayload>>
   createFormTitle?: string
   editFormTitle?: string
+  formModalContentClassName?: string
   mapEditEntityToFormValues?: (entity: TData) => Partial<TCreatePayload>
   viewFields?: EntityViewField<TData>[]
   viewModalTitle?: string
   viewModalSubtitle?: ReactNode | ((entity: TData) => ReactNode)
   viewModalCloseLabel?: string
   viewModalEmptyValue?: ReactNode
+  viewModalContentClassName?: string
   caption?: string
 }
 
@@ -61,12 +63,14 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   createForm: CreateFormComponent,
   createFormTitle = "Novo registro",
   editFormTitle = "Editar registro",
+  formModalContentClassName,
   mapEditEntityToFormValues,
   viewFields,
   viewModalTitle = "Detalhes",
   viewModalSubtitle,
   viewModalCloseLabel,
   viewModalEmptyValue,
+  viewModalContentClassName,
   caption,
 }: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -176,6 +180,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           open={isCreateModalOpen}
           onOpenChange={handleCreateModalOpenChange}
           title={createFormTitle}
+          contentClassName={formModalContentClassName}
         >
           <CreateFormComponent
             onSubmit={handleCreate}
@@ -189,6 +194,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           open={isEditModalOpen}
           onOpenChange={handleEditModalOpenChange}
           title={editFormTitle}
+          contentClassName={formModalContentClassName}
         >
           <CreateFormComponent
             initialValues={editFormInitialValues}
@@ -205,6 +211,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             subtitle={viewModalSubtitle}
             closeLabel={viewModalCloseLabel}
             emptyValue={viewModalEmptyValue}
+            contentClassName={viewModalContentClassName}
             open={isEntityViewOpen}
             onOpenChange={handleEntityViewOpenChange}
             entity={entityInView}

@@ -11,6 +11,14 @@ export interface Product extends EntityWithName {
   insuranceCompany?: InsuranceCompany
 }
 
+export function formatProductLabel(
+  product: Pick<Product, "name" | "insuranceCompanyId" | "insuranceCompany">,
+) {
+  return `${product.name} - ${
+    product.insuranceCompany?.name ?? product.insuranceCompanyId
+  }`
+}
+
 export type ProductUpsertPayload = Pick<
   Product,
   "name" | "productTypeId" | "insuranceCompanyId"

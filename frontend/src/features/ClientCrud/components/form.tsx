@@ -4,7 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useMemo } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import { type Product } from "@/features/ProductCrud/models/product"
+import {
+  formatProductLabel,
+  type Product,
+} from "@/features/ProductCrud/models/product"
 import {
   clientUpsertSchema,
   type ClientUpsertFormValues,
@@ -12,9 +15,9 @@ import {
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"
-import { Checkbox } from "@/shared/components/ui/checkbox"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
+import { MultiSelectInput } from "@/shared/components/ui/multi-select-input"
 import { Typography } from "@/shared/components/ui/typography"
 import { routes } from "@/shared/constants/routes"
 
@@ -67,7 +70,7 @@ export function ClientForm({
   const productOptions = useMemo(
     () =>
       products.map((product) => ({
-        label: product.name,
+        label: formatProductLabel(product),
         value: product.id,
       })),
     [products],
@@ -123,12 +126,19 @@ export function ClientForm({
   return (
     <Box asChild>
       <form
-        className="max-h-[70vh] w-full flex-col gap-5 overflow-y-auto pr-1"
+        className="max-h-[76vh] w-full flex-col gap-6 overflow-y-auto pr-1"
         onSubmit={handleSubmit}
         noValidate
       >
         <Box className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Box className="flex-col gap-1.5 sm:col-span-2">
+          <Typography
+            variant="small"
+            className="font-medium sm:col-span-2"
+          >
+            Dados pessoais
+          </Typography>
+
+          <Box className="flex-col gap-1.5">
             <Label htmlFor="client-name">Nome</Label>
             <Controller
               control={form.control}
@@ -149,7 +159,7 @@ export function ClientForm({
             ) : null}
           </Box>
 
-          <Box className="flex-col gap-1.5 sm:col-span-2">
+          <Box className="flex-col gap-1.5">
             <Label htmlFor="client-email">E-mail</Label>
             <Controller
               control={form.control}
@@ -263,7 +273,7 @@ export function ClientForm({
 
         <Box className="flex-col gap-3 border-t pt-4">
           <Typography variant="small" className="font-medium">
-            Endereco
+            Endereço
           </Typography>
 
           <Box className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -420,60 +430,23 @@ export function ClientForm({
           <Controller
             control={form.control}
             name="productIds"
-            render={({ field }) => {
-              const selectedProductIds = field.value ?? []
-
-              const handleProductChange = (
-                productId: string,
-                checked: boolean,
-              ) => {
-                const nextValue = checked
-                  ? [...selectedProductIds, productId]
-                  : selectedProductIds.filter(
-                      (selectedId) => selectedId !== productId,
-                    )
-
-                field.onChange(nextValue)
-              }
-
-              if (areProductsLoading) {
-                return (
-                  <Typography variant="small" className="text-muted-foreground">
-                    Carregando produtos...
-                  </Typography>
-                )
-              }
-
-              if (productOptions.length === 0) {
-                return (
-                  <Typography variant="small" className="text-muted-foreground">
-                    Nenhum produto cadastrado.
-                  </Typography>
-                )
-              }
-
-              return (
-                <Box className="max-h-36 flex-col gap-2 overflow-y-auto rounded-md border p-3">
-                  {productOptions.map((product) => (
-                    <Box key={product.value} className="items-center gap-2">
-                      <Checkbox
-                        id={`client-product-${product.value}`}
-                        checked={selectedProductIds.includes(product.value)}
-                        onCheckedChange={(checked) =>
-                          handleProductChange(product.value, checked === true)
-                        }
-                      />
-                      <Label
-                        htmlFor={`client-product-${product.value}`}
-                        className="cursor-pointer font-normal"
-                      >
-                        {product.label}
-                      </Label>
-                    </Box>
-                  ))}
-                </Box>
-              )
-            }}
+            render={({ field, fieldState }) => (
+              <MultiSelectInput
+                id="client-products"
+                value={field.value ?? []}
+                onChange={field.onChange}
+                options={productOptions}
+                placeholder={
+                  areProductsLoading
+                    ? "Carregando produtos..."
+                    : "Selecione os produtos"
+                }
+                searchPlaceholder="Pesquisar por produto ou seguradora..."
+                emptyMessage="Nenhum produto encontrado."
+                disabled={areProductsLoading}
+                isInvalid={!!fieldState.error}
+              />
+            )}
           />
         </Box>
 

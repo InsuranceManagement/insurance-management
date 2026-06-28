@@ -27,6 +27,7 @@ type EntityViewModalProps<TData> = {
   subtitle?: ReactNode | ((entity: TData) => ReactNode)
   closeLabel?: string
   emptyValue?: ReactNode
+  contentClassName?: string
 }
 
 export function EntityViewModal<TData>({
@@ -38,6 +39,7 @@ export function EntityViewModal<TData>({
   subtitle,
   closeLabel = "Fechar",
   emptyValue = "-",
+  contentClassName,
 }: Readonly<EntityViewModalProps<TData>>) {
   const subtitleContent =
     entity && typeof subtitle === "function"
@@ -74,6 +76,7 @@ export function EntityViewModal<TData>({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
+      contentClassName={contentClassName}
       footer={
         <Box className="w-full justify-end">
           <Button
