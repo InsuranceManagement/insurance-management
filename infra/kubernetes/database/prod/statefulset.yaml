@@ -5,7 +5,7 @@ metadata:
   namespace: insurance-management-prod
 spec:
   serviceName: insurance-management-postgres
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: insurance-management-postgres
