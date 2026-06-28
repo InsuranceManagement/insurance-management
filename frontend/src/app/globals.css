@@ -142,4 +142,7 @@
   [data-sidebar="sidebar"] {
     background-image: var(--brand-gradient);
   }
+  [data-right-panel-frame] {
+    background-color: var(--muted);
+  }
 }

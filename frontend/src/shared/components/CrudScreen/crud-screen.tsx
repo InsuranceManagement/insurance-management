@@ -1,14 +1,12 @@
 "use client"
 
-import { type ComponentType, type ReactNode, useMemo, useState } from "react"
+import { useMemo, useState, type ComponentType, type ReactNode } from "react"
 
 import { Box } from "@/shared/components/ui/box"
 import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
 
-import { AddButton } from "@/shared/components/CrudScreen/components/add-button"
 import { ActionsPopover } from "@/shared/components/CrudScreen/components/actions-popover"
-import { DataTable } from "@/shared/components/DataTable/data-table"
-import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
+import { AddButton } from "@/shared/components/CrudScreen/components/add-button"
 import {
   EntityViewModal,
   type EntityViewField,
@@ -18,6 +16,8 @@ import { useDeleteEntity } from "@/shared/components/CrudScreen/hooks/use-delete
 import { useEditEntity } from "@/shared/components/CrudScreen/hooks/use-edit-entity"
 import { useEntityView } from "@/shared/components/CrudScreen/hooks/use-entity-view"
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
+import { DataTable } from "@/shared/components/DataTable/data-table"
+import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
 import { ApiRouteType } from "@/shared/constants/routes"
@@ -162,7 +162,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
 
   return (
     <main className="flex flex-1 flex-col p-6 md:p-8">
-      <Box className="flex-col gap-15">
+      <Box className="flex-col gap-5">
         <Box className="items-center justify-between gap-4">
           <Typography variant="h3">{title}</Typography>
 
