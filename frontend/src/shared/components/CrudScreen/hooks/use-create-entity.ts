@@ -23,6 +23,7 @@ export function useCreateEntity<TCreatePayload>({
     queryKeyToSync: listQueryKey,
     meta: {
       errorMessage: `Erro ao criar registros em ${title}.`,
+      successMessage: "Cadastro realizado com sucesso.",
     },
   })
 

@@ -37,6 +37,7 @@ export function useDeleteEntity<TData extends DeletableEntityRecord>({
     queryKeyToSync: listQueryKey,
     meta: {
       errorMessage: `Erro ao deletar registros em ${title}.`,
+      successMessage: "Exclusão realizada com sucesso.",
     },
   });
 
