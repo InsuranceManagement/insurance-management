@@ -76,7 +76,9 @@ export class ChartPoint {
     return uniqueClients.size
   }
 
-  private static countClientsByMonth(clients: Pick<ClientModel, 'createdAt'>[]): Map<string, number> {
+  private static countClientsByMonth(
+    clients: Pick<ClientModel, 'createdAt'>[],
+  ): Map<string, number> {
     return clients.reduce((acc, client) => {
       const monthKey = this.getMonthKey(client.createdAt)
       const currentCount = acc.get(monthKey) ?? 0
