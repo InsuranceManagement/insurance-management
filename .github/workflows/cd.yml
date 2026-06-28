@@ -29,10 +29,28 @@ jobs:
           printf '%s' "${{ secrets.FRONTEND_SSH_PRIVATE_KEY }}" > ~/.ssh/frontend_vm_key
           chmod 600 ~/.ssh/frontend_vm_key
 
+      - name: Validate frontend connection inputs
+        run: |
+          if [ -z "${{ secrets.FRONTEND_VM_IP }}" ]; then
+            echo "FRONTEND_VM_IP secret is empty"
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.FRONTEND_SSH_PRIVATE_KEY }}" ]; then
+            echo "FRONTEND_SSH_PRIVATE_KEY secret is empty"
+            exit 1
+          fi
+
       - name: Create inventory
         working-directory: infra/ansible
         run: |
-          printf '[frontend_vm]\n%s ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/frontend_vm_key\n\n[kubernetes_deployer]\nlocalhost ansible_connection=local\n' "${{ secrets.FRONTEND_VM_IP }}" > hosts.ci.ini
+          cat > hosts.ci.ini <<EOF
+          [frontend_vm]
+          ${{ secrets.FRONTEND_VM_IP }} ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/frontend_vm_key
+
+          [kubernetes_deployer]
+          localhost ansible_connection=local
+          EOF
 
       - name: Deploy frontend container
         working-directory: infra/ansible
