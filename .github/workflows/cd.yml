@@ -45,6 +45,14 @@ jobs:
             exit 1
           fi
 
+      - name: Test SSH connection to frontend VM
+        run: |
+          ssh -i ~/.ssh/frontend_vm_key \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=no \
+            azureuser@${{ secrets.FRONTEND_VM_IP }} \
+            "echo SSH_OK"
+
       - name: Create inventory
         working-directory: infra/ansible
         run: |
