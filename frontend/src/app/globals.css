@@ -90,6 +90,12 @@
 }
 
 .dark {
+  --brand-gradient: linear-gradient(
+    135deg,
+    #01131c 0%,
+    #022b3d 50%,
+    #06445c 100%
+  );
   --background: oklch(0.148 0.004 228.8);
   --foreground: oklch(0.987 0.002 197.1);
   --card: oklch(0.218 0.008 223.9);
@@ -113,7 +119,7 @@
   --chart-3: oklch(0.609 0.126 221.723);
   --chart-4: oklch(0.52 0.105 223.128);
   --chart-5: oklch(0.45 0.085 224.283);
-  --sidebar: #044766;
+  --sidebar: #01131c;
   --sidebar-foreground: oklch(0.987 0.002 197.1);
   --sidebar-primary: oklch(0.623 0.214 259.815);
   --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
