@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: lucascastelano/insurance-management-backend:1.0.0
+          image: lucascastelano/insurance-management-backend:homolog
           imagePullPolicy: Always
           ports:
             - name: http

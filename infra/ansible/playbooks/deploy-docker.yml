@@ -3,7 +3,19 @@
   hosts: frontend_vm
   become: true
 
+  vars:
+    frontend_image: "lucascastelano/insurance-management-frontend:{{ deploy_environment }}"
+    frontend_container_name: "insurance-management-frontend-{{ deploy_environment }}"
+    frontend_host_port: "{{ 3001 if deploy_environment == 'homolog' else 3000 }}"
+    frontend_container_port: 3000
+
   tasks:
+    - name: Validate deployment environment
+      ansible.builtin.assert:
+        that:
+          - deploy_environment in ["homolog", "prod"]
+        fail_msg: "deploy_environment must be homolog or prod"
+
     - name: Install Docker dependencies
       ansible.builtin.apt:
         name:

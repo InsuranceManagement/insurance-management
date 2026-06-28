@@ -6,8 +6,16 @@ output "frontend_gateway_url" {
   value = module.gateway.frontend_gateway_url
 }
 
+output "frontend_homolog_gateway_url" {
+  value = module.gateway.frontend_homolog_gateway_url
+}
+
 output "backend_gateway_url" {
   value = "${module.gateway.api_management_gateway_url}/api"
+}
+
+output "backend_homolog_gateway_url" {
+  value = module.gateway.backend_homolog_gateway_url
 }
 
 output "resource_group_name" {

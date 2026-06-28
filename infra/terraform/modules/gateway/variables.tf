@@ -22,6 +22,14 @@ variable "frontend_url" {
   type = string
 }
 
+variable "frontend_homolog_url" {
+  type = string
+}
+
 variable "backend_url" {
+  type = string
+}
+
+variable "backend_homolog_url" {
   type = string
 }

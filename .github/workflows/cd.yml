@@ -5,15 +5,26 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      deploy_environment:
+        description: Environment to deploy
+        required: true
+        default: prod
+        type: choice
+        options:
+          - prod
+          - homolog
 
 concurrency:
   group: cd-main
   cancel-in-progress: true
 
 env:
-  BACKEND_IMAGE: lucascastelano/insurance-management-backend:1.0.0
-  FRONTEND_IMAGE: lucascastelano/insurance-management-frontend:1.0.0
-  NEXT_PUBLIC_API_URL: https://apim-insurance-management.azure-api.net/api
+  DEPLOY_ENVIRONMENT: ${{ github.event_name == 'push' && 'homolog' || inputs.deploy_environment }}
+  BACKEND_IMAGE: lucascastelano/insurance-management-backend:${{ github.event_name == 'push' && 'homolog' || inputs.deploy_environment }}
+  FRONTEND_IMAGE: lucascastelano/insurance-management-frontend:${{ github.event_name == 'push' && 'homolog' || inputs.deploy_environment }}
+  NEXT_PUBLIC_API_URL: ${{ (github.event_name == 'push' || inputs.deploy_environment == 'homolog') && 'https://apim-insurance-management.azure-api.net/homolog/api' || 'https://apim-insurance-management.azure-api.net/api' }}
+  NEXT_PUBLIC_BASE_PATH: ${{ (github.event_name == 'push' || inputs.deploy_environment == 'homolog') && '/homolog' || '' }}
 
 jobs:
   deploy-frontend:
@@ -34,6 +45,7 @@ jobs:
             -t ${{ env.FRONTEND_IMAGE }} \
             -f infra/frontend/Dockerfile \
             --build-arg NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }} \
+            --build-arg NEXT_PUBLIC_BASE_PATH=${{ env.NEXT_PUBLIC_BASE_PATH }} \
             frontend
 
       - name: Push frontend image
@@ -69,7 +81,7 @@ jobs:
           DOCKER_REGISTRY_USERNAME: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         run: |
-          ansible-playbook -i hosts.ci.ini playbooks/deploy-docker.yml
+          ansible-playbook -i hosts.ci.ini playbooks/deploy-docker.yml -e deploy_environment=${{ env.DEPLOY_ENVIRONMENT }}
 
   deploy-backend:
     runs-on: ubuntu-latest
@@ -112,4 +124,4 @@ jobs:
         env:
           ANSIBLE_INVENTORY: hosts.ini
         run: |
-          ansible-playbook -i hosts.ini playbooks/deploy-k8s.yml
+          ansible-playbook -i hosts.ini playbooks/deploy-k8s.yml -e deploy_environment=${{ env.DEPLOY_ENVIRONMENT }}

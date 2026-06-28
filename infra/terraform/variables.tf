@@ -54,6 +54,11 @@ variable "backend_url" {
   default = "http://172.168.58.147/api"
 }
 
+variable "backend_homolog_url" {
+  type    = string
+  default = "http://172.168.58.147/homolog/api"
+}
+
 variable "aks_cluster_name" {
   type    = string
   default = "aks-insurance-backend"

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next"
 
 const isDevelopment = process.env.NODE_ENV === "development"
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || undefined
 
 function getApiOrigin() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -69,6 +70,7 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  basePath,
   poweredByHeader: false,
   async headers() {
     return [

@@ -26,8 +26,10 @@ module "gateway" {
   api_management_name = var.api_management_name
   publisher_name      = var.publisher_name
   publisher_email     = var.publisher_email
-  frontend_url        = module.compute.frontend_url
-  backend_url         = var.backend_url
+  frontend_url         = module.compute.frontend_url
+  frontend_homolog_url = "http://${module.compute.frontend_vm_public_ip}:3001"
+  backend_url          = var.backend_url
+  backend_homolog_url  = var.backend_homolog_url
 }
 
 module "compute" {
