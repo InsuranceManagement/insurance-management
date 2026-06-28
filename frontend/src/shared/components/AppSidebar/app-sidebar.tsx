@@ -13,6 +13,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 
 import logoBranca from "@/shared/assets/logo_branca.png"
+import logoWm from "@/shared/assets/logo_wm.png"
 import { useAuth } from "@/shared/context/auth-context"
 
 import {
@@ -84,14 +85,20 @@ export function AppSidebar() {
               asChild
               size="lg"
               tooltip="Mainiere"
-              className="h-24"
+              className="h-24 group-data-[collapsible=icon]:justify-center"
             >
               <Link href="/dashboard">
                 <Image
                   src={logoBranca}
                   alt="Mainiere"
                   priority
-                  className="w-48 max-w-none shrink-0 group-data-[collapsible=icon]:w-16"
+                  className="w-48 max-w-none shrink-0 group-data-[collapsible=icon]:hidden"
+                />
+                <Image
+                  src={logoWm}
+                  alt="Mainiere"
+                  priority
+                  className="hidden w-24 max-w-none shrink-0 group-data-[collapsible=icon]:block"
                 />
               </Link>
             </SidebarMenuButton>
