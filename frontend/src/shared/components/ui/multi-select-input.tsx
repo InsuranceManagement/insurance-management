@@ -54,8 +54,6 @@ export function MultiSelectInput({
   const triggerRef = React.useRef<HTMLButtonElement>(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [search, setSearch] = React.useState("")
-  const [portalContainer, setPortalContainer] =
-    React.useState<HTMLElement | null>(null)
 
   const filteredOptions = React.useMemo(() => {
     const normalizedSearch = normalizeSearchValue(search)
@@ -78,19 +76,18 @@ export function MultiSelectInput({
     [options, value],
   )
 
-  const selectedText = selectedLabels.length
+  const selectedTitle = selectedLabels.length
     ? selectedLabels.join(", ")
     : placeholder
 
-  const handleOpenChange = (open: boolean) => {
-    if (open) {
-      setPortalContainer(
-        triggerRef.current?.closest<HTMLElement>(
-          '[data-slot="dialog-content"]',
-        ) ?? null,
-      )
-    }
+  const selectedText =
+    selectedLabels.length === 0
+      ? placeholder
+      : selectedLabels.length === 1
+        ? selectedLabels[0]
+        : `${selectedLabels.length} itens selecionados`
 
+  const handleOpenChange = (open: boolean) => {
     setIsOpen(open)
 
     if (!open) setSearch("")
@@ -116,7 +113,7 @@ export function MultiSelectInput({
           aria-invalid={isInvalid}
           aria-expanded={isOpen}
           role="combobox"
-          className="w-full justify-between font-normal"
+          className="min-w-0 max-w-full shrink overflow-hidden w-full justify-between font-normal"
         >
           <Typography
             asChild
@@ -126,18 +123,20 @@ export function MultiSelectInput({
               selectedLabels.length === 0 && "text-muted-foreground",
             )}
           >
-            <span title={selectedText}>{selectedText}</span>
+            <span title={selectedTitle}>{selectedText}</span>
           </Typography>
 
           <ChevronDownIcon data-icon="inline-end" aria-hidden />
         </Button>
       </Popover.Trigger>
 
-      <Popover.Portal container={portalContainer ?? undefined}>
+      <Popover.Portal>
         <Popover.Content
           align="start"
+          side="bottom"
           sideOffset={4}
-          className="z-50 w-(--radix-popover-trigger-width) overflow-hidden rounded-md bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10"
+          collisionPadding={16}
+          className="z-[70] max-h-[min(20rem,var(--radix-popover-content-available-height))] w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] overflow-hidden rounded-md bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10"
         >
           <Box
             className="flex-col"
@@ -155,7 +154,7 @@ export function MultiSelectInput({
             <Box
               role="listbox"
               aria-multiselectable="true"
-              className="grid max-h-56 overflow-y-auto overscroll-contain p-1"
+              className="grid max-h-[min(14rem,var(--radix-popover-content-available-height))] overflow-y-auto overscroll-contain p-1"
             >
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => {

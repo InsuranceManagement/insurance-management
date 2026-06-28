@@ -85,4 +85,17 @@ export class DashboardRepository {
 
     return ChartPoint.fromClientDocumentDistributionPrisma(clients)
   }
+
+  async getClientAgeRangePoints(): Promise<ChartPoint[]> {
+    const clients = await this.prismaService.client.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        birthDate: true,
+      },
+    })
+
+    return ChartPoint.fromClientAgeRangePrisma(clients)
+  }
 }

@@ -94,6 +94,30 @@ export class ChartPoint {
     ].filter((point) => point.y > 0)
   }
 
+  static fromClientAgeRangePrisma(clients: Pick<ClientModel, 'birthDate'>[]): ChartPoint[] {
+    const ageRanges = [
+      { name: 'Ate 30 anos', min: 0, max: 30, color: '#38BDF8' },
+      { name: '31 a 40 anos', min: 31, max: 40, color: '#2563EB' },
+      { name: '41 a 50 anos', min: 41, max: 50, color: '#10B981' },
+      { name: '51 a 60 anos', min: 51, max: 60, color: '#F59E0B' },
+      { name: 'Acima de 60 anos', min: 61, max: Number.POSITIVE_INFINITY, color: '#EF4444' },
+    ]
+
+    const today = new Date()
+
+    return ageRanges
+      .map((range) => {
+        const clientsCount = clients.filter((client) => {
+          const age = this.getAgeFromBirthDate(client.birthDate, today)
+
+          return age >= range.min && age <= range.max
+        }).length
+
+        return new ChartPoint(clientsCount, range.name, undefined, range.color)
+      })
+      .filter((point) => point.y > 0)
+  }
+
   private static getUniqueClientsCountByInsuranceCompany(
     company: InsuranceCompanyWithClientsRecord,
   ): number {
@@ -157,5 +181,19 @@ export class ChartPoint {
     ]
 
     return `${monthLabels[Number(month) - 1]}/${year}`
+  }
+
+  private static getAgeFromBirthDate(birthDate: Date, referenceDate: Date): number {
+    let age = referenceDate.getUTCFullYear() - birthDate.getUTCFullYear()
+    const monthDifference = referenceDate.getUTCMonth() - birthDate.getUTCMonth()
+    const isBeforeBirthday =
+      monthDifference < 0 ||
+      (monthDifference === 0 && referenceDate.getUTCDate() < birthDate.getUTCDate())
+
+    if (isBeforeBirthday) {
+      age -= 1
+    }
+
+    return age
   }
 }

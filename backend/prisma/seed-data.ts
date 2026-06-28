@@ -203,6 +203,14 @@ export const seedData = {
       chartTypeId: 'pie',
     },
     {
+      id: 'client-age-range',
+      name: 'Faixa etaria da carteira',
+      description: 'Distribuicao de clientes por faixa etaria',
+      apiRoute: '/dashboard/client-age-range',
+      order: 8,
+      chartTypeId: 'bar',
+    },
+    {
       id: 'total-clients-kpi',
       name: 'Total de Clientes',
       apiRoute: '/dashboard/kpi-total-clients',
@@ -225,7 +233,7 @@ export const seedData = {
       cpf: '25136330759',
       cnpj: null,
       phoneNumber: '11987654321',
-      birthDate: '1987-02-21T00:00:00.000Z',
+      birthDate: '1999-02-21T00:00:00.000Z',
       products: {
         connect: [
           { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000001' },
@@ -242,7 +250,7 @@ export const seedData = {
       cpf: '67848384756',
       cnpj: null,
       phoneNumber: '21999887766',
-      birthDate: '1992-08-05T00:00:00.000Z',
+      birthDate: '1991-08-05T00:00:00.000Z',
       products: {
         connect: [
           { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000002' },
@@ -259,7 +267,7 @@ export const seedData = {
       cpf: '17967170709',
       cnpj: null,
       phoneNumber: '31988776655',
-      birthDate: '1985-11-30T00:00:00.000Z',
+      birthDate: '1980-11-30T00:00:00.000Z',
       products: {
         connect: [
           { id: 'b2e4d3c5-2222-4b3b-9d2b-000000000002' },
@@ -276,7 +284,7 @@ export const seedData = {
       cpf: null,
       cnpj: '07886095000131',
       phoneNumber: '11994561234',
-      birthDate: '1995-03-12T00:00:00.000Z',
+      birthDate: '1972-03-12T00:00:00.000Z',
       products: {
         connect: [
           { id: 'a1f3c2d4-1111-4f2a-9c1a-000000000003' },
@@ -293,7 +301,7 @@ export const seedData = {
       cpf: null,
       cnpj: '12775849000116',
       phoneNumber: '21991234567',
-      birthDate: '1991-07-19T00:00:00.000Z',
+      birthDate: '1959-07-19T00:00:00.000Z',
       products: {
         connect: [
           { id: 'c3f5e4d6-3333-4c4c-9e3c-000000000003' },

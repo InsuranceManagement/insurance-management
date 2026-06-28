@@ -25,4 +25,8 @@ export class DashboardService {
   async getClientDocumentDistribution(): Promise<ChartPoint[]> {
     return this.dashboardRepository.getClientDocumentDistributionPoints()
   }
+
+  async getClientAgeRange(): Promise<ChartPoint[]> {
+    return this.dashboardRepository.getClientAgeRangePoints()
+  }
 }

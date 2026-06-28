@@ -32,4 +32,9 @@ export class DashboardController {
   getClientDocumentDistribution() {
     return this.dashboardService.getClientDocumentDistribution()
   }
+
+  @Get('client-age-range')
+  getClientAgeRange() {
+    return this.dashboardService.getClientAgeRange()
+  }
 }
