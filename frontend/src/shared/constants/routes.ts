@@ -85,9 +85,9 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/product-types/${id}`,
     },
-    deleteById: {
+    deleteMany: {
       method: "DELETE",
-      path: (id: string) => `/product-types/${id}`,
+      path: "/product-types",
     },
   },
   products: {
@@ -107,9 +107,9 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/products/${id}`,
     },
-    deleteById: {
+    deleteMany: {
       method: "DELETE",
-      path: (id: string) => `/products/${id}`,
+      path: "/products",
     },
   },
   clients: {
