@@ -1,4 +1,5 @@
 import type { InsuranceCompanyGetPayload } from '@generated/prisma/models/InsuranceCompany'
+import type { ClientModel } from '@generated/prisma/models/Client'
 
 export type InsuranceCompanyWithClientsRecord = InsuranceCompanyGetPayload<{
   select: {
@@ -45,6 +46,78 @@ export class ChartPoint {
     return points
   }
 
+  static fromClientsGrowthByMonthPrisma(clients: Pick<ClientModel, 'createdAt'>[]): ChartPoint[] {
+    if (clients.length === 0) {
+      return []
+    }
+
+    const clientsByMonth = this.countClientsByMonth(clients)
+    const orderedMonths = this.getMonthRange(
+      this.getMonthKey(clients[0].createdAt),
+      this.getMonthKey(clients[clients.length - 1].createdAt),
+    )
+
+    let accumulatedClients = 0
+
+    return orderedMonths.map((monthKey) => {
+      accumulatedClients += clientsByMonth.get(monthKey) ?? 0
+
+      return new ChartPoint(accumulatedClients, this.formatMonthLabel(monthKey))
+    })
+  }
+
+  static fromClientDocumentDistributionPrisma(
+    clients: Pick<ClientModel, 'cpf' | 'cnpj'>[],
+  ): ChartPoint[] {
+    const distribution = clients.reduce(
+      (acc, client) => {
+        if (client.cnpj) {
+          acc.pj += 1
+          return acc
+        }
+
+        if (client.cpf) {
+          acc.pf += 1
+        }
+
+        return acc
+      },
+      {
+        pf: 0,
+        pj: 0,
+      },
+    )
+
+    return [
+      new ChartPoint(distribution.pf, 'Pessoa Fisica', undefined, '#2563EB'),
+      new ChartPoint(distribution.pj, 'Pessoa Juridica', undefined, '#10B981'),
+    ].filter((point) => point.y > 0)
+  }
+
+  static fromClientAgeRangePrisma(clients: Pick<ClientModel, 'birthDate'>[]): ChartPoint[] {
+    const ageRanges = [
+      { name: 'Ate 30 anos', min: 0, max: 30, color: '#38BDF8' },
+      { name: '31 a 40 anos', min: 31, max: 40, color: '#2563EB' },
+      { name: '41 a 50 anos', min: 41, max: 50, color: '#10B981' },
+      { name: '51 a 60 anos', min: 51, max: 60, color: '#F59E0B' },
+      { name: 'Acima de 60 anos', min: 61, max: Number.POSITIVE_INFINITY, color: '#EF4444' },
+    ]
+
+    const today = new Date()
+
+    return ageRanges
+      .map((range) => {
+        const clientsCount = clients.filter((client) => {
+          const age = this.getAgeFromBirthDate(client.birthDate, today)
+
+          return age >= range.min && age <= range.max
+        }).length
+
+        return new ChartPoint(clientsCount, range.name, undefined, range.color)
+      })
+      .filter((point) => point.y > 0)
+  }
+
   private static getUniqueClientsCountByInsuranceCompany(
     company: InsuranceCompanyWithClientsRecord,
   ): number {
@@ -53,5 +126,74 @@ export class ChartPoint {
     )
 
     return uniqueClients.size
+  }
+
+  private static countClientsByMonth(
+    clients: Pick<ClientModel, 'createdAt'>[],
+  ): Map<string, number> {
+    return clients.reduce((acc, client) => {
+      const monthKey = this.getMonthKey(client.createdAt)
+      const currentCount = acc.get(monthKey) ?? 0
+
+      acc.set(monthKey, currentCount + 1)
+
+      return acc
+    }, new Map<string, number>())
+  }
+
+  private static getMonthRange(startMonthKey: string, endMonthKey: string): string[] {
+    const [startYear, startMonth] = startMonthKey.split('-').map(Number)
+    const [endYear, endMonth] = endMonthKey.split('-').map(Number)
+    const currentDate = new Date(Date.UTC(startYear, startMonth - 1, 1))
+    const endDate = new Date(Date.UTC(endYear, endMonth - 1, 1))
+    const monthKeys: string[] = []
+
+    while (currentDate <= endDate) {
+      monthKeys.push(this.getMonthKey(currentDate))
+      currentDate.setUTCMonth(currentDate.getUTCMonth() + 1)
+    }
+
+    return monthKeys
+  }
+
+  private static getMonthKey(date: Date): string {
+    const year = date.getUTCFullYear()
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
+
+    return `${year}-${month}`
+  }
+
+  private static formatMonthLabel(monthKey: string): string {
+    const [year, month] = monthKey.split('-')
+    const monthLabels = [
+      'Jan',
+      'Fev',
+      'Mar',
+      'Abr',
+      'Mai',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Set',
+      'Out',
+      'Nov',
+      'Dez',
+    ]
+
+    return `${monthLabels[Number(month) - 1]}/${year}`
+  }
+
+  private static getAgeFromBirthDate(birthDate: Date, referenceDate: Date): number {
+    let age = referenceDate.getUTCFullYear() - birthDate.getUTCFullYear()
+    const monthDifference = referenceDate.getUTCMonth() - birthDate.getUTCMonth()
+    const isBeforeBirthday =
+      monthDifference < 0 ||
+      (monthDifference === 0 && referenceDate.getUTCDate() < birthDate.getUTCDate())
+
+    if (isBeforeBirthday) {
+      age -= 1
+    }
+
+    return age
   }
 }

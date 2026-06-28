@@ -17,4 +17,24 @@ export class DashboardController {
   async getTotalClients() {
     return this.dashboardService.getTotalClients()
   }
+
+  @Get('kpi-total-products')
+  async getTotalProducts() {
+    return this.dashboardService.getTotalProducts()
+  }
+
+  @Get('clients-growth-by-month')
+  getClientsGrowthByMonth() {
+    return this.dashboardService.getClientsGrowthByMonth()
+  }
+
+  @Get('client-document-distribution')
+  getClientDocumentDistribution() {
+    return this.dashboardService.getClientDocumentDistribution()
+  }
+
+  @Get('client-age-range')
+  getClientAgeRange() {
+    return this.dashboardService.getClientAgeRange()
+  }
 }

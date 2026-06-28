@@ -101,7 +101,7 @@ export default function ProductCrud() {
         list: routes.products.list,
         create: routes.products.create,
         edit: routes.products.updateById,
-        delete: routes.products.deleteById,
+        delete: routes.products.deleteMany,
       }}
     />
   )

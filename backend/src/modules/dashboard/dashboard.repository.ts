@@ -47,4 +47,55 @@ export class DashboardRepository {
       },
     })
   }
+
+  async getTotalProducts(): Promise<number> {
+    return await this.prismaService.products.count({
+      where: {
+        deletedAt: null,
+      },
+    })
+  }
+
+  async getClientsGrowthByMonthPoints(): Promise<ChartPoint[]> {
+    const clients = await this.prismaService.client.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
+
+    return ChartPoint.fromClientsGrowthByMonthPrisma(clients)
+  }
+
+  async getClientDocumentDistributionPoints(): Promise<ChartPoint[]> {
+    const clients = await this.prismaService.client.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        cpf: true,
+        cnpj: true,
+      },
+    })
+
+    return ChartPoint.fromClientDocumentDistributionPrisma(clients)
+  }
+
+  async getClientAgeRangePoints(): Promise<ChartPoint[]> {
+    const clients = await this.prismaService.client.findMany({
+      where: {
+        deletedAt: null,
+      },
+      select: {
+        birthDate: true,
+      },
+    })
+
+    return ChartPoint.fromClientAgeRangePrisma(clients)
+  }
 }

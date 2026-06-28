@@ -20,9 +20,9 @@ export default function RootLayout(props: Readonly<RootLayoutProps>) {
 
   return (
     <AuthGuard>
-      <SidebarProvider>
+      <SidebarProvider data-right-panel-frame>
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="md:m-2 md:overflow-hidden md:rounded-xl md:shadow-sm">
           <AppHeader />
           <Box className="flex-1 flex-col">{children}</Box>
         </SidebarInset>

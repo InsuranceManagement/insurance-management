@@ -27,6 +27,7 @@ type EntityViewModalProps<TData> = {
   subtitle?: ReactNode | ((entity: TData) => ReactNode)
   closeLabel?: string
   emptyValue?: ReactNode
+  contentClassName?: string
 }
 
 export function EntityViewModal<TData>({
@@ -38,6 +39,7 @@ export function EntityViewModal<TData>({
   subtitle,
   closeLabel = "Fechar",
   emptyValue = "-",
+  contentClassName,
 }: Readonly<EntityViewModalProps<TData>>) {
   const subtitleContent =
     entity && typeof subtitle === "function"
@@ -53,13 +55,20 @@ export function EntityViewModal<TData>({
       typeof value === "boolean"
     ) {
       return (
-        <Typography variant="p" className="text-sm leading-normal">
+        <Typography
+          variant="p"
+          className="min-w-0 text-sm leading-normal break-words [overflow-wrap:anywhere]"
+        >
           {value}
         </Typography>
       )
     }
 
-    return <Box className="text-sm leading-normal">{value}</Box>
+    return (
+      <Box className="min-w-0 text-sm leading-normal break-words [overflow-wrap:anywhere]">
+        {value}
+      </Box>
+    )
   }
 
   return (
@@ -67,6 +76,7 @@ export function EntityViewModal<TData>({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
+      contentClassName={contentClassName}
       footer={
         <Box className="w-full justify-end">
           <Button
@@ -99,7 +109,7 @@ export function EntityViewModal<TData>({
             return (
               <Box
                 key={String(field.accessorKey)}
-                className="flex-col gap-1 bg-card p-3"
+                className="min-w-0 flex-col gap-1 bg-card p-3"
               >
                 <Typography
                   variant="small"
