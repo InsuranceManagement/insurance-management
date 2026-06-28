@@ -29,6 +29,10 @@ jobs:
           printf '%s' "${{ secrets.FRONTEND_SSH_PRIVATE_KEY_B64 }}" | base64 -d > ~/.ssh/frontend_vm_key
           chmod 600 ~/.ssh/frontend_vm_key
 
+      - name: Check SSH key fingerprint
+        run: |
+          ssh-keygen -lf ~/.ssh/frontend_vm_key
+
       - name: Validate frontend connection inputs
         run: |
           if [ -z "${{ secrets.FRONTEND_VM_IP }}" ]; then
