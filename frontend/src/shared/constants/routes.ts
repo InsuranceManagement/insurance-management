@@ -112,4 +112,26 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       path: (id: string) => `/products/${id}`,
     },
   },
+  clients: {
+    list: {
+      method: "GET",
+      path: "/clients",
+    },
+    create: {
+      method: "POST",
+      path: "/clients",
+    },
+    getById: {
+      method: "GET",
+      path: (id: string) => `/clients/${id}`,
+    },
+    updateById: {
+      method: "PATCH",
+      path: (id: string) => `/clients/${id}`,
+    },
+    deleteMany: {
+      method: "DELETE",
+      path: "/clients",
+    },
+  },
 } as const;
