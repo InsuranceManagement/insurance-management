@@ -17,4 +17,9 @@ export class DashboardController {
   async getTotalClients() {
     return this.dashboardService.getTotalClients()
   }
+
+  @Get('clients-growth-by-month')
+  getClientsGrowthByMonth() {
+    return this.dashboardService.getClientsGrowthByMonth()
+  }
 }
