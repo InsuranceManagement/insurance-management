@@ -126,7 +126,7 @@ export function ClientForm({
   return (
     <Box asChild>
       <form
-        className="max-h-[76vh] w-full flex-col gap-6 overflow-y-auto pr-1"
+        className="max-h-[76vh] w-full flex-col gap-6 overflow-x-hidden overflow-y-auto pr-1"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -271,7 +271,7 @@ export function ClientForm({
           </Box>
         </Box>
 
-        <Box className="flex-col gap-3 border-t pt-4">
+        <Box className="min-w-0 flex-col gap-3 border-t pt-4">
           <Typography variant="small" className="font-medium">
             Endereço
           </Typography>
@@ -422,7 +422,7 @@ export function ClientForm({
           </Box>
         </Box>
 
-        <Box className="flex-col gap-3 border-t pt-4">
+        <Box className="min-w-0 flex-col gap-3 border-t pt-4">
           <Typography variant="small" className="font-medium">
             Produtos vinculados
           </Typography>
