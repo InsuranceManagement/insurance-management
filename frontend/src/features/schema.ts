@@ -37,3 +37,50 @@ export const productUpsertSchema = z.object({
 
 export type ProductUpsertFormValues = z.infer<typeof productUpsertSchema>;
 
+const optionalDigitsSchema = z.string().trim().optional();
+
+export const clientUpsertSchema = z
+  .object({
+    name: z.string().trim().min(1, "O nome e obrigatorio"),
+    email: z.string().trim().email("Informe um e-mail valido"),
+    cpf: optionalDigitsSchema.refine(
+      (value) => !value || /^\d{11}$/.test(value),
+      "O CPF deve conter exatamente 11 numeros",
+    ),
+    cnpj: optionalDigitsSchema.refine(
+      (value) => !value || /^\d{14}$/.test(value),
+      "O CNPJ deve conter exatamente 14 numeros",
+    ),
+    phoneNumber: z
+      .string()
+      .trim()
+      .regex(/^\d{10,15}$/, "O telefone deve conter entre 10 e 15 numeros"),
+    birthDate: z.string().trim().min(1, "A data de nascimento e obrigatoria"),
+    address: z.object({
+      cep: optionalDigitsSchema.refine(
+        (value) => !value || /^\d{8}$/.test(value),
+        "O CEP deve conter exatamente 8 numeros",
+      ),
+      street: z.string().trim().min(1, "A rua e obrigatoria"),
+      district: z.string().trim().min(1, "O bairro e obrigatorio"),
+      state: z.string().trim().min(1, "O estado e obrigatorio"),
+      city: z.string().trim().min(1, "A cidade e obrigatoria"),
+      number: z.string().trim().min(1, "O numero e obrigatorio"),
+      complement: z.string().trim().optional(),
+    }),
+    productIds: z.array(z.string()),
+  })
+  .superRefine((values, context) => {
+    if (values.cpf || values.cnpj) {
+      return;
+    }
+
+    context.addIssue({
+      code: "custom",
+      path: ["cpf"],
+      message: "Informe pelo menos um CPF ou CNPJ",
+    });
+  });
+
+export type ClientUpsertFormValues = z.infer<typeof clientUpsertSchema>;
+
