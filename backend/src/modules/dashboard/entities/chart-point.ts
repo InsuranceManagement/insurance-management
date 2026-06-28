@@ -66,6 +66,34 @@ export class ChartPoint {
     })
   }
 
+  static fromClientDocumentDistributionPrisma(
+    clients: Pick<ClientModel, 'cpf' | 'cnpj'>[],
+  ): ChartPoint[] {
+    const distribution = clients.reduce(
+      (acc, client) => {
+        if (client.cnpj) {
+          acc.pj += 1
+          return acc
+        }
+
+        if (client.cpf) {
+          acc.pf += 1
+        }
+
+        return acc
+      },
+      {
+        pf: 0,
+        pj: 0,
+      },
+    )
+
+    return [
+      new ChartPoint(distribution.pf, 'Pessoa Fisica', undefined, '#2563EB'),
+      new ChartPoint(distribution.pj, 'Pessoa Juridica', undefined, '#10B981'),
+    ].filter((point) => point.y > 0)
+  }
+
   private static getUniqueClientsCountByInsuranceCompany(
     company: InsuranceCompanyWithClientsRecord,
   ): number {
