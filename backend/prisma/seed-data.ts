@@ -245,6 +245,13 @@ export const seedData = {
       order: 3,
       chartTypeId: 'kpi',
     },
+    {
+      id: 'total-product-types-kpi',
+      name: 'Total de Tipos de Produto',
+      apiRoute: '/dashboard/kpi-total-product-types',
+      order: 4,
+      chartTypeId: 'kpi',
+    },
   ],
   client: [
     {

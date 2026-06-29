@@ -23,6 +23,10 @@ export class DashboardService {
     return this.dashboardRepository.getTotalInsuranceCompanies()
   }
 
+  async getTotalProductTypes(): Promise<number> {
+    return this.dashboardRepository.getTotalProductTypes()
+  }
+
   async getClientsGrowthByMonth(): Promise<ChartPoint[]> {
     return this.dashboardRepository.getClientsGrowthByMonthPoints()
   }
