@@ -9,6 +9,7 @@ import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { useChartData } from "@/shared/hooks/use-chart-data"
+import { useHighchartsTheme } from "@/shared/hooks/use-highcharts-theme"
 import { cn } from "@/shared/lib/utils"
 import { type BaseChartProps } from "@/shared/models/charts/chart-config"
 import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
@@ -32,9 +33,6 @@ type HeatmapFormatterContext = {
   productCount?: number
 }
 
-const emptyCellColor = "var(--muted)"
-const activeCellColor = "var(--chart-2)"
-
 export function HeatmapChart({
   dataUrl,
   title,
@@ -44,6 +42,7 @@ export function HeatmapChart({
   const { data, isLoading, isError } = useChartData<ProductTypeHeatmapData>({
     dataUrl,
   })
+  const highchartsTheme = useHighchartsTheme()
 
   const isEmpty =
     !isLoading &&
@@ -52,7 +51,11 @@ export function HeatmapChart({
       data.productTypes.length === 0 ||
       data.cells.every((cell) => cell.value === 0))
 
-  const options = useMemo<ChartOptions>(() => {
+  const options = useMemo<ChartOptions | null>(() => {
+    if (!highchartsTheme) {
+      return null
+    }
+
     const companies = data?.insuranceCompanies ?? []
     const productTypes = data?.productTypes ?? []
     const companyIndexById = new Map(
@@ -76,7 +79,10 @@ export function HeatmapChart({
           y,
           value: cell.value,
           productCount: cell.productCount,
-          color: cell.value > 0 ? activeCellColor : emptyCellColor,
+            color:
+              cell.value > 0
+                ? highchartsTheme.raw.chartColors[1]
+                : highchartsTheme.raw.muted,
         })
 
         return acc
@@ -84,22 +90,27 @@ export function HeatmapChart({
 
     return {
       chart: {
+        ...highchartsTheme.chart,
         type: "heatmap",
-        backgroundColor: "transparent",
         spacing: [8, 8, 8, 8],
       },
+      colors: highchartsTheme.colors,
       title: {
+        ...highchartsTheme.title,
         text: title,
         align: "left",
         style: {
+          ...highchartsTheme.title.style,
           fontSize: "0.875rem",
           fontWeight: "600",
         },
       },
       subtitle: {
+        ...highchartsTheme.subtitle,
         text: subtitle,
         align: "left",
         style: {
+          ...highchartsTheme.subtitle.style,
           fontSize: "0.6875rem",
         },
       },
@@ -117,6 +128,7 @@ export function HeatmapChart({
           autoRotation: undefined,
           reserveSpace: true,
           style: {
+            ...highchartsTheme.axis.labels.style,
             fontSize: "0.625rem",
             textOverflow: "ellipsis",
           },
@@ -130,6 +142,7 @@ export function HeatmapChart({
         },
         labels: {
           style: {
+            ...highchartsTheme.axis.labels.style,
             fontSize: "0.625rem",
           },
         },
@@ -138,11 +151,12 @@ export function HeatmapChart({
         min: 0,
         max: 1,
         stops: [
-          [0, emptyCellColor],
-          [1, activeCellColor],
+          [0, highchartsTheme.raw.muted],
+          [1, highchartsTheme.raw.chartColors[1]],
         ],
       },
       tooltip: {
+        ...highchartsTheme.tooltip,
         formatter() {
           const point = this as HeatmapFormatterContext
           const companyName = companies[point.y ?? 0]?.name ?? ""
@@ -156,7 +170,7 @@ export function HeatmapChart({
         series: {
           animation: false,
           borderWidth: 2,
-          borderColor: "var(--card)",
+          borderColor: highchartsTheme.raw.card,
           dataLabels: {
             enabled: true,
             formatter() {
@@ -165,7 +179,7 @@ export function HeatmapChart({
               return point.productCount ? String(point.productCount) : ""
             },
             style: {
-              color: "var(--primary-foreground)",
+              color: highchartsTheme.raw.primaryForeground,
               fontSize: "0.625rem",
               fontWeight: "600",
               textOutline: "none",
@@ -181,7 +195,7 @@ export function HeatmapChart({
         },
       ],
     }
-  }, [data, subtitle, title])
+  }, [data, highchartsTheme, subtitle, title])
 
   if (isLoading) {
     return (
@@ -207,6 +221,14 @@ export function HeatmapChart({
         preset={ChartTypeSizePreset.EIGHT_BY_FOUR}
         className={className}
       />
+    )
+  }
+
+  if (!options) {
+    return (
+      <ChartCard preset={ChartTypeSizePreset.EIGHT_BY_FOUR}>
+        <div className="h-full w-full" />
+      </ChartCard>
     )
   }
 

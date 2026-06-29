@@ -21,6 +21,8 @@ export function useChartData<T = ChartPoint[]>({
     },
     queryKey: ["chart-data", dataUrl],
     enabled: !!dataUrl,
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
   return {

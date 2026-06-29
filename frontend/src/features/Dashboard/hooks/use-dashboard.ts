@@ -22,6 +22,8 @@ export function useDashboard() {
   const chartConfigsQuery = useApiQuery<ChartApiResponse[]>({
     route: routes.charts.list,
     queryKey: ["dashboard", "chart-configs"],
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
   const { charts, kpis } = useMemo<{
