@@ -15,6 +15,7 @@ const presetStyles: Record<ChartTypeSizePreset, string> = {
   [ChartTypeSizePreset.ONE_BY_ONE]: "col-span-2 row-span-1",
   [ChartTypeSizePreset.TWO_BY_ONE]: "col-span-4 row-span-1",
   [ChartTypeSizePreset.FOUR_BY_FOUR]: "col-span-4 row-span-4",
+  [ChartTypeSizePreset.EIGHT_BY_FOUR]: "col-span-8 row-span-4",
 }
 
 export function ChartCard({

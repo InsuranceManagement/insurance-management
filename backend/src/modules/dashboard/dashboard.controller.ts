@@ -37,4 +37,9 @@ export class DashboardController {
   getClientAgeRange() {
     return this.dashboardService.getClientAgeRange()
   }
+
+  @Get('product-types-by-insurance-company')
+  getProductTypesByInsuranceCompany() {
+    return this.dashboardService.getProductTypesByInsuranceCompany()
+  }
 }

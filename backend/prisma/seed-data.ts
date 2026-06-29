@@ -176,6 +176,12 @@ export const seedData = {
       description: 'Card de indicador',
       size: '1x1',
     },
+    {
+      id: 'heatmap',
+      name: 'Heatmap',
+      description: 'Matriz de intensidade',
+      size: '8x4',
+    },
   ],
   chart: [
     {
@@ -209,6 +215,14 @@ export const seedData = {
       apiRoute: '/dashboard/client-age-range',
       order: 8,
       chartTypeId: 'bar',
+    },
+    {
+      id: 'product-types-by-insurance-company',
+      name: 'Tipos de produto por seguradora',
+      description: 'Relacao entre seguradoras e tipos de produto cadastrados',
+      apiRoute: '/dashboard/product-types-by-insurance-company',
+      order: 9,
+      chartTypeId: 'heatmap',
     },
     {
       id: 'total-clients-kpi',
