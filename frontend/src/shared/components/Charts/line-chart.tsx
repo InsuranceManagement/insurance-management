@@ -53,12 +53,15 @@ export function LineChart({
     unit,
   })
 
-  const options = useMemo<ChartOptions>(
-    () => ({
+  const options = useMemo<ChartOptions | null>(
+    () =>
+      highchartsTheme
+        ? {
       chart: {
         ...highchartsTheme.chart,
         type: "line",
       },
+      colors: highchartsTheme.colors,
       title: {
         ...highchartsTheme.title,
         text: title,
@@ -115,7 +118,8 @@ export function LineChart({
         },
       },
       series,
-    }),
+    }
+        : null,
     [
       highchartsTheme,
       series,
@@ -128,6 +132,14 @@ export function LineChart({
       xAxisType,
     ],
   )
+
+  if (!options) {
+    return (
+      <ChartCard preset={ChartTypeSizePreset.FOUR_BY_FOUR}>
+        <div className="h-full w-full" />
+      </ChartCard>
+    )
+  }
 
   return isEmpty ? (
     <EmptyChartCard

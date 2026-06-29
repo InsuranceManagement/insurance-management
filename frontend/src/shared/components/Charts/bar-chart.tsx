@@ -51,12 +51,15 @@ export function BarChart({
     unit,
   })
 
-  const options = useMemo<ChartOptions>(
-    () => ({
+  const options = useMemo<ChartOptions | null>(
+    () =>
+      highchartsTheme
+        ? {
       chart: {
         ...highchartsTheme.chart,
         type: "column",
       },
+      colors: highchartsTheme.colors,
       title: {
         ...highchartsTheme.title,
         text: title,
@@ -109,7 +112,8 @@ export function BarChart({
         },
       },
       series,
-    }),
+    }
+        : null,
     [
       highchartsTheme,
       series,
@@ -121,6 +125,14 @@ export function BarChart({
       yAxisTitle,
     ],
   )
+
+  if (!options) {
+    return (
+      <ChartCard preset={ChartTypeSizePreset.FOUR_BY_FOUR}>
+        <div className="h-full w-full" />
+      </ChartCard>
+    )
+  }
 
   return isEmpty ? (
     <EmptyChartCard

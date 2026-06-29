@@ -50,12 +50,15 @@ export function PieChart({
     unit,
   })
 
-  const options = useMemo<ChartOptions>(
-    () => ({
+  const options = useMemo<ChartOptions | null>(
+    () =>
+      highchartsTheme
+        ? {
       chart: {
         ...highchartsTheme.chart,
         type: "pie",
       },
+      colors: highchartsTheme.colors,
       title: {
         ...highchartsTheme.title,
         text: title,
@@ -89,7 +92,8 @@ export function PieChart({
         },
       },
       series,
-    }),
+    }
+        : null,
     [
       donut,
       highchartsTheme,
@@ -100,6 +104,14 @@ export function PieChart({
       title,
     ],
   )
+
+  if (!options) {
+    return (
+      <ChartCard preset={ChartTypeSizePreset.FOUR_BY_FOUR}>
+        <div className="h-full w-full" />
+      </ChartCard>
+    )
+  }
 
   return isEmpty ? (
     <EmptyChartCard
