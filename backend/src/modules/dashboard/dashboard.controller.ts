@@ -23,6 +23,11 @@ export class DashboardController {
     return this.dashboardService.getTotalProducts()
   }
 
+  @Get('kpi-total-insurance-companies')
+  async getTotalInsuranceCompanies() {
+    return this.dashboardService.getTotalInsuranceCompanies()
+  }
+
   @Get('clients-growth-by-month')
   getClientsGrowthByMonth() {
     return this.dashboardService.getClientsGrowthByMonth()

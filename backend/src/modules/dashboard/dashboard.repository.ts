@@ -57,6 +57,14 @@ export class DashboardRepository {
     })
   }
 
+  async getTotalInsuranceCompanies(): Promise<number> {
+    return await this.prismaService.insuranceCompany.count({
+      where: {
+        deletedAt: null,
+      },
+    })
+  }
+
   async getClientsGrowthByMonthPoints(): Promise<ChartPoint[]> {
     const clients = await this.prismaService.client.findMany({
       where: {
