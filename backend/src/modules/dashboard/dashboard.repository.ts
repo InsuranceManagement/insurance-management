@@ -2,10 +2,7 @@ import {
   ChartPoint,
   type InsuranceCompanyWithClientsRecord,
 } from '@/modules/dashboard/entities/chart-point'
-import {
-  ProductTypeHeatmap,
-  type InsuranceCompanyWithProductTypesRecord,
-} from '@/modules/dashboard/entities/product-type-heatmap'
+import { ProductTypeHeatmap } from '@/modules/dashboard/entities/product-type-heatmap'
 import { PrismaService } from '@/modules/database/prisma.service'
 import { Injectable } from '@nestjs/common'
 
@@ -148,9 +145,6 @@ export class DashboardRepository {
       }),
     ])
 
-    return ProductTypeHeatmap.fromPrisma(
-      companies as InsuranceCompanyWithProductTypesRecord[],
-      productTypes,
-    )
+    return ProductTypeHeatmap.fromPrisma(companies, productTypes)
   }
 }
