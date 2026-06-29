@@ -7,6 +7,7 @@ import { Chart, type ChartOptions } from "@highcharts/react"
 import { ChartCard } from "@/shared/components/ChartCard/chart-card"
 import { EmptyChartCard } from "@/shared/components/EmptyChartCard/empty-chart-card"
 import { useChartData } from "@/shared/hooks/use-chart-data"
+import { useHighchartsTheme } from "@/shared/hooks/use-highcharts-theme"
 import { useHighchartsSeriesData } from "@/shared/hooks/use-highcharts-series-data"
 import { cn } from "@/shared/lib/utils"
 import { type BaseChartProps } from "@/shared/models/charts/chart-config"
@@ -32,6 +33,7 @@ export function BarChart({
   const { data: points } = useChartData({
     dataUrl,
   })
+  const highchartsTheme = useHighchartsTheme()
 
   const chartData = useMemo(
     () => [
@@ -52,35 +54,46 @@ export function BarChart({
   const options = useMemo<ChartOptions>(
     () => ({
       chart: {
+        ...highchartsTheme.chart,
         type: "column",
-        backgroundColor: "transparent",
       },
       title: {
+        ...highchartsTheme.title,
         text: title,
       },
       subtitle: {
+        ...highchartsTheme.subtitle,
         text: subtitle,
       },
       credits: {
         enabled: false,
       },
       legend: {
+        ...highchartsTheme.legend,
         enabled: showLegend,
       },
       xAxis: {
         type: "category",
+        lineColor: highchartsTheme.axis.lineColor,
+        tickColor: highchartsTheme.axis.tickColor,
+        labels: highchartsTheme.axis.labels,
         title: {
+          ...highchartsTheme.axis.title,
           text: xAxisTitle,
         },
       },
       yAxis: {
         min: 0,
         allowDecimals: false,
+        gridLineColor: highchartsTheme.axis.gridLineColor,
+        labels: highchartsTheme.axis.labels,
         title: {
+          ...highchartsTheme.axis.title,
           text: yAxisTitle,
         },
       },
       tooltip: {
+        ...highchartsTheme.tooltip,
         shared: true,
       },
       plotOptions: {
@@ -97,7 +110,16 @@ export function BarChart({
       },
       series,
     }),
-    [series, showLegend, stacked, subtitle, title, xAxisTitle, yAxisTitle],
+    [
+      highchartsTheme,
+      series,
+      showLegend,
+      stacked,
+      subtitle,
+      title,
+      xAxisTitle,
+      yAxisTitle,
+    ],
   )
 
   return isEmpty ? (
