@@ -238,6 +238,20 @@ export const seedData = {
       order: 2,
       chartTypeId: 'kpi',
     },
+    {
+      id: 'total-insurance-companies-kpi',
+      name: 'Total de Seguradoras',
+      apiRoute: '/dashboard/kpi-total-insurance-companies',
+      order: 3,
+      chartTypeId: 'kpi',
+    },
+    {
+      id: 'total-product-types-kpi',
+      name: 'Total de Tipos de Produto',
+      apiRoute: '/dashboard/kpi-total-product-types',
+      order: 4,
+      chartTypeId: 'kpi',
+    },
   ],
   client: [
     {
