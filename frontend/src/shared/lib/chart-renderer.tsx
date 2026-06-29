@@ -9,6 +9,10 @@ import {
   type LineChartProps,
 } from "@/shared/components/Charts/line-chart"
 import {
+  HeatmapChart,
+  type HeatmapChartProps,
+} from "@/shared/components/Charts/heatmap-chart"
+import {
   PieChart,
   type PieChartProps,
 } from "@/shared/components/Charts/pie-chart"
@@ -18,6 +22,7 @@ export type ChartRendererConfig =
   | ({ id: string; type: "bar" } & BarChartProps)
   | ({ id: string; type: "pie" } & PieChartProps)
   | ({ id: string; type: "donut" } & PieChartProps)
+  | ({ id: string; type: "heatmap" } & HeatmapChartProps)
 
 const chartRendererByType: {
   line: (chart: Extract<ChartRendererConfig, { type: "line" }>) => ReactElement
@@ -25,6 +30,9 @@ const chartRendererByType: {
   pie: (chart: Extract<ChartRendererConfig, { type: "pie" }>) => ReactElement
   donut: (
     chart: Extract<ChartRendererConfig, { type: "donut" }>,
+  ) => ReactElement
+  heatmap: (
+    chart: Extract<ChartRendererConfig, { type: "heatmap" }>,
   ) => ReactElement
 } = {
   line: (chart) => (
@@ -73,6 +81,14 @@ const chartRendererByType: {
       donut
     />
   ),
+  heatmap: (chart) => (
+    <HeatmapChart
+      key={chart.id}
+      dataUrl={chart.dataUrl}
+      title={chart.title}
+      subtitle={chart.subtitle}
+    />
+  ),
 }
 
 export function renderChartByType(chart: ChartRendererConfig): ReactElement {
@@ -88,5 +104,9 @@ export function renderChartByType(chart: ChartRendererConfig): ReactElement {
     return chartRendererByType.pie(chart)
   }
 
-  return chartRendererByType.donut(chart)
+  if (chart.type === "donut") {
+    return chartRendererByType.donut(chart)
+  }
+
+  return chartRendererByType.heatmap(chart)
 }

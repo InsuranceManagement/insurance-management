@@ -6,7 +6,7 @@ import { renderChartByType } from "@/shared/lib/chart-renderer"
 
 export const Dashboard = () => {
   const { charts, kpis } = useDashboard()
-  console.log(kpis)
+
   return (
     <section className="relative grid grid-cols-8 auto-rows-[6rem] gap-4">
       {kpis.map((kpi) => (

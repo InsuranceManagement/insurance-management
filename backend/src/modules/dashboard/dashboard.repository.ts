@@ -2,6 +2,7 @@ import {
   ChartPoint,
   type InsuranceCompanyWithClientsRecord,
 } from '@/modules/dashboard/entities/chart-point'
+import { ProductTypeHeatmap } from '@/modules/dashboard/entities/product-type-heatmap'
 import { PrismaService } from '@/modules/database/prisma.service'
 import { Injectable } from '@nestjs/common'
 
@@ -97,5 +98,53 @@ export class DashboardRepository {
     })
 
     return ChartPoint.fromClientAgeRangePrisma(clients)
+  }
+
+  async getProductTypesByInsuranceCompanyHeatmap(): Promise<ProductTypeHeatmap> {
+    const [companies, productTypes] = await Promise.all([
+      this.prismaService.insuranceCompany.findMany({
+        where: {
+          deletedAt: null,
+        },
+        select: {
+          id: true,
+          name: true,
+          color: true,
+          products: {
+            where: {
+              deletedAt: null,
+              productType: {
+                deletedAt: null,
+              },
+            },
+            select: {
+              productType: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          name: 'asc',
+        },
+      }),
+      this.prismaService.productType.findMany({
+        where: {
+          deletedAt: null,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: {
+          name: 'asc',
+        },
+      }),
+    ])
+
+    return ProductTypeHeatmap.fromPrisma(companies, productTypes)
   }
 }
