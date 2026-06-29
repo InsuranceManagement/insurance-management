@@ -1,5 +1,6 @@
 import { DashboardRepository } from '@/modules/dashboard/dashboard.repository'
 import { ChartPoint } from '@/modules/dashboard/entities/chart-point'
+import { ProductTypeHeatmap } from '@/modules/dashboard/entities/product-type-heatmap'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
@@ -28,5 +29,9 @@ export class DashboardService {
 
   async getClientAgeRange(): Promise<ChartPoint[]> {
     return this.dashboardRepository.getClientAgeRangePoints()
+  }
+
+  async getProductTypesByInsuranceCompany(): Promise<ProductTypeHeatmap> {
+    return this.dashboardRepository.getProductTypesByInsuranceCompanyHeatmap()
   }
 }
