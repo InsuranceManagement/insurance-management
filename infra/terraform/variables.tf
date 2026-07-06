@@ -51,12 +51,12 @@ variable "admin_ssh_public_key" {
 
 variable "backend_url" {
   type    = string
-  default = "http://172.168.58.147/api"
+  default = "http://172.169.165.75/api"
 }
 
 variable "backend_homolog_url" {
   type    = string
-  default = "http://172.168.58.147/homolog/api"
+  default = "http://172.169.165.75/homolog/api"
 }
 
 variable "aks_cluster_name" {
