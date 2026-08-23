@@ -1,12 +1,5 @@
+import { NotificationRelationResponseDto } from '@/modules/notifications/dto/notification-relation-response.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-
-class NotificationLogRelationResponseDto {
-  @ApiProperty()
-  id!: string
-
-  @ApiProperty()
-  name!: string
-}
 
 export class NotificationLogResponseDto {
   @ApiProperty()
@@ -21,7 +14,7 @@ export class NotificationLogResponseDto {
   @ApiProperty()
   body!: string
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ type: String, nullable: true })
   errorMessage!: string | null
 
   @ApiProperty()
@@ -30,12 +23,12 @@ export class NotificationLogResponseDto {
   @ApiProperty()
   notificationStatusId!: string
 
-  @ApiPropertyOptional({ type: () => NotificationLogRelationResponseDto, nullable: true })
-  notificationStatus!: NotificationLogRelationResponseDto | null
+  @ApiPropertyOptional({ type: () => NotificationRelationResponseDto, nullable: true })
+  notificationStatus!: NotificationRelationResponseDto | null
 
   @ApiProperty()
   notificationTypeId!: string
 
-  @ApiPropertyOptional({ type: () => NotificationLogRelationResponseDto, nullable: true })
-  notificationType!: NotificationLogRelationResponseDto | null
+  @ApiPropertyOptional({ type: () => NotificationRelationResponseDto, nullable: true })
+  notificationType!: NotificationRelationResponseDto | null
 }
