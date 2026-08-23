@@ -3,6 +3,9 @@ import {
   NotificationLog,
   type NotificationLogMsPayload,
 } from '@/modules/notifications/entities/notification-log'
+import { Template, type TemplateMsPayload } from '@/modules/notifications/entities/template'
+import type { CreateTemplateInput } from '@/modules/notifications/inputs/create-template.input'
+import type { UpdateTemplateInput } from '@/modules/notifications/inputs/update-template.input'
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
@@ -25,6 +28,24 @@ export class NotificationsMsClient {
     })
 
     return raw.map((item) => NotificationLog.fromMs(item))
+  }
+
+  async createTemplate(payload: CreateTemplateInput): Promise<Template> {
+    const raw = await this.request<TemplateMsPayload>('/template/', {
+      method: 'POST',
+      body: payload,
+    })
+
+    return Template.fromMs(raw)
+  }
+
+  async updateTemplate(templateId: string, payload: UpdateTemplateInput): Promise<Template> {
+    const raw = await this.request<TemplateMsPayload>(`/template/${templateId}`, {
+      method: 'PUT',
+      body: payload,
+    })
+
+    return Template.fromMs(raw)
   }
 
   private async request<T>(path: string, options: MsRequestOptions): Promise<T> {
