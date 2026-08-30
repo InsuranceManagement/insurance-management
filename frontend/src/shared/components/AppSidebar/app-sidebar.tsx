@@ -2,6 +2,7 @@
 
 import {
   CircleDollarSignIcon,
+  CalendarDaysIcon,
   HomeIcon,
   LogOutIcon,
   PackageIcon,
@@ -40,6 +41,11 @@ const mainItems = [
 ]
 
 const supportItems = [
+  {
+    title: "Visitas",
+    href: "/visitas",
+    icon: CalendarDaysIcon,
+  },
   {
     title: "Seguradoras",
     href: "/seguradoras",
