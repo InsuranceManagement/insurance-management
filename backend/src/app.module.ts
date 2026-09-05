@@ -17,6 +17,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { ProductTypeModule } from './modules/product-type/product-type.module'
 import { ProductModule } from './modules/product/product.module'
 import { UserModule } from './modules/user/user.module'
+import { VisitModule } from './modules/visit/visit.module'
 
 import { minutes, ThrottlerModule } from '@nestjs/throttler'
 import { CustomThrottlerGuard } from './common/auth/auth.throttler.guard'
@@ -41,6 +42,7 @@ import { CustomThrottlerGuard } from './common/auth/auth.throttler.guard'
     ChartModule,
     DashboardModule,
     NotificationsModule,
+    VisitModule,
   ],
   controllers: [AppController],
   providers: [
