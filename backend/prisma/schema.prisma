@@ -56,8 +56,6 @@ model Products {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   deletedAt          DateTime?
-
-  visits Visit[]
 }
 
 model Client {
@@ -118,13 +116,11 @@ model Chart {
 }
 
 model Visit {
-  id        String   @id
+  id        String   @id @default(uuid())
   name      String
   description String 
   clientId  String
   client    Client @relation(fields: [clientId], references: [id])
-  productId String
-  product   Products @relation(fields: [productId], references: [id])
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
