@@ -10,11 +10,11 @@ import { CalendarDaysIcon } from "lucide-react"
 import { VisitDialog } from "@/features/Visits/components/visit-dialog"
 import { useVisitClients } from "@/features/Visits/hooks/use-visit-clients"
 import { useVisitMutations } from "@/features/Visits/hooks/use-visit-mutations"
+import { useVisits } from "@/features/Visits/hooks/use-visits"
 import {
   useVisitDateRange,
   useVisitsCalendar,
 } from "@/features/Visits/hooks/use-visits-calendar"
-import { useVisits } from "@/features/Visits/hooks/use-visits"
 import { type VisitUpsertPayload } from "@/features/Visits/models/visit"
 import { Box } from "@/shared/components/ui/box"
 import {
@@ -45,7 +45,10 @@ export function VisitsCalendar() {
   }
 
   const handleDelete = (id: string) => {
-    deleteVisit.mutate({ routeParams: [id] }, { onSuccess: calendar.closeDialog })
+    deleteVisit.mutate(
+      { routeParams: [id] },
+      { onSuccess: calendar.closeDialog },
+    )
   }
 
   return (
@@ -66,7 +69,8 @@ export function VisitsCalendar() {
         <CardHeader className="gap-1 border-b">
           <CardTitle>Agenda de visitas</CardTitle>
           <CardDescription>
-            Clique em uma data para criar uma visita ou em um evento para editar e excluir.
+            Clique em uma data para criar uma visita ou em um evento para editar
+            e excluir.
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
@@ -85,7 +89,12 @@ export function VisitsCalendar() {
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
               }}
-              buttonText={{ today: "Hoje", month: "Mês", week: "Semana", day: "Dia" }}
+              buttonText={{
+                today: "Hoje",
+                month: "Mês",
+                week: "Semana",
+                day: "Dia",
+              }}
               allDaySlot={false}
               slotMinTime={calendar.slotRange.minTime}
               slotMaxTime={calendar.slotRange.maxTime}
