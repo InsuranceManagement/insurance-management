@@ -1,6 +1,7 @@
 import { DashboardModule } from '@/modules/dashboard/dashboard.module'
 import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
+import { ScheduleModule } from '@nestjs/schedule'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -14,6 +15,7 @@ import { ClientModule } from './modules/client/client.module'
 import { PrismaModule } from './modules/database/prisma.module'
 import { InsuranceCompanyModule } from './modules/insurance-company/insurance-company.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
+import { NotificationRuleModule } from './modules/notification-rule/notification-rule.module'
 import { ProductTypeModule } from './modules/product-type/product-type.module'
 import { ProductModule } from './modules/product/product.module'
 import { UserModule } from './modules/user/user.module'
@@ -24,6 +26,7 @@ import { CustomThrottlerGuard } from './common/auth/auth.throttler.guard'
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([
       {
         ttl: minutes(1),
@@ -42,6 +45,7 @@ import { CustomThrottlerGuard } from './common/auth/auth.throttler.guard'
     ChartModule,
     DashboardModule,
     NotificationsModule,
+    NotificationRuleModule,
     VisitModule,
   ],
   controllers: [AppController],

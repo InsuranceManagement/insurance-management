@@ -16,6 +16,11 @@ export class NotificationsService {
     return logs.map((log) => this.toLogResponse(log))
   }
 
+  async getTemplates(): Promise<TemplateResponseDto[]> {
+    const templates = await this.notificationsMsClient.getTemplates()
+    return templates.map((template) => this.toTemplateResponse(template))
+  }
+
   async createTemplate(input: CreateTemplateDto): Promise<TemplateResponseDto> {
     const template = await this.notificationsMsClient.createTemplate(input)
     return this.toTemplateResponse(template)
