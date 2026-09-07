@@ -2,14 +2,13 @@ import { Logger, ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { NestFactory } from '@nestjs/core'
+import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { AUTH_COOKIE_NAME } from './common/auth/cookie.constants'
 import { doubleCsrfProtection } from './common/auth/csrf'
 import { environment } from './common/config/environment'
 import { createValidationException } from './common/validation/validation-exception.factory'
-
-import cookieParser = require('cookie-parser')
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
