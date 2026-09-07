@@ -4,9 +4,9 @@ import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
 import { ClientService } from '@/modules/client/services/client.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 
-@ApiBearerAuth()
+@ApiCookieAuth('access_token')
 @ApiTags('Clients')
 @Controller('clients')
 export class ClientController {

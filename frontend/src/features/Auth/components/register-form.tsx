@@ -8,6 +8,7 @@ import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { useRegister } from "@/features/Auth/hooks/use-register"
+import { resetCsrfToken } from "@/shared/lib/api-client"
 
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"
@@ -37,6 +38,7 @@ export default function RegisterForm() {
       body: values,
     })
 
+    resetCsrfToken()
     router.push("/login")
   })
 

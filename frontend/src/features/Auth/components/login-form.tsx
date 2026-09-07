@@ -11,6 +11,7 @@ import { loginSchema, type LoginFormValues } from "../schema"
 
 import { useLogin } from "@/features/Auth/hooks/use-login"
 import { useAuth } from "@/shared/context/auth-context"
+import { resetCsrfToken } from "@/shared/lib/api-client"
 
 import { Box } from "@/shared/components/ui/box"
 import { Button } from "@/shared/components/ui/button"
@@ -37,24 +38,17 @@ export default function LoginForm() {
       body: values,
     })
 
-    login(result.accessToken, result.user)
+    login(result.user)
+    resetCsrfToken()
 
     router.push("/dashboard")
   })
 
   return (
     <Box asChild>
-      <form
-        onSubmit={handleSubmit}
-        className="w-full flex-col gap-4"
-        noValidate
-      >
+      <form onSubmit={handleSubmit} className="w-full flex-col gap-4" noValidate>
         <Box className="flex-col gap-1.5">
-          <Typography
-            asChild
-            variant="small"
-            className="font-medium"
-          >
+          <Typography asChild variant="small" className="font-medium">
             <label htmlFor="email">Email</label>
           </Typography>
 
@@ -72,10 +66,7 @@ export default function LoginForm() {
           />
 
           {form.formState.errors.email?.message && (
-            <Typography
-              variant="small"
-              className="text-destructive"
-            >
+            <Typography variant="small" className="text-destructive">
               {form.formState.errors.email.message}
             </Typography>
           )}
@@ -83,11 +74,7 @@ export default function LoginForm() {
 
         <Box className="flex-col gap-1.5">
           <Box className="items-center justify-between">
-            <Typography
-              asChild
-              variant="small"
-              className="font-medium"
-            >
+            <Typography asChild variant="small" className="font-medium">
               <label htmlFor="password">Senha</label>
             </Typography>
 
@@ -117,21 +104,14 @@ export default function LoginForm() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </Box>
             )}
           />
 
           {form.formState.errors.password?.message && (
-            <Typography
-              variant="small"
-              className="text-destructive"
-            >
+            <Typography variant="small" className="text-destructive">
               {form.formState.errors.password.message}
             </Typography>
           )}
@@ -151,17 +131,10 @@ export default function LoginForm() {
           {loginMutation.isPending ? "Entrando..." : "Entrar"}
         </Button>
 
-        <Typography
-          asChild
-          variant="small"
-          className="text-center text-muted-foreground"
-        >
+        <Typography asChild variant="small" className="text-center text-muted-foreground">
           <p>
             Não possui uma conta?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-[#06608a] hover:underline"
-            >
+            <Link href="/register" className="font-medium text-[#06608a] hover:underline">
               Cadastre-se
             </Link>
           </p>
