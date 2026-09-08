@@ -8,6 +8,10 @@ import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
 import { ActionsPopover } from "@/shared/components/CrudScreen/components/actions-popover"
 import { AddButton } from "@/shared/components/CrudScreen/components/add-button"
 import {
+  CrudCardList,
+  type CrudCardView,
+} from "@/shared/components/CrudScreen/components/crud-card-list"
+import {
   EntityViewModal,
   type EntityViewField,
 } from "@/shared/components/CrudScreen/components/EntityViewModal"
@@ -41,7 +45,8 @@ type CrudFormProps<TFormPayload> = {
 type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   title: string
   sourceRoutes: CrudSourceRoutes
-  columns: ColumnDef<TData>[]
+  columns?: ColumnDef<TData>[]
+  cardView?: CrudCardView<TData>
   createForm: ComponentType<CrudFormProps<TCreatePayload>>
   createFormTitle?: string
   editFormTitle?: string
@@ -60,6 +65,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   title,
   sourceRoutes,
   columns,
+  cardView,
   createForm: CreateFormComponent,
   createFormTitle = "Novo registro",
   editFormTitle = "Editar registro",
@@ -167,7 +173,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   return (
     <main className="flex flex-1 flex-col p-6 md:p-8">
       <Box className="flex-col gap-5">
-        <Box className="items-center justify-between gap-4">
+        <Box className="mx-1 items-center justify-between gap-4">
           <Typography variant="h3">{title}</Typography>
 
           <AddButton
@@ -230,17 +236,29 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             onViewEntity={handleViewEntity}
           />
 
-          <DataTable
-            caption={caption ?? "Tabela de registros"}
-            columns={columns}
-            data={rows}
-            className="w-full"
-            rowSelection={rowSelection}
-            setRowSelection={setRowSelection}
-            emptyMessage={
-              areRowsLoading ? "Carregando dados..." : "Sem dados para exibir."
-            }
-          />
+          {cardView ? (
+            <CrudCardList
+              data={rows}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
+              cardView={cardView}
+              emptyMessage={
+                areRowsLoading ? "Carregando dados..." : "Sem dados para exibir."
+              }
+            />
+          ) : (
+            <DataTable
+              caption={caption ?? "Tabela de registros"}
+              columns={columns ?? []}
+              data={rows}
+              className="w-full"
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
+              emptyMessage={
+                areRowsLoading ? "Carregando dados..." : "Sem dados para exibir."
+              }
+            />
+          )}
         </Box>
 
         <DeleteModal
