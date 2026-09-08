@@ -3,9 +3,9 @@ import { CreateChartTypeDto } from '@/modules/chart-type/dto/create-chart-type.d
 import { UpdateChartTypeDto } from '@/modules/chart-type/dto/update-chart-type.dto'
 import { ChartTypeService } from '@/modules/chart-type/services/chart-type.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 
-@ApiBearerAuth()
+@ApiCookieAuth('access_token')
 @ApiTags('Chart Types')
 @Controller('chart-types')
 export class ChartTypeController {

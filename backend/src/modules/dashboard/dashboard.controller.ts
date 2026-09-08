@@ -1,8 +1,8 @@
 import { DashboardService } from '@/modules/dashboard/services/dashboard.service'
 import { Controller, Get } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 
-@ApiBearerAuth()
+@ApiCookieAuth('access_token')
 @ApiTags('Dashboard')
 @Controller('dashboard')
 export class DashboardController {

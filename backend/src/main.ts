@@ -1,8 +1,12 @@
 import { Logger, ValidationPipe } from '@nestjs/common'
-import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
+import { NestFactory } from '@nestjs/core'
+import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import { AppModule } from './app.module'
+import { AUTH_COOKIE_NAME } from './common/auth/cookie.constants'
+import { doubleCsrfProtection } from './common/auth/csrf'
 import { environment } from './common/config/environment'
 import { createValidationException } from './common/validation/validation-exception.factory'
 
@@ -11,10 +15,14 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap')
 
   app.use(helmet())
+  app.use(cookieParser())
 
   app.enableCors({
     origin: environment.ALLOWED_ORIGINS.length > 0 ? environment.ALLOWED_ORIGINS : false,
+    credentials: true,
   })
+
+  app.use(doubleCsrfProtection)
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -29,7 +37,7 @@ async function bootstrap() {
     .setTitle('Insurance Management API')
     .setDescription('Insurance Management system API')
     .setVersion('0.0.1')
-    .addBearerAuth()
+    .addCookieAuth(AUTH_COOKIE_NAME)
     .build()
 
   const document = SwaggerModule.createDocument(app, config)

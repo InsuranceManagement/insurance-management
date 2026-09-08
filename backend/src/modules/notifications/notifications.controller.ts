@@ -2,9 +2,9 @@ import { CreateTemplateDto } from '@/modules/notifications/dto/create-template.d
 import { UpdateTemplateDto } from '@/modules/notifications/dto/update-template.dto'
 import { NotificationsService } from '@/modules/notifications/services/notifications.service'
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 
-@ApiBearerAuth()
+@ApiCookieAuth('access_token')
 @ApiTags('Notifications')
 @Controller('notifications')
 export class NotificationsController {

@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "sourceMode": "source",
+  "excludedPaths": [
+    "infra/"
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "kind": "router",
+      "required": true,
+      "source": "generate-harness request and repository source",
+      "purpose": "Route agents to project-specific context, rules, validation and workflows."
+    },
+    {
+      "path": "backend/AGENTS.md",
+      "kind": "router",
+      "required": false,
+      "source": "backend source and existing backend directives",
+      "purpose": "Provide scoped NestJS, Prisma, layering and validation rules."
+    },
+    {
+      "path": "frontend/AGENTS.md",
+      "kind": "router",
+      "required": false,
+      "source": "frontend source and existing frontend directives",
+      "purpose": "Provide scoped Next.js, UI, CRUD and data-access rules."
+    },
+    {
+      "path": ".docs/harness/README.md",
+      "kind": "index",
+      "required": true,
+      "source": "generate-harness request and repository source",
+      "purpose": "Declare source mode, scope, routing map, labels and open questions."
+    },
+    {
+      "path": ".docs/harness/manifest.json",
+      "kind": "manifest",
+      "required": true,
+      "source": "final harness file set",
+      "purpose": "Inventory every generated final harness artifact."
+    },
+    {
+      "path": ".docs/harness/prompts/base-context.md",
+      "kind": "prompt",
+      "required": true,
+      "source": "backend and frontend source/configuration",
+      "purpose": "Load dense project, stack, architecture, constraints, paths and commands context."
+    },
+    {
+      "path": ".docs/harness/specs/project-overview.md",
+      "kind": "spec",
+      "required": true,
+      "source": "application modules, pages, package files and environment configuration",
+      "purpose": "Describe implemented purpose, capabilities, applications and knowledge limits."
+    },
+    {
+      "path": ".docs/harness/specs/architecture.md",
+      "kind": "spec",
+      "required": false,
+      "source": "application bootstrap, modules, providers, clients and layouts",
+      "purpose": "Describe detected components, boundaries and data flows."
+    },
+    {
+      "path": ".docs/harness/specs/features.md",
+      "kind": "spec",
+      "required": false,
+      "source": "backend modules and frontend features/pages",
+      "purpose": "Map implemented capabilities and their backend/frontend coverage."
+    },
+    {
+      "path": ".docs/harness/specs/domain.md",
+      "kind": "spec",
+      "required": false,
+      "source": "Prisma schema, DTOs, entities and services",
+      "purpose": "Define detected terms, relationships, invariants and lifecycle rules."
+    },
+    {
+      "path": ".docs/harness/specs/api.md",
+      "kind": "spec",
+      "required": false,
+      "source": "NestJS controllers/DTOs and frontend route registry",
+      "purpose": "Record HTTP routes, access requirements, payloads and consumers."
+    },
+    {
+      "path": ".docs/harness/specs/data-model.md",
+      "kind": "spec",
+      "required": false,
+      "source": "Prisma schema, repositories, migrations and seed code",
+      "purpose": "Record persisted models, relations, IDs and deletion semantics."
+    },
+    {
+      "path": ".docs/harness/instructions/architecture.md",
+      "kind": "instruction",
+      "required": false,
+      "source": "detected backend/frontend boundaries and patterns",
+      "purpose": "Preserve architectural responsibilities during changes."
+    },
+    {
+      "path": ".docs/harness/instructions/coding-standards.md",
+      "kind": "instruction",
+      "required": false,
+      "source": "TypeScript, ESLint, DTO, repository and component patterns",
+      "purpose": "Define repository-specific implementation conventions."
+    },
+    {
+      "path": ".docs/harness/instructions/testing.md",
+      "kind": "instruction",
+      "required": false,
+      "source": "package scripts, Jest configuration, tests and CI checks",
+      "purpose": "Define test scope, commands, environment needs and minimum validation."
+    },
+    {
+      "path": ".docs/harness/instructions/security.md",
+      "kind": "instruction",
+      "required": false,
+      "source": "auth, bootstrap, reset-password, notification client and Next.js headers",
+      "purpose": "Preserve detected controls and identify concrete security gaps."
+    },
+    {
+      "path": ".docs/harness/instructions/code-review.md",
+      "kind": "instruction",
+      "required": false,
+      "source": "project architecture, contracts, data and security controls",
+      "purpose": "Provide project-specific review checks and reporting rules."
+    },
+    {
+      "path": ".docs/harness/hooks/agent-workflow.md",
+      "kind": "hook",
+      "required": true,
+      "source": "generate-harness request and repository validation practices",
+      "purpose": "Define portable pre-work, work, validation and reporting behavior."
+    },
+    {
+      "path": ".docs/harness/skills/implement-feature.md",
+      "kind": "skill",
+      "required": false,
+      "source": "project layers, frontend feature structure and validation commands",
+      "purpose": "Guide end-to-end feature implementation."
+    },
+    {
+      "path": ".docs/harness/skills/fix-bug.md",
+      "kind": "skill",
+      "required": false,
+      "source": "project contracts, common failure points and validation commands",
+      "purpose": "Guide root-cause fixes and regression coverage."
+    },
+    {
+      "path": ".docs/harness/skills/write-tests.md",
+      "kind": "skill",
+      "required": false,
+      "source": "Jest setup, current test coverage and application boundaries",
+      "purpose": "Guide project-specific test selection and implementation."
+    },
+    {
+      "path": ".docs/harness/skills/refactor.md",
+      "kind": "skill",
+      "required": false,
+      "source": "project architecture, contracts and validation commands",
+      "purpose": "Guide behavior-preserving structural improvements."
+    },
+    {
+      "path": ".docs/harness/skills/review-code.md",
+      "kind": "skill",
+      "required": false,
+      "source": "project review, security and testing instructions",
+      "purpose": "Guide evidence-based review of repository changes."
+    }
+  ]
+}
