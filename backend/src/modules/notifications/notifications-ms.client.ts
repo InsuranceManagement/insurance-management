@@ -16,6 +16,13 @@ type MsRequestOptions = {
   body?: unknown
 }
 
+export type SendTemplateEmailInput = {
+  recipientEmail: string
+  templateId: string
+  idempotencyKey: string
+  variables: Record<string, unknown>
+}
+
 @Injectable()
 export class NotificationsMsClient {
   private readonly logger = new Logger(NotificationsMsClient.name)
@@ -28,6 +35,14 @@ export class NotificationsMsClient {
     })
 
     return raw.map((item) => NotificationLog.fromMs(item))
+  }
+
+  async getTemplates(): Promise<Template[]> {
+    const raw = await this.request<TemplateMsPayload[]>('/template/', {
+      method: 'GET',
+    })
+
+    return raw.map((item) => Template.fromMs(item))
   }
 
   async createTemplate(payload: CreateTemplateInput): Promise<Template> {
@@ -46,6 +61,19 @@ export class NotificationsMsClient {
     })
 
     return Template.fromMs(raw)
+  }
+
+  async sendTemplateEmail(input: SendTemplateEmailInput): Promise<void> {
+    await this.request('/notifications/send', {
+      method: 'POST',
+      body: {
+        type: 'BrevoEmail',
+        recipientEmail: input.recipientEmail,
+        templateId: input.templateId,
+        idempotencyKey: input.idempotencyKey,
+        variables: input.variables,
+      },
+    })
   }
 
   private async request<T>(path: string, options: MsRequestOptions): Promise<T> {

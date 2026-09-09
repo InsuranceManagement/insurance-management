@@ -126,3 +126,13 @@ model Visit {
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
 }
+
+model NotificationRule {
+  id        String   @id @default(uuid())
+  name      String
+  templateId String
+  condition Json
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

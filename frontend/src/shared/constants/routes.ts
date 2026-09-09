@@ -168,4 +168,36 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       path: (id: string) => `/visits/${id}`,
     },
   },
+  notifications: {
+    templates: {
+      method: "GET",
+      path: "/notifications/templates",
+    },
+  },
+  notificationRules: {
+    list: {
+      method: "GET",
+      path: "/notification-rules",
+    },
+    create: {
+      method: "POST",
+      path: "/notification-rules",
+    },
+    getById: {
+      method: "GET",
+      path: (id: string) => `/notification-rules/${id}`,
+    },
+    updateById: {
+      method: "PATCH",
+      path: (id: string) => `/notification-rules/${id}`,
+    },
+    deleteMany: {
+      method: "DELETE",
+      path: "/notification-rules",
+    },
+    previewById: {
+      method: "POST",
+      path: (id: string) => `/notification-rules/${id}/preview`,
+    },
+  },
 } as const

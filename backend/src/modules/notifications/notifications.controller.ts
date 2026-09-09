@@ -15,6 +15,11 @@ export class NotificationsController {
     return this.notificationsService.getLogs()
   }
 
+  @Get('templates')
+  getTemplates() {
+    return this.notificationsService.getTemplates()
+  }
+
   @Post('templates')
   createTemplate(@Body() input: CreateTemplateDto) {
     return this.notificationsService.createTemplate(input)

@@ -3,6 +3,7 @@
 import {
   CircleDollarSignIcon,
   CalendarDaysIcon,
+  BellIcon,
   HomeIcon,
   LogOutIcon,
   PackageIcon,
@@ -41,6 +42,11 @@ const mainItems = [
 ]
 
 const supportItems = [
+  {
+    title: "Mensagens",
+    href: "/notificacoes",
+    icon: BellIcon,
+  },
   {
     title: "Visitas",
     href: "/visitas",
