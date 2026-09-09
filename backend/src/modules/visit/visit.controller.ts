@@ -10,13 +10,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 import { CreateVisitDto } from './dto/create-visit.dto'
 import { ListVisitsDto } from './dto/list-visits.dto'
 import { UpdateVisitDto } from './dto/update-visit.dto'
 import { VisitService } from './visit.service'
 
-@ApiBearerAuth()
+@ApiCookieAuth('access_token')
 @ApiTags('Visits')
 @Controller('visits')
 export class VisitController {

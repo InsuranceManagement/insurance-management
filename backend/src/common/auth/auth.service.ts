@@ -14,15 +14,9 @@ export type JwtPayload = {
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
-  async validateToken(authorization?: string): Promise<JwtPayload> {
-    if (!authorization || !authorization.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Token de autenticação ausente ou malformado')
-    }
-
-    const token = authorization.slice('Bearer '.length).trim()
-
+  async validateToken(token?: string): Promise<JwtPayload> {
     if (!token) {
-      throw new UnauthorizedException('Token de autenticação ausente ou malformado')
+      throw new UnauthorizedException('Sessão ausente')
     }
 
     try {

@@ -1,11 +1,11 @@
 import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { ProductService } from '@/modules/product/product.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 
-@ApiBearerAuth()
+@ApiCookieAuth('access_token')
 @ApiTags('Products')
 @Controller('products')
 export class ProductController {

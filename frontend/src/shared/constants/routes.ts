@@ -1,11 +1,15 @@
 export type ApiRouteType = {
-  method: "GET" | "POST" | "PATCH" | "DELETE";
+  method: "GET" | "POST" | "PATCH" | "DELETE"
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  path: string | ((...args: any[]) => string);
-};
+  path: string | ((...args: any[]) => string)
+}
 
 export const routes: Record<string, Record<string, ApiRouteType>> = {
   users: {
+    csrf: {
+      method: "GET",
+      path: "/users/csrf",
+    },
     list: {
       method: "GET",
       path: "/users",
@@ -17,6 +21,14 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     login: {
       method: "POST",
       path: "/users/login",
+    },
+    logout: {
+      method: "POST",
+      path: "/users/logout",
+    },
+    me: {
+      method: "GET",
+      path: "/users/me",
     },
     getById: {
       method: "GET",
@@ -188,4 +200,4 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       path: (id: string) => `/notification-rules/${id}/preview`,
     },
   },
-} as const;
+} as const

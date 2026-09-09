@@ -1,6 +1,8 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
+import { routes } from "@/shared/constants/routes"
+import { apiClient, resetCsrfToken } from "@/shared/lib/api-client"
 
 type User = {
   id: string
@@ -10,11 +12,10 @@ type User = {
 
 type AuthContextData = {
   user: User | null
-  token: string | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (token: string, user: User) => void
-  logout: () => void
+  login: (user: User) => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextData | null>(null)
@@ -25,42 +26,58 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    const storedToken = localStorage.getItem("accessToken")
-    const storedUser = localStorage.getItem("user")
+    let active = true
 
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setUser(JSON.parse(storedUser))
-    }
-
-    setIsLoading(false)
-  }, [])
-
-  const login = (token: string, user: User) => {
-    localStorage.setItem("accessToken", token)
-    localStorage.setItem("user", JSON.stringify(user))
-
-    setToken(token)
-    setUser(user)
-  }
-
-  const logout = () => {
     localStorage.removeItem("accessToken")
     localStorage.removeItem("user")
 
-    setToken(null)
-    setUser(null)
+    void apiClient<User>({ route: routes.users.me })
+      .then((currentUser) => {
+        if (active) {
+          setUser(currentUser)
+          setIsAuthenticated(true)
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setUser(null)
+          setIsAuthenticated(false)
+        }
+      })
+      .finally(() => {
+        if (active) setIsLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const login = (user: User) => {
+    setUser(user)
+    setIsAuthenticated(true)
+  }
+
+  const logout = async () => {
+    try {
+      await apiClient({ route: routes.users.logout })
+    } catch {
+      // The local state must be cleared even if the server is unavailable.
+    } finally {
+      resetCsrfToken()
+      setUser(null)
+      setIsAuthenticated(false)
+    }
   }
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
-        isAuthenticated: !!token,
+        isAuthenticated,
         isLoading,
         login,
         logout,

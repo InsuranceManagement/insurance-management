@@ -3,8 +3,12 @@ import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { IS_PUBLIC } from './auth.decorators'
 import { AuthService, JwtPayload } from './auth.service'
+import { AUTH_COOKIE_NAME } from './cookie.constants'
 
-type AuthenticatedRequest = Request & { user?: JwtPayload }
+type AuthenticatedRequest = Request & {
+  user?: JwtPayload
+  cookies?: Record<string, string>
+}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,20 +25,16 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>()
 
-    if (isPublic || this.isSwaggerRoute(request)) {
+    if (isPublic || request.method === 'OPTIONS' || this.isSwaggerRoute(request)) {
       return true
     }
 
-    const authorization = this.getAuthorizationHeader(request)
-    const payload = await this.authService.validateToken(authorization)
+    const tokenValue: unknown = request.cookies?.[AUTH_COOKIE_NAME]
+    const token = typeof tokenValue === 'string' ? tokenValue : undefined
+    const payload = await this.authService.validateToken(token)
     request.user = payload
 
     return true
-  }
-
-  private getAuthorizationHeader(request: Request): string | undefined {
-    const header = request.headers.authorization
-    return Array.isArray(header) ? header[0] : header
   }
 
   private isSwaggerRoute(request: Request): boolean {

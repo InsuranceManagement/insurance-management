@@ -1,12 +1,22 @@
 import axios, { type AxiosRequestConfig } from "axios"
 
 import { environment } from "@/shared/config/environment"
-import { type ApiRouteType } from "@/shared/constants/routes"
+import { routes, type ApiRouteType } from "@/shared/constants/routes"
 
 type QueryParamValue = string | number | boolean | null | undefined
 
 export type ApiQueryParams = Record<string, QueryParamValue>
 export type ApiRequestHeaders = AxiosRequestConfig["headers"]
+
+type CsrfResponse = {
+  csrfToken: string
+}
+
+let csrfToken: string | undefined
+
+export function resetCsrfToken(): void {
+  csrfToken = undefined
+}
 
 type ApiRequestOptions<TBody = unknown> = {
   route: ApiRouteType
@@ -33,12 +43,22 @@ export const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.request.use(
-  (config) => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken")
+  async (config) => {
+    config.withCredentials = true
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+    if (
+      typeof window !== "undefined" &&
+      ["POST", "PUT", "PATCH", "DELETE"].includes((config.method ?? "GET").toUpperCase())
+    ) {
+      if (!csrfToken) {
+        const response = await axiosClient.get(resolvePath(routes.users.csrf), {
+          withCredentials: true,
+        })
+        csrfToken = (response.data as CsrfResponse).csrfToken
+      }
+
+      if (csrfToken) {
+        config.headers["X-CSRF-Token"] = csrfToken
       }
     }
 

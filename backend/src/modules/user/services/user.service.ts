@@ -1,4 +1,4 @@
-import { AuthResponseDto } from '@/modules/user/dto/auth-response.dto'
+import { AuthSession } from '@/modules/user/dto/auth-response.dto'
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
 import { ForgotPasswordDto } from '@/modules/user/dto/forgot-password.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
@@ -28,7 +28,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async create(input: CreateUserDto): Promise<AuthResponseDto> {
+  async create(input: CreateUserDto): Promise<AuthSession> {
     const existingUser = await this.userRepository.findByEmail(input.email)
 
     if (existingUser) {
@@ -42,7 +42,7 @@ export class UserService {
     return this.buildAuthResponse(user, accessToken)
   }
 
-  async login(input: LoginDto): Promise<AuthResponseDto> {
+  async login(input: LoginDto): Promise<AuthSession> {
     const user = await this.userRepository.findByEmail(input.email)
 
     if (!user?.isActive()) {
@@ -167,7 +167,7 @@ export class UserService {
     })
   }
 
-  private buildAuthResponse(user: User, accessToken: string): AuthResponseDto {
+  private buildAuthResponse(user: User, accessToken: string): AuthSession {
     return {
       accessToken,
       user: {
