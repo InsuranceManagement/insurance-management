@@ -8,6 +8,10 @@ import type { CreateTemplateInput } from '@/modules/notifications/inputs/create-
 import type { UpdateTemplateInput } from '@/modules/notifications/inputs/update-template.input'
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import {
+  NOTIFICATION_MAIL_FROM_NAME,
+  type NotificationTemplateVariables,
+} from './notification-email.contract'
 
 const REQUEST_TIMEOUT_MS = 7000
 
@@ -19,8 +23,7 @@ type MsRequestOptions = {
 export type SendTemplateEmailInput = {
   recipientEmail: string
   templateId: string
-  idempotencyKey: string
-  variables: Record<string, unknown>
+  templateVariables: NotificationTemplateVariables
 }
 
 @Injectable()
@@ -67,11 +70,11 @@ export class NotificationsMsClient {
     await this.request('/notifications/send', {
       method: 'POST',
       body: {
-        type: 'BrevoEmail',
+        type: 'Email',
         recipientEmail: input.recipientEmail,
         templateId: input.templateId,
-        idempotencyKey: input.idempotencyKey,
-        variables: input.variables,
+        templateVariables: input.templateVariables,
+        mailFromName: NOTIFICATION_MAIL_FROM_NAME,
       },
     })
   }

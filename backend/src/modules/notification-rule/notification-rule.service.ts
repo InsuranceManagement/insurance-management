@@ -106,16 +106,13 @@ export class NotificationRuleService {
       await this.notificationsMsClient.sendTemplateEmail({
         recipientEmail: client.email,
         templateId: rule.templateId,
-        idempotencyKey: `notification-rule:${rule.id}:client:${client.id}:date:${calendarDate.fullDate}`,
-        variables: {
-          client: {
-            id: client.id,
-            name: client.name,
-            email: client.email,
-            phoneNumber: client.phoneNumber,
-            birthDate: client.birthDate.toISOString(),
-          },
-          context: { today: calendarDate.fullDate },
+        templateVariables: {
+          'client.id': client.id,
+          'client.name': client.name,
+          'client.email': client.email,
+          'client.phoneNumber': client.phoneNumber,
+          'client.birthDate': client.birthDate.toISOString(),
+          'context.today': calendarDate.fullDate,
         },
       })
     } catch (error) {

@@ -1,8 +1,10 @@
-import { environment } from '@/common/config/environment'
-import { User } from '@/modules/user/entities/user'
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
 import { createHash, randomBytes } from 'crypto'
+
+import { environment } from '@/common/config/environment'
+import { NOTIFICATION_MAIL_FROM_NAME } from '@/modules/notifications/notification-email.contract'
+import { User } from '@/modules/user/entities/user'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class PasswordResetService {
@@ -57,10 +59,11 @@ export class PasswordResetService {
         </div>`
 
     const payload = {
-      type: 'BrevoEmail',
+      type: 'Email',
       emailBody,
       recipientEmail: user.email,
       subject: 'Reset password',
+      mailFromName: NOTIFICATION_MAIL_FROM_NAME,
     }
 
     const headers: Record<string, string> = {
