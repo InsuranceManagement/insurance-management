@@ -169,6 +169,10 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     },
   },
   notifications: {
+    logs: {
+      method: "GET",
+      path: "/notifications/logs",
+    },
     templates: {
       method: "GET",
       path: "/notifications/templates",
