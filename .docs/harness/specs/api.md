@@ -80,6 +80,8 @@ KPIs retornam numero; series retornam `ChartPoint[]`; o ultimo retorna o payload
 
 ### Notificacoes
 
+**Detectado:** `NotificationRuleModule` e importado pelo `AppModule`, registrando as rotas protegidas `GET/POST/DELETE /notification-rules`, `GET/PATCH /notification-rules/:id` e `POST /notification-rules/:id/preview`. O modulo tambem registra o agendador diario de regras as 09:00 em `America/Sao_Paulo`. Evidencias: `backend/src/app.module.ts`, `backend/src/modules/notification-rule/notification-rule.controller.ts`, `backend/src/modules/notification-rule/notification-rule.scheduler.ts`.
+
 | Metodo | Path | Contrato |
 | --- | --- | --- |
 | GET | `/notifications/logs` | Logs do servico externo |
@@ -98,4 +100,6 @@ O POST aceita `name`, `description` anulavel, `subject`, `body`, e opcionais `va
 
 ## Consumido pelo frontend
 
-`frontend/src/shared/constants/routes.ts` cobre auth, seguradoras, tipos de produto, produtos, clientes, charts-list e visits. Dashboard usa `apiRoute` retornado por Chart. Usuarios administrativos, chart types e notifications nao possuem rotas frontend centralizadas detectadas.
+**Detectado:** `frontend/src/shared/constants/routes.ts` cobre auth, seguradoras, tipos de produto, produtos, clientes, charts-list, visits, regras de notificacao, templates e logs de notificacoes. Dashboard usa `apiRoute` retornado por Chart. Usuarios administrativos e chart types nao possuem telas frontend detectadas.
+
+**Detectado:** a tela `/logs` consome `GET /notifications/logs` como `NotificationLog[]`, sem parametros de paginacao ou filtros no servidor. A busca, os filtros e a paginacao sao locais, com ordenacao decrescente por `timestamp`. Evidencias: `frontend/src/features/ApplicationLogs/models/notification-log.ts`, `frontend/src/features/ApplicationLogs/hooks/use-application-logs.ts`.
