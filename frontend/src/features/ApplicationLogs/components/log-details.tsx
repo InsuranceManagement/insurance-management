@@ -1,61 +1,58 @@
 import { CircleAlertIcon } from "lucide-react"
 
-import { LogStatus } from "@/features/ApplicationLogs/components/log-status"
-import {
-  getTypeLabel,
-  type NotificationLog,
-} from "@/features/ApplicationLogs/models/notification-log"
 import { Box } from "@/shared/components/ui/box"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
-import { formatDate } from "@/shared/lib/date-format"
+import { type NotificationLog } from "@/features/ApplicationLogs/models/notification-log"
 
 type LogDetailsProps = {
   log: NotificationLog | null
   onClose: () => void
 }
 
+function buildEmailPreview(body: string) {
+  if (/<html[\s>]/i.test(body)) return body
+
+  return `<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; base-uri 'none'; form-action 'none'" />
+    <style>
+      :root { color-scheme: light; }
+      body { margin: 0; padding: 24px; color: #111827; background: #ffffff; font-family: Arial, sans-serif; line-height: 1.5; }
+      img { max-width: 100%; height: auto; }
+      a { color: #1d4ed8; }
+    </style>
+  </head>
+  <body>${body}</body>
+</html>`
+}
+
 export function LogDetails({ log, onClose }: Readonly<LogDetailsProps>) {
   if (!log) return null
 
-  const fields = [
-    { label: "Destinatário", value: log.recipient },
-    { label: "Enviado por", value: log.sentBy },
-    { label: "Tipo de mensagem", value: getTypeLabel(log) },
-    {
-      label: "Data e hora",
-      value: formatDate(log.timestamp, "DD/MM/YYYY [às] HH:mm:ss"),
-    },
-  ]
-
   return (
     <Modal
-      title="Detalhes da mensagem"
+      title="Visualização da mensagem"
       open
       onOpenChange={(open) => {
         if (!open) onClose()
       }}
-      contentClassName="sm:max-w-2xl"
+      contentClassName="sm:max-w-3xl"
     >
-      <Box className="max-h-[70dvh] w-full min-w-0 flex-col gap-6 overflow-y-auto pr-1">
-        <Box className="items-center justify-between gap-3">
-          <Typography variant="muted">Registro de mensagem</Typography>
-          <LogStatus log={log} />
-        </Box>
-        <Box asChild className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <dl>
-            {fields.map((field) => (
-              <Box key={field.label} className="min-w-0 flex-col gap-1">
-                <Typography asChild variant="muted">
-                  <dt>{field.label}</dt>
-                </Typography>
-                <Typography asChild variant="small" className="break-words">
-                  <dd>{field.value || "Não informado"}</dd>
-                </Typography>
-              </Box>
-            ))}
-          </dl>
-        </Box>
+      <Box className="w-full min-w-0 flex-col gap-4">
+        <Typography variant="muted">
+          Pré-visualização do e-mail como ele foi enviado.
+        </Typography>
+        <iframe
+          title="Pré-visualização do conteúdo do e-mail"
+          sandbox=""
+          referrerPolicy="no-referrer"
+          srcDoc={buildEmailPreview(log.body)}
+          className="h-[min(62dvh,640px)] w-full rounded-xl border bg-white"
+        />
         {log.errorMessage && (
           <Box className="flex-col gap-2 rounded-xl border border-destructive/25 bg-destructive/5 p-4">
             <Box className="items-center gap-2">
@@ -67,12 +64,6 @@ export function LogDetails({ log, onClose }: Readonly<LogDetailsProps>) {
             </Typography>
           </Box>
         )}
-        <Box className="flex-col gap-1 border-t pt-4">
-          <Typography variant="muted">Identificador do registro</Typography>
-          <Typography variant="small" className="font-mono text-xs break-all">
-            {log.id}
-          </Typography>
-        </Box>
       </Box>
     </Modal>
   )
