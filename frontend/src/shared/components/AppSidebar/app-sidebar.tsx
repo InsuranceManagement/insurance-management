@@ -5,6 +5,7 @@ import {
   CalendarDaysIcon,
   BellIcon,
   HomeIcon,
+  LogsIcon,
   LogOutIcon,
   PackageIcon,
   TagsIcon,
@@ -43,7 +44,12 @@ const mainItems = [
 
 const supportItems = [
   {
-    title: "Mensagens",
+    title: "Registros de mensagens",
+    href: "/logs",
+    icon: LogsIcon,
+  },
+  {
+    title: "Regras de mensagem",
     href: "/notificacoes",
     icon: BellIcon,
   },

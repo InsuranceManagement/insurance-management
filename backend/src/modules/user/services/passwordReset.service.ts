@@ -34,27 +34,27 @@ export class PasswordResetService {
 
     const emailBody = resetUrl
       ? `<div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #111827;">
-          <h2 style="margin: 0 0 8px; color: #1d4ed8;">Reset your password</h2>
-          <p style="margin: 0 0 16px;">Hello ${user.name},</p>
-          <p style="margin: 0 0 20px;">Click the button below to reset your password.</p>
+          <h2 style="margin: 0 0 8px; color: #1d4ed8;">Redefina sua senha</h2>
+          <p style="margin: 0 0 16px;">Olá, ${user.name},</p>
+          <p style="margin: 0 0 20px;">Clique no botão abaixo para redefinir sua senha.</p>
           <div style="text-align: center; margin: 24px 0;">
             <a href="${resetUrl}" style="background: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 6px; display: inline-block;">
-              Reset password
+              Redefinir senha
             </a>
           </div>
           <p style="margin: 16px 0 0; color: #6b7280; font-size: 12px;">
-            This link expires at ${expiresAtText}.
+            Este link expira em ${expiresAtText}.
           </p>
         </div>`
       : `<div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #111827;">
-          <h2 style="margin: 0 0 8px; color: #1d4ed8;">Reset your password</h2>
-          <p style="margin: 0 0 16px;">Hello ${user.name},</p>
-          <p style="margin: 0 0 8px;">Use the code below to reset your password:</p>
+          <h2 style="margin: 0 0 8px; color: #1d4ed8;">Redefina sua senha</h2>
+          <p style="margin: 0 0 16px;">Olá, ${user.name},</p>
+          <p style="margin: 0 0 8px;">Use o código abaixo para redefinir sua senha:</p>
           <div style="font-family: 'Courier New', monospace; background: #f3f4f6; padding: 12px; border-radius: 6px; word-break: break-all;">
             ${token}
           </div>
           <p style="margin: 16px 0 0; color: #6b7280; font-size: 12px;">
-            This code expires at ${expiresAtText}.
+            Este código expira em ${expiresAtText}.
           </p>
         </div>`
 

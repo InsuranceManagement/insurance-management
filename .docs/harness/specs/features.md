@@ -12,7 +12,7 @@
 | Dashboard | 4 KPIs, 4 distribuicoes/series e 1 heatmap | Widgets dinamicos por configuracao | `backend/src/modules/dashboard`, `frontend/src/features/Dashboard` |
 | Charts | CRUD de configuracoes | Consome apenas listagem para montar dashboard | `backend/src/modules/chart`, `frontend/src/features/Dashboard/hooks/use-dashboard.ts` |
 | Chart types | CRUD com presets de tamanho | Sem gestao detectada | `backend/src/modules/chart-type` |
-| Notificacoes | Logs e criacao/edicao de templates via servico externo | Sem tela detectada | `backend/src/modules/notifications` |
+| Notificacoes | Logs e criacao/edicao de templates via servico externo | **Detectado:** historico de mensagens em `/logs`, com busca, filtros por status/tipo/erro, paginacao local e detalhes | `backend/src/modules/notifications`, `frontend/src/features/ApplicationLogs` |
 
 ## Regras funcionais relevantes
 
@@ -27,7 +27,8 @@
 
 ## Cobertura de interface
 
-- Protegidas: `/dashboard`, `/seguradoras`, `/tipos-de-produto`, `/produtos`, `/clientes`, `/visitas`.
+- Protegidas: `/dashboard`, `/seguradoras`, `/tipos-de-produto`, `/produtos`, `/clientes`, `/visitas`, `/logs`.
 - Publicas: `/login`, `/register`, `/forgot-password`, `/reset-password`.
-- **Detectado:** nao ha paginas para usuarios, charts, chart types ou notificacoes.
+- **Detectado:** nao ha paginas para usuarios, charts ou chart types.
+- **Detectado:** `/logs` consulta `GET /notifications/logs`, mostra tipo, destinatario, remetente e status amigavel, e nao renderiza o HTML do corpo da mensagem. O contrato atual nao fornece nome de template no log. Status e tipos usam os nomes retornados pela API, com traducao dos valores tecnicos conhecidos e fallback para os IDs quando as relacoes sao nulas. Evidencias: `frontend/src/features/ApplicationLogs`, `frontend/src/app/(protected)/logs/page.tsx`.
 - **Desconhecido:** se essas paginas ausentes sao planejadas.
