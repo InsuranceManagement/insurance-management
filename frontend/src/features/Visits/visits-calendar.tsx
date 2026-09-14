@@ -25,6 +25,7 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card"
 import { Typography } from "@/shared/components/ui/typography"
+import { formatDate } from "@/shared/lib/date-format"
 
 export function VisitsCalendar() {
   const { data: clients = [] } = useVisitClients()
@@ -100,6 +101,27 @@ export function VisitsCalendar() {
               slotMaxTime={calendar.slotRange.maxTime}
               events={calendar.events}
               eventDisplay="block"
+              eventContent={(info) => {
+                const time = info.event.start
+                  ? formatDate(info.event.start, "HH:mm", "")
+                  : ""
+
+                return (
+                  <div
+                    className="visit-calendar-event"
+                    title={String(info.event.extendedProps.visitName)}
+                  >
+                    {time ? (
+                      <span className="visit-calendar-event-time">
+                        {time}
+                      </span>
+                    ) : null}
+                    <span className="visit-calendar-event-title">
+                      {String(info.event.extendedProps.visitName)}
+                    </span>
+                  </div>
+                )
+              }}
             />
           </Box>
         </CardContent>
@@ -112,6 +134,7 @@ export function VisitsCalendar() {
         isUpdating={updateVisit.isPending}
         isDeleting={deleteVisit.isPending}
         onClose={calendar.closeDialog}
+        onEdit={calendar.openEdit}
         onCreate={handleCreate}
         onUpdate={handleUpdate}
         onDelete={handleDelete}
