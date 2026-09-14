@@ -8,6 +8,7 @@ import { type Visit, type VisitDateRange } from "../models/visit"
 
 export type VisitDialogState =
   | { mode: "create"; date: string }
+  | { mode: "view"; visit: Visit }
   | { mode: "edit"; visit: Visit }
   | null
 
@@ -112,6 +113,7 @@ export function useVisitsCalendar(
         ? `${visit.name} · ${clientsById.get(visit.clientId)}`
         : visit.name,
       start: visit.date,
+      extendedProps: { visitName: visit.name },
     }))
   }, [clients, visits])
 
@@ -146,7 +148,11 @@ export function useVisitsCalendar(
 
   const handleEventClick = (info: EventClickArg) => {
     const visit = visits.find((item) => item.id === info.event.id)
-    if (visit) setDialogState({ mode: "edit", visit })
+    if (visit) setDialogState({ mode: "view", visit })
+  }
+
+  const openEdit = (visit: Visit) => {
+    setDialogState({ mode: "edit", visit })
   }
 
   return {
@@ -155,6 +161,7 @@ export function useVisitsCalendar(
     slotRange,
     handleDateClick,
     handleEventClick,
+    openEdit,
     closeDialog: () => setDialogState(null),
   }
 }
