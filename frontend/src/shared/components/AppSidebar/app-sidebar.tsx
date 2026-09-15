@@ -7,6 +7,7 @@ import {
   HomeIcon,
   LogsIcon,
   LogOutIcon,
+  MailIcon,
   PackageIcon,
   TagsIcon,
   UsersIcon,
@@ -14,6 +15,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useMemo } from "react"
 
 import logoBranca from "@/shared/assets/logo_branca.png"
 import logoWm from "@/shared/assets/logo_wm.png"
@@ -54,6 +56,11 @@ const supportItems = [
     icon: BellIcon,
   },
   {
+    title: "Templates de mensagem",
+    href: "/notificacoes/templates",
+    icon: MailIcon,
+  },
+  {
     title: "Visitas",
     href: "/visitas",
     icon: CalendarDaysIcon,
@@ -80,9 +87,27 @@ const supportItems = [
   },
 ]
 
+const navItems = [...mainItems, ...supportItems]
+
+// Entre itens cujo href é prefixo de outro (ex.: "/notificacoes" e
+// "/notificacoes/templates"), só o mais especifico deve ficar marcado
+// como ativo.
+function getActiveHref(pathname: string | null): string | null {
+  const matches = navItems.filter(
+    (item) => pathname === item.href || pathname?.startsWith(`${item.href}/`),
+  )
+
+  if (matches.length === 0) return null
+
+  return matches.reduce((longest, item) =>
+    item.href.length > longest.href.length ? item : longest,
+  ).href
+}
+
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const activeHref = useMemo(() => getActiveHref(pathname), [pathname])
 
   const { logout } = useAuth()
 
@@ -138,10 +163,7 @@ export function AppSidebar() {
                     asChild
                     tooltip={item.title}
                     className="text-sidebar-foreground"
-                    isActive={
-                      pathname === item.href ||
-                      (item.href !== "/" && pathname?.startsWith(item.href))
-                    }
+                    isActive={item.href === activeHref}
                   >
                     <Link href={item.href}>
                       <item.icon />
@@ -174,10 +196,7 @@ export function AppSidebar() {
                     asChild
                     tooltip={item.title}
                     className="text-sidebar-foreground"
-                    isActive={
-                      pathname === item.href ||
-                      (item.href !== "/" && pathname?.startsWith(item.href))
-                    }
+                    isActive={item.href === activeHref}
                   >
                     <Link href={item.href}>
                       <item.icon />

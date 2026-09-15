@@ -84,3 +84,22 @@ export const clientUpsertSchema = z
 
 export type ClientUpsertFormValues = z.infer<typeof clientUpsertSchema>;
 
+export const notificationTemplateUpsertSchema = z.object({
+  name: z.string().trim().min(1, "O nome é obrigatório"),
+  description: z.string().trim().optional(),
+  subject: z.string().trim().min(1, "O assunto é obrigatório"),
+  body: z.string().trim().min(1, "O corpo do template é obrigatório"),
+  notificationTypeId: z.string().trim().optional(),
+  isActive: z.boolean(),
+  variablePairs: z.array(
+    z.object({
+      key: z.string().trim(),
+      value: z.string().trim(),
+    }),
+  ),
+});
+
+export type NotificationTemplateFormValues = z.infer<
+  typeof notificationTemplateUpsertSchema
+>;
+
