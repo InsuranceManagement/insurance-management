@@ -9,6 +9,7 @@ type ActionsPopoverProps = {
   selectedCount: number
   isSingleSelection: boolean
   canViewEntity?: boolean
+  canDelete?: boolean
   onClearSelection: () => void
   onDeleteSelected: () => void
   onEditSelected: () => void
@@ -19,6 +20,7 @@ export function ActionsPopover({
   selectedCount,
   isSingleSelection,
   canViewEntity = true,
+  canDelete = true,
   onClearSelection,
   onDeleteSelected,
   onEditSelected,
@@ -44,15 +46,17 @@ export function ActionsPopover({
         {selectedCount} itens selecionados
       </Typography>
 
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon-xs"
-        aria-label="Deletar selecionados"
-        onClick={onDeleteSelected}
-      >
-        <Trash2Icon className="text-destructive" />
-      </Button>
+      {canDelete ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          aria-label="Deletar selecionados"
+          onClick={onDeleteSelected}
+        >
+          <Trash2Icon className="text-destructive" />
+        </Button>
+      ) : null}
 
       <Button
         type="button"

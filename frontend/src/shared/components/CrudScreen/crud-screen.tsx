@@ -31,7 +31,7 @@ type CrudSourceRoutes = {
   list: ApiRouteType
   create: ApiRouteType
   edit: ApiRouteType
-  delete: ApiRouteType
+  delete?: ApiRouteType
 }
 
 type CrudFormProps<TFormPayload> = {
@@ -230,6 +230,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             selectedCount={selectedCount}
             isSingleSelection={isSingleSelection}
             canViewEntity={hasEntityView}
+            canDelete={!!sourceRoutes.delete}
             onClearSelection={handleClearSelection}
             onDeleteSelected={handleDeleteSelected}
             onEditSelected={handleEditSelected}
@@ -261,13 +262,15 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           )}
         </Box>
 
-        <DeleteModal
-          open={isDeleteModalOpen}
-          onOpenChange={handleDeleteModalOpenChange}
-          onConfirm={handleConfirmDelete}
-          itemName={deleteItemName}
-          isConfirming={deleteMutation.isPending}
-        />
+        {sourceRoutes.delete ? (
+          <DeleteModal
+            open={isDeleteModalOpen}
+            onOpenChange={handleDeleteModalOpenChange}
+            onConfirm={handleConfirmDelete}
+            itemName={deleteItemName}
+            isConfirming={deleteMutation.isPending}
+          />
+        ) : null}
       </Box>
     </main>
   )
