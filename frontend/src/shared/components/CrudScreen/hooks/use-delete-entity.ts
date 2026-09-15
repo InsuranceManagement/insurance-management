@@ -12,7 +12,7 @@ type DeletableEntityRecord = {
 
 type UseDeleteEntityOptions<TData extends DeletableEntityRecord> = {
   title: string;
-  deleteRoute: ApiRouteType;
+  deleteRoute?: ApiRouteType;
   listQueryKey: QueryKey;
   selectedRows: TData[];
   editingRow: TData | null;
@@ -32,8 +32,11 @@ export function useDeleteEntity<TData extends DeletableEntityRecord>({
   const [rowsPendingDelete, setRowsPendingDelete] = useState<TData[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // `route` nunca e usado quando `deleteRoute` esta ausente: o botao de
+  // excluir fica oculto (ver `canDelete` em ActionsPopover/CrudScreen), entao
+  // `.mutate()` nunca dispara e este placeholder nunca chega a rede.
   const deleteMutation = useApiMutation<unknown>({
-    route: deleteRoute,
+    route: deleteRoute ?? { method: "DELETE", path: "" },
     queryKeyToSync: listQueryKey,
     meta: {
       errorMessage: `Erro ao deletar registros em ${title}.`,
@@ -42,7 +45,7 @@ export function useDeleteEntity<TData extends DeletableEntityRecord>({
   });
 
   const handleDeleteSelected = () => {
-    if (selectedRows.length === 0) {
+    if (!deleteRoute || selectedRows.length === 0) {
       return;
     }
 
