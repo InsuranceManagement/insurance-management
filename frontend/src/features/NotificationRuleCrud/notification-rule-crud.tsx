@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 
 import { NotificationRuleForm } from "@/features/NotificationRuleCrud/components/form"
+import { NotificationRulePreview } from "@/features/NotificationRuleCrud/components/rule-preview"
 import {
   notificationRuleGroups,
   notificationRuleFieldLabels,
@@ -50,6 +51,11 @@ const viewFields: EntityViewField<NotificationRule>[] = [
         </pre>
       </Box>
     ),
+  },
+  {
+    accessorKey: "id",
+    label: "Prévia de disparo",
+    cell: ({ entity }) => <NotificationRulePreview rule={entity} />,
   },
 ]
 
