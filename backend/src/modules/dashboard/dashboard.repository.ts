@@ -5,12 +5,13 @@ import {
 import { ProductTypeHeatmap } from '@/modules/dashboard/entities/product-type-heatmap'
 import { PrismaService } from '@/modules/database/prisma.service'
 import { Injectable } from '@nestjs/common'
+import { DashboardDateRangeInput } from './inputs/dashboard-date-range.input'
 
 @Injectable()
 export class DashboardRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getClientsByInsuranceCompanyPoints(): Promise<ChartPoint[]> {
+  async getClientsByInsuranceCompanyPoints(input: DashboardDateRangeInput): Promise<ChartPoint[]> {
     const companies: InsuranceCompanyWithClientsRecord[] =
       await this.prismaService.insuranceCompany.findMany({
         where: {
@@ -23,11 +24,15 @@ export class DashboardRepository {
           products: {
             where: {
               deletedAt: null,
+              productType: {
+                deletedAt: null,
+              },
             },
             select: {
               clients: {
                 where: {
                   deletedAt: null,
+                  createdAt: this.createdAtFilter(input),
                 },
                 select: {
                   id: true,
@@ -41,42 +46,47 @@ export class DashboardRepository {
     return ChartPoint.fromInsuranceCompanyWithClientsPrisma(companies)
   }
 
-  async getTotalClients(): Promise<number> {
+  async getTotalClients(input: DashboardDateRangeInput): Promise<number> {
     return await this.prismaService.client.count({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
     })
   }
 
-  async getTotalProducts(): Promise<number> {
+  async getTotalProducts(input: DashboardDateRangeInput): Promise<number> {
     return await this.prismaService.products.count({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
     })
   }
 
-  async getTotalInsuranceCompanies(): Promise<number> {
+  async getTotalInsuranceCompanies(input: DashboardDateRangeInput): Promise<number> {
     return await this.prismaService.insuranceCompany.count({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
     })
   }
 
-  async getTotalProductTypes(): Promise<number> {
+  async getTotalProductTypes(input: DashboardDateRangeInput): Promise<number> {
     return await this.prismaService.productType.count({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
     })
   }
 
-  async getClientsGrowthByMonthPoints(): Promise<ChartPoint[]> {
+  async getClientsGrowthByMonthPoints(input: DashboardDateRangeInput): Promise<ChartPoint[]> {
     const clients = await this.prismaService.client.findMany({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
       select: {
         createdAt: true,
@@ -86,13 +96,14 @@ export class DashboardRepository {
       },
     })
 
-    return ChartPoint.fromClientsGrowthByMonthPrisma(clients)
+    return ChartPoint.fromClientsGrowthByMonthPrisma(clients, input)
   }
 
-  async getClientDocumentDistributionPoints(): Promise<ChartPoint[]> {
+  async getClientDocumentDistributionPoints(input: DashboardDateRangeInput): Promise<ChartPoint[]> {
     const clients = await this.prismaService.client.findMany({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
       select: {
         cpf: true,
@@ -103,10 +114,11 @@ export class DashboardRepository {
     return ChartPoint.fromClientDocumentDistributionPrisma(clients)
   }
 
-  async getClientAgeRangePoints(): Promise<ChartPoint[]> {
+  async getClientAgeRangePoints(input: DashboardDateRangeInput): Promise<ChartPoint[]> {
     const clients = await this.prismaService.client.findMany({
       where: {
         deletedAt: null,
+        createdAt: this.createdAtFilter(input),
       },
       select: {
         birthDate: true,
@@ -116,7 +128,9 @@ export class DashboardRepository {
     return ChartPoint.fromClientAgeRangePrisma(clients)
   }
 
-  async getProductTypesByInsuranceCompanyHeatmap(): Promise<ProductTypeHeatmap> {
+  async getProductTypesByInsuranceCompanyHeatmap(
+    input: DashboardDateRangeInput,
+  ): Promise<ProductTypeHeatmap> {
     const [companies, productTypes] = await Promise.all([
       this.prismaService.insuranceCompany.findMany({
         where: {
@@ -129,6 +143,7 @@ export class DashboardRepository {
           products: {
             where: {
               deletedAt: null,
+              createdAt: this.createdAtFilter(input),
               productType: {
                 deletedAt: null,
               },
@@ -162,5 +177,14 @@ export class DashboardRepository {
     ])
 
     return ProductTypeHeatmap.fromPrisma(companies, productTypes)
+  }
+
+  private createdAtFilter(input: DashboardDateRangeInput): { gte?: Date; lte?: Date } | undefined {
+    const filter: { gte?: Date; lte?: Date } = {}
+
+    if (input.startDate) filter.gte = new Date(input.startDate)
+    if (input.endDate) filter.lte = new Date(input.endDate)
+
+    return Object.keys(filter).length > 0 ? filter : undefined
   }
 }

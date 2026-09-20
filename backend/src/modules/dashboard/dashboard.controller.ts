@@ -1,6 +1,7 @@
 import { DashboardService } from '@/modules/dashboard/services/dashboard.service'
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
+import { DashboardDateRangeDto } from './dto/dashboard-date-range.dto'
 
 @ApiCookieAuth('access_token')
 @ApiTags('Dashboard')
@@ -9,47 +10,47 @@ export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   @Get('clients-by-insurance-company')
-  getClientsByInsuranceCompany() {
-    return this.dashboardService.getClientsByInsuranceCompany()
+  getClientsByInsuranceCompany(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getClientsByInsuranceCompany(input)
   }
 
   @Get('kpi-total-clients')
-  async getTotalClients() {
-    return this.dashboardService.getTotalClients()
+  async getTotalClients(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getTotalClients(input)
   }
 
   @Get('kpi-total-products')
-  async getTotalProducts() {
-    return this.dashboardService.getTotalProducts()
+  async getTotalProducts(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getTotalProducts(input)
   }
 
   @Get('kpi-total-insurance-companies')
-  async getTotalInsuranceCompanies() {
-    return this.dashboardService.getTotalInsuranceCompanies()
+  async getTotalInsuranceCompanies(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getTotalInsuranceCompanies(input)
   }
 
   @Get('kpi-total-product-types')
-  async getTotalProductTypes() {
-    return this.dashboardService.getTotalProductTypes()
+  async getTotalProductTypes(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getTotalProductTypes(input)
   }
 
   @Get('clients-growth-by-month')
-  getClientsGrowthByMonth() {
-    return this.dashboardService.getClientsGrowthByMonth()
+  getClientsGrowthByMonth(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getClientsGrowthByMonth(input)
   }
 
   @Get('client-document-distribution')
-  getClientDocumentDistribution() {
-    return this.dashboardService.getClientDocumentDistribution()
+  getClientDocumentDistribution(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getClientDocumentDistribution(input)
   }
 
   @Get('client-age-range')
-  getClientAgeRange() {
-    return this.dashboardService.getClientAgeRange()
+  getClientAgeRange(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getClientAgeRange(input)
   }
 
   @Get('product-types-by-insurance-company')
-  getProductTypesByInsuranceCompany() {
-    return this.dashboardService.getProductTypesByInsuranceCompany()
+  getProductTypesByInsuranceCompany(@Query() input: DashboardDateRangeDto) {
+    return this.dashboardService.getProductTypesByInsuranceCompany(input)
   }
 }

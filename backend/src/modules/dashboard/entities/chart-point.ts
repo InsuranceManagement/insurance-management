@@ -1,5 +1,6 @@
 import type { InsuranceCompanyGetPayload } from '@generated/prisma/models/InsuranceCompany'
 import type { ClientModel } from '@generated/prisma/models/Client'
+import type { DashboardDateRangeInput } from '../inputs/dashboard-date-range.input'
 
 export type InsuranceCompanyWithClientsRecord = InsuranceCompanyGetPayload<{
   select: {
@@ -46,16 +47,31 @@ export class ChartPoint {
     return points
   }
 
-  static fromClientsGrowthByMonthPrisma(clients: Pick<ClientModel, 'createdAt'>[]): ChartPoint[] {
-    if (clients.length === 0) {
+  static fromClientsGrowthByMonthPrisma(
+    clients: Pick<ClientModel, 'createdAt'>[],
+    dateRange: DashboardDateRangeInput,
+  ): ChartPoint[] {
+    if (clients.length === 0 && (!dateRange.startDate || !dateRange.endDate)) {
       return []
     }
 
-    const clientsByMonth = this.countClientsByMonth(clients)
-    const orderedMonths = this.getMonthRange(
-      this.getMonthKey(clients[0].createdAt),
-      this.getMonthKey(clients[clients.length - 1].createdAt),
-    )
+    const startMonthKey = dateRange.startDate
+      ? this.getMonthKeyFromIsoDate(dateRange.startDate)
+      : undefined
+    const endMonthKey = dateRange.endDate
+      ? this.getMonthKeyFromIsoDate(dateRange.endDate)
+      : undefined
+    const clientsByMonth = this.countClientsByMonth(clients, startMonthKey, endMonthKey)
+    const orderedMonths =
+      dateRange.startDate && dateRange.endDate
+        ? this.getMonthRange(
+            this.getMonthKeyFromIsoDate(dateRange.startDate),
+            this.getMonthKeyFromIsoDate(dateRange.endDate),
+          )
+        : this.getMonthRange(
+            this.getMonthKey(clients[0].createdAt),
+            this.getMonthKey(clients[clients.length - 1].createdAt),
+          )
 
     let accumulatedClients = 0
 
@@ -130,9 +146,17 @@ export class ChartPoint {
 
   private static countClientsByMonth(
     clients: Pick<ClientModel, 'createdAt'>[],
+    startMonthKey?: string,
+    endMonthKey?: string,
   ): Map<string, number> {
     return clients.reduce((acc, client) => {
-      const monthKey = this.getMonthKey(client.createdAt)
+      const createdAtMonth = this.getMonthKey(client.createdAt)
+      const monthKey =
+        startMonthKey && createdAtMonth < startMonthKey
+          ? startMonthKey
+          : endMonthKey && createdAtMonth > endMonthKey
+            ? endMonthKey
+            : createdAtMonth
       const currentCount = acc.get(monthKey) ?? 0
 
       acc.set(monthKey, currentCount + 1)
@@ -161,6 +185,10 @@ export class ChartPoint {
     const month = String(date.getUTCMonth() + 1).padStart(2, '0')
 
     return `${year}-${month}`
+  }
+
+  private static getMonthKeyFromIsoDate(date: string): string {
+    return date.slice(0, 7)
   }
 
   private static formatMonthLabel(monthKey: string): string {
