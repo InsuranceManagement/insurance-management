@@ -2,6 +2,7 @@ import { PrismaService } from '@/modules/database/prisma.service'
 import { InsuranceCompany } from '@/modules/insurance-company/entities/insurance-company'
 import { CreateInsuranceCompanyInput } from '@/modules/insurance-company/inputs/create-insurance-company.input'
 import { UpdateInsuranceCompanyInput } from '@/modules/insurance-company/inputs/update-insurance-company.input'
+import { Prisma } from '@generated/prisma'
 import { Injectable } from '@nestjs/common'
 
 type InsuranceCompanyRecord = {
@@ -72,24 +73,39 @@ export class InsuranceCompanyRepository {
     })
   }
 
-  async softDeleteMany(companyIds: string[]): Promise<number> {
+  async softDeleteMany(
+    companyIds: string[],
+  ): Promise<{ deletedCount: number; hasActiveProducts: boolean }> {
     if (companyIds.length === 0) {
-      return 0
+      return { deletedCount: 0, hasActiveProducts: false }
     }
 
-    const { count } = await this.prismaService.insuranceCompany.updateMany({
-      where: {
-        id: {
-          in: companyIds,
-        },
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: new Date(),
-      },
-    })
+    return this.prismaService.$transaction(
+      async (transaction) => {
+        const companiesWithActiveProducts = await transaction.insuranceCompany.count({
+          where: {
+            id: { in: companyIds },
+            deletedAt: null,
+            products: { some: { deletedAt: null } },
+          },
+        })
 
-    return count
+        if (companiesWithActiveProducts > 0) {
+          return { deletedCount: 0, hasActiveProducts: true }
+        }
+
+        const { count } = await transaction.insuranceCompany.updateMany({
+          where: {
+            id: { in: companyIds },
+            deletedAt: null,
+          },
+          data: { deletedAt: new Date() },
+        })
+
+        return { deletedCount: count, hasActiveProducts: false }
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    )
   }
 
   async list(): Promise<InsuranceCompany[]> {

@@ -3,7 +3,7 @@ import { CreateInsuranceCompanyDto } from '@/modules/insurance-company/dto/creat
 import { UpdateInsuranceCompanyDto } from '@/modules/insurance-company/dto/update-insurance-company.dto'
 import { InsuranceCompanyService } from '@/modules/insurance-company/services/insurance-company.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiCookieAuth('access_token')
 @ApiTags('Insurance Companies')
@@ -32,6 +32,9 @@ export class InsuranceCompanyController {
   }
 
   @Delete()
+  @ApiBadRequestResponse({
+    description: 'A exclusão foi bloqueada porque há produtos ativos associados.',
+  })
   delete(@Body() input: DeleteManyDto) {
     return this.insuranceCompanyService.delete(input.ids)
   }

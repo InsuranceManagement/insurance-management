@@ -19,6 +19,7 @@
 - Auth: registro retorna sessao, mas o frontend redireciona cadastro para login; login leva ao dashboard.
 - Usuario/cliente nao podem repetir e-mail ativo. Cliente exige pelo menos CPF ou CNPJ e pode associar zero ou mais produtos ativos.
 - Seguradora e tipo de produto rejeitam nome ativo duplicado.
+- Seguradoras e tipos de produto com produtos ativos associados nao podem ser excluidos; produtos so aceitam associacoes com pais ativos.
 - Tipo de produto cria ID com nome em maiusulas e espacos convertidos para underscore.
 - Chart e chart type usam o proprio nome como ID; mudanca de nome pode mudar a chave primaria.
 - Visits so aceita `clientId` de cliente ativo; listagem aceita limites inclusivos `startDate` e `endDate`.
