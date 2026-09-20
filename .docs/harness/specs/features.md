@@ -9,7 +9,7 @@
 | Produtos | CRUD e relacoes com tipo/seguradora | CRUD tabular com selects | `backend/src/modules/product`, `frontend/src/features/ProductCrud` |
 | Clientes | CRUD, endereco, produtos associados, CPF/CNPJ | CRUD tabular e formulario composto | `backend/src/modules/client`, `frontend/src/features/ClientCrud` |
 | Visitas | CRUD, filtro por data e validacao do cliente | Calendario mensal/semanal/diario | `backend/src/modules/visit`, `frontend/src/features/Visits` |
-| Dashboard | 4 KPIs, 4 distribuicoes/series e 1 heatmap | Widgets dinamicos por configuracao | `backend/src/modules/dashboard`, `frontend/src/features/Dashboard` |
+| Dashboard | 4 KPIs, 4 distribuicoes/series e 1 heatmap; filtro global opcional por intervalo inclusivo de cadastro | Widgets dinamicos por configuracao; o intervalo deve conter data inicial e final e sem filtro mostra todo o historico | `backend/src/modules/dashboard`, `frontend/src/features/Dashboard` |
 | Charts | CRUD de configuracoes | Consome apenas listagem para montar dashboard | `backend/src/modules/chart`, `frontend/src/features/Dashboard/hooks/use-dashboard.ts` |
 | Chart types | CRUD com presets de tamanho | Sem gestao detectada | `backend/src/modules/chart-type` |
 | Notificacoes | Logs e criacao/edicao de templates via servico externo | **Detectado:** historico de mensagens em `/logs`, com busca, filtros por status/tipo/erro, paginacao local e detalhes | `backend/src/modules/notifications`, `frontend/src/features/ApplicationLogs` |

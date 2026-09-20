@@ -13,54 +13,54 @@
 
 ### Base e usuarios
 
-| Metodo | Path | Acesso | Contrato resumido |
-| --- | --- | --- | --- |
-| GET | `/` | Publica | Retorna `Hello World!` |
-| POST | `/users` | Publica | Cria user e retorna `{ accessToken, user }` |
-| POST | `/users/login` | Publica | Credenciais -> `{ accessToken, user }` |
-| POST | `/users/forgot-password` | Publica | E-mail -> mensagem neutra |
-| POST | `/users/reset-password` | Publica | Token + nova senha -> mensagem |
-| GET | `/users` | JWT | `UserResponseDto[]` |
-| GET | `/users/:id` | JWT | `UserResponseDto` |
-| PATCH | `/users/:id` | JWT | Update parcial |
-| DELETE | `/users` | JWT | Soft delete batch por `ids` |
+| Metodo | Path                     | Acesso  | Contrato resumido                           |
+| ------ | ------------------------ | ------- | ------------------------------------------- |
+| GET    | `/`                      | Publica | Retorna `Hello World!`                      |
+| POST   | `/users`                 | Publica | Cria user e retorna `{ accessToken, user }` |
+| POST   | `/users/login`           | Publica | Credenciais -> `{ accessToken, user }`      |
+| POST   | `/users/forgot-password` | Publica | E-mail -> mensagem neutra                   |
+| POST   | `/users/reset-password`  | Publica | Token + nova senha -> mensagem              |
+| GET    | `/users`                 | JWT     | `UserResponseDto[]`                         |
+| GET    | `/users/:id`             | JWT     | `UserResponseDto`                           |
+| PATCH  | `/users/:id`             | JWT     | Update parcial                              |
+| DELETE | `/users`                 | JWT     | Soft delete batch por `ids`                 |
 
 ### Cadastros principais
 
 Cada grupo abaixo oferece `POST /recurso`, `GET /recurso`, `GET /recurso/:id`, `PATCH /recurso/:id` e `DELETE /recurso` batch:
 
-| Recurso | Path | Criacao |
-| --- | --- | --- |
-| Seguradoras | `/insurance-companies` | `name`, `color` hexadecimal `#RRGGBB` |
-| Tipos de produto | `/product-types` | `name`, `description` |
-| Produtos | `/products` | `name`, `productTypeId`, `insuranceCompanyId` |
-| Charts | `/charts` | `name`, `description`, `apiRoute`, `chartTypeId`, `order`, `unit?` |
-| Chart types | `/chart-types` | `name`, `description`, `size` |
+| Recurso          | Path                   | Criacao                                                            |
+| ---------------- | ---------------------- | ------------------------------------------------------------------ |
+| Seguradoras      | `/insurance-companies` | `name`, `color` hexadecimal `#RRGGBB`                              |
+| Tipos de produto | `/product-types`       | `name`, `description`                                              |
+| Produtos         | `/products`            | `name`, `productTypeId`, `insuranceCompanyId`                      |
+| Charts           | `/charts`              | `name`, `description`, `apiRoute`, `chartTypeId`, `order`, `unit?` |
+| Chart types      | `/chart-types`         | `name`, `description`, `size`                                      |
 
 Todos exigem JWT. Seguradoras, tipos de produto e produtos usam soft delete; charts e chart types usam delete fisico.
 
 ### Clientes
 
-| Metodo | Path | Contrato |
-| --- | --- | --- |
-| POST | `/clients` | Cria cliente |
-| GET | `/clients` | Clientes ativos com address e products |
-| GET | `/clients/:id` | Cliente ativo com address e products |
-| GET | `/clients/:id/products` | Produtos ativos do cliente |
-| PATCH | `/clients/:id` | Update parcial; address aninhado e products substituiveis |
-| DELETE | `/clients` | Soft delete batch |
+| Metodo | Path                    | Contrato                                                  |
+| ------ | ----------------------- | --------------------------------------------------------- |
+| POST   | `/clients`              | Cria cliente                                              |
+| GET    | `/clients`              | Clientes ativos com address e products                    |
+| GET    | `/clients/:id`          | Cliente ativo com address e products                      |
+| GET    | `/clients/:id/products` | Produtos ativos do cliente                                |
+| PATCH  | `/clients/:id`          | Update parcial; address aninhado e products substituiveis |
+| DELETE | `/clients`              | Soft delete batch                                         |
 
 Criacao exige `name`, `email`, `phoneNumber`, `birthDate`, `address`; aceita `cpf?`, `cnpj?`, `productIds?`, mas ao menos CPF/CNPJ e obrigatorio. Address exige street, district, state, city e number; cep/complement sao opcionais.
 
 ### Visitas
 
-| Metodo | Path | Contrato |
-| --- | --- | --- |
-| POST | `/visits` | `name`, `description`, `clientId` UUID, `date` ISO |
-| GET | `/visits` | Filtros opcionais inclusivos `startDate`, `endDate` |
-| GET | `/visits/:id` | Uma visita |
-| PATCH | `/visits/:id` | Campos parciais da criacao |
-| DELETE | `/visits/:id` | Delete fisico; resposta 204 |
+| Metodo | Path          | Contrato                                            |
+| ------ | ------------- | --------------------------------------------------- |
+| POST   | `/visits`     | `name`, `description`, `clientId` UUID, `date` ISO  |
+| GET    | `/visits`     | Filtros opcionais inclusivos `startDate`, `endDate` |
+| GET    | `/visits/:id` | Uma visita                                          |
+| PATCH  | `/visits/:id` | Campos parciais da criacao                          |
+| DELETE | `/visits/:id` | Delete fisico; resposta 204                         |
 
 ### Dashboard
 
@@ -76,17 +76,19 @@ Todos sao `GET` protegidos:
 - `/dashboard/client-age-range`
 - `/dashboard/product-types-by-insurance-company`
 
-KPIs retornam numero; series retornam `ChartPoint[]`; o ultimo retorna o payload de heatmap. As configuracoes seed de Chart apontam para essas rotas.
+Todas aceitam `startDate` e `endDate` opcionais, como limites inclusivos de `createdAt`. Os parametros devem ser informados juntos e `startDate` deve ser anterior ou igual a `endDate`; intervalo incompleto ou invertido retorna HTTP 400. Sem ambos, a API retorna o historico completo.
+
+O periodo restringe clientes nas cinco agregacoes de clientes, produtos no KPI de produtos e no heatmap, seguradoras no respectivo KPI e tipos de produto no respectivo KPI. Seguradoras, produtos, clientes e tipos relacionados continuam sujeitos aos filtros de ativos usados pelas consultas. KPIs retornam numero; series retornam `ChartPoint[]`; o heatmap retorna seu payload proprio. As configuracoes seed de Chart apontam para essas rotas.
 
 ### Notificacoes
 
 **Detectado:** `NotificationRuleModule` e importado pelo `AppModule`, registrando as rotas protegidas `GET/POST/DELETE /notification-rules`, `GET/PATCH /notification-rules/:id` e `POST /notification-rules/:id/preview`. O modulo tambem registra o agendador diario de regras as 09:00 em `America/Sao_Paulo`. Evidencias: `backend/src/app.module.ts`, `backend/src/modules/notification-rule/notification-rule.controller.ts`, `backend/src/modules/notification-rule/notification-rule.scheduler.ts`.
 
-| Metodo | Path | Contrato |
-| --- | --- | --- |
-| GET | `/notifications/logs` | Logs do servico externo |
-| POST | `/notifications/templates` | Cria template externo |
-| PUT | `/notifications/templates/:id` | Atualiza template externo |
+| Metodo | Path                           | Contrato                  |
+| ------ | ------------------------------ | ------------------------- |
+| GET    | `/notifications/logs`          | Logs do servico externo   |
+| POST   | `/notifications/templates`     | Cria template externo     |
+| PUT    | `/notifications/templates/:id` | Atualiza template externo |
 
 O POST aceita `name`, `description` anulavel, `subject`, `body`, e opcionais `variableSchema`, `isActive`, `notificationTypeId`. O PUT exige as sete chaves; cada uma pode ser nula por exigencia do servico externo.
 
