@@ -8,11 +8,13 @@ import { useApiQuery } from "@/shared/hooks/use-api-query"
 type UseListEntityOptions = {
   title: string
   listRoute: ApiRouteType
+  listQueryKey?: QueryKey
 }
 
 export function useListEntity<TData>({
   title,
   listRoute,
+  listQueryKey: listQueryKeyOverride,
 }: Readonly<UseListEntityOptions>) {
   const listPathKey = useMemo(
     () =>
@@ -22,10 +24,11 @@ export function useListEntity<TData>({
     [listRoute.path],
   )
 
-  const listQueryKey = useMemo<QueryKey>(
+  const autoListQueryKey = useMemo<QueryKey>(
     () => ["crud-screen", listRoute.method, listPathKey],
     [listRoute.method, listPathKey],
   )
+  const listQueryKey = listQueryKeyOverride ?? autoListQueryKey
 
   const { data, isLoading } = useApiQuery<TData[]>({
     route: listRoute,

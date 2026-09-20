@@ -94,6 +94,7 @@ export default function NotificationTemplateCrud() {
   return (
     <CrudScreen<NotificationTemplate, NotificationTemplateUpsertPayload>
       title="Templates de mensagem"
+      listQueryKey={["notification-templates"]}
       columns={columns}
       createForm={NotificationTemplateForm}
       createFormTitle="Novo template"

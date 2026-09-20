@@ -14,6 +14,7 @@ import { ChartModule } from './modules/chart/chart.module'
 import { ClientModule } from './modules/client/client.module'
 import { PrismaModule } from './modules/database/prisma.module'
 import { InsuranceCompanyModule } from './modules/insurance-company/insurance-company.module'
+import { NotificationRuleModule } from './modules/notification-rule/notification-rule.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
 import { ProductTypeModule } from './modules/product-type/product-type.module'
 import { ProductModule } from './modules/product/product.module'
@@ -44,6 +45,7 @@ import { CustomThrottlerGuard } from './common/auth/auth.throttler.guard'
     ChartModule,
     DashboardModule,
     NotificationsModule,
+    NotificationRuleModule,
     VisitModule,
   ],
   controllers: [AppController],

@@ -3,7 +3,11 @@
 import { useMemo, useState, type ComponentType, type ReactNode } from "react"
 
 import { Box } from "@/shared/components/ui/box"
-import { type ColumnDef, type RowSelectionState } from "@tanstack/react-table"
+import {
+  type ColumnDef,
+  type RowSelectionState,
+} from "@tanstack/react-table"
+import { type QueryKey } from "@tanstack/react-query"
 
 import { ActionsPopover } from "@/shared/components/CrudScreen/components/actions-popover"
 import { AddButton } from "@/shared/components/CrudScreen/components/add-button"
@@ -45,6 +49,7 @@ type CrudFormProps<TFormPayload> = {
 type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   title: string
   sourceRoutes: CrudSourceRoutes
+  listQueryKey?: QueryKey
   columns?: ColumnDef<TData>[]
   cardView?: CrudCardView<TData>
   createForm: ComponentType<CrudFormProps<TCreatePayload>>
@@ -64,6 +69,7 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
 export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   title,
   sourceRoutes,
+  listQueryKey: listQueryKeyProp,
   columns,
   cardView,
   createForm: CreateFormComponent,
@@ -84,6 +90,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   const { rows, areRowsLoading, listQueryKey } = useListEntity<TData>({
     title,
     listRoute: sourceRoutes.list,
+    listQueryKey: listQueryKeyProp,
   })
 
   const selectedRows = useMemo(() => {
