@@ -94,9 +94,6 @@ export default function NotificationTemplateCrud() {
   return (
     <CrudScreen<NotificationTemplate, NotificationTemplateUpsertPayload>
       title="Templates de mensagem"
-      // Mesma chave usada por NotificationRuleCrud/NotificationRuleForm pro
-      // dropdown de templates: precisa ser a MESMA para que criar/editar um
-      // template aqui invalide o cache que a tela de regras consome.
       listQueryKey={["notification-templates"]}
       columns={columns}
       createForm={NotificationTemplateForm}
