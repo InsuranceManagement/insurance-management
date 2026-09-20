@@ -39,6 +39,7 @@ const chartRendererByType: {
     <LineChart
       key={chart.id}
       dataUrl={chart.dataUrl}
+      queryParams={chart.queryParams}
       series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
@@ -52,6 +53,7 @@ const chartRendererByType: {
     <BarChart
       key={chart.id}
       dataUrl={chart.dataUrl}
+      queryParams={chart.queryParams}
       series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
@@ -64,6 +66,7 @@ const chartRendererByType: {
     <PieChart
       key={chart.id}
       dataUrl={chart.dataUrl}
+      queryParams={chart.queryParams}
       series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
@@ -74,6 +77,7 @@ const chartRendererByType: {
     <PieChart
       key={chart.id}
       dataUrl={chart.dataUrl}
+      queryParams={chart.queryParams}
       series={chart.series}
       title={chart.title}
       subtitle={chart.subtitle}
@@ -85,6 +89,7 @@ const chartRendererByType: {
     <HeatmapChart
       key={chart.id}
       dataUrl={chart.dataUrl}
+      queryParams={chart.queryParams}
       title={chart.title}
       subtitle={chart.subtitle}
     />

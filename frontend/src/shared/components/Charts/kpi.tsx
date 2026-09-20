@@ -8,6 +8,7 @@ import { ChartTypeSizePreset } from "@/shared/models/charts/chart-size-preset"
 type KPIChartProps = {
   title: string
   valueUrl: string
+  queryParams?: Record<string, string>
   unit?: string
   prefix?: string
   suffix?: string
@@ -17,14 +18,19 @@ type KPIChartProps = {
 export function KPIChart({
   title,
   valueUrl,
+  queryParams,
   unit,
   prefix,
   suffix,
   className,
 }: Readonly<KPIChartProps>) {
-  const { data: value } = useChartData<number>({ dataUrl: valueUrl })
+  const { data: value } = useChartData<number>({
+    dataUrl: valueUrl,
+    queryParams,
+  })
 
-  const formattedValue = value ? `${prefix ?? ""}${value}${suffix ?? ""}` : "--"
+  const formattedValue =
+    value === undefined ? "--" : `${prefix ?? ""}${value}${suffix ?? ""}`
 
   return (
     <ChartCard

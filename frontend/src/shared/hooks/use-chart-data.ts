@@ -3,6 +3,7 @@ import { type ChartPoint } from "@/shared/models/charts/chart-point"
 
 type UseChartDataParams = {
   dataUrl?: string
+  queryParams?: Record<string, string>
 }
 
 type UseChartDataResult<T> = {
@@ -13,13 +14,15 @@ type UseChartDataResult<T> = {
 
 export function useChartData<T = ChartPoint[]>({
   dataUrl,
+  queryParams,
 }: Readonly<UseChartDataParams>): UseChartDataResult<T> {
   const query = useApiQuery<T>({
     route: {
       method: "GET",
       path: dataUrl ?? "",
     },
-    queryKey: ["chart-data", dataUrl],
+    queryKey: ["chart-data", dataUrl, queryParams],
+    queryParams,
     enabled: !!dataUrl,
     staleTime: 0,
     refetchOnMount: "always",

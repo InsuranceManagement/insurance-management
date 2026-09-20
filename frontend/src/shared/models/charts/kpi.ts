@@ -3,6 +3,7 @@ export type Kpi = {
   title: string
   subtitle: string
   valueUrl: string
+  queryParams?: Record<string, string>
   unit?: string
   prefix?: string
 }

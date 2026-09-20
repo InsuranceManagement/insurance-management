@@ -21,6 +21,7 @@ export type LineChartProps = BaseChartProps & {
 
 export function LineChart({
   dataUrl,
+  queryParams,
   series: inputSeries,
   className,
   unit,
@@ -34,6 +35,7 @@ export function LineChart({
 }: Readonly<LineChartProps>) {
   const { data: points } = useChartData({
     dataUrl,
+    queryParams,
   })
   const highchartsTheme = useHighchartsTheme()
 

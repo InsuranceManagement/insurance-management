@@ -20,6 +20,7 @@ export type BarChartProps = BaseChartProps & {
 
 export function BarChart({
   dataUrl,
+  queryParams,
   series: inputSeries,
   className,
   unit,
@@ -32,6 +33,7 @@ export function BarChart({
 }: Readonly<BarChartProps>) {
   const { data: points } = useChartData({
     dataUrl,
+    queryParams,
   })
   const highchartsTheme = useHighchartsTheme()
 

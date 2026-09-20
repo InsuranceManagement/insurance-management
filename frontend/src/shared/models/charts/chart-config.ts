@@ -2,6 +2,7 @@ import { type ChartSeries } from "@/shared/models/charts/chart-series"
 
 export interface BaseChartProps {
   dataUrl: string
+  queryParams?: Record<string, string>
   series: ChartSeries
   title: string
   subtitle: string

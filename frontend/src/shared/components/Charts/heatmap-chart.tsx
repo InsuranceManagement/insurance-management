@@ -35,12 +35,14 @@ type HeatmapFormatterContext = {
 
 export function HeatmapChart({
   dataUrl,
+  queryParams,
   title,
   subtitle,
   className,
 }: Readonly<HeatmapChartProps>) {
   const { data, isLoading, isError } = useChartData<ProductTypeHeatmapData>({
     dataUrl,
+    queryParams,
   })
   const highchartsTheme = useHighchartsTheme()
 

@@ -6,6 +6,11 @@ import { type ChartRendererConfig } from "@/shared/lib/chart-renderer"
 import { type ChartSeriesType } from "@/shared/models/charts/chart-series"
 import { Kpi } from "@/shared/models/charts/kpi"
 
+type DashboardDateRange = {
+  startDate: string
+  endDate: string
+}
+
 type ChartApiResponse = {
   id: string
   name: string
@@ -18,7 +23,18 @@ type ChartApiResponse = {
   updatedAt: string
 }
 
-export function useDashboard() {
+export function useDashboard(dateRange?: DashboardDateRange) {
+  const queryParams = useMemo(
+    () =>
+      dateRange
+        ? {
+            startDate: dateRange.startDate,
+            endDate: dateRange.endDate,
+          }
+        : undefined,
+    [dateRange],
+  )
+
   const chartConfigsQuery = useApiQuery<ChartApiResponse[]>({
     route: routes.charts.list,
     queryKey: ["dashboard", "chart-configs"],
@@ -48,6 +64,7 @@ export function useDashboard() {
           id: config.id,
           type: chartType,
           dataUrl: config.apiRoute,
+          queryParams,
           series: {
             name: config.name,
             type: chartType,
@@ -69,13 +86,14 @@ export function useDashboard() {
         unit: config.unit,
         subtitle: config.description,
         valueUrl: config.apiRoute,
+        queryParams,
       }))
 
     return {
       charts,
       kpis,
     }
-  }, [chartConfigsQuery.data])
+  }, [chartConfigsQuery.data, queryParams])
 
   return {
     charts,

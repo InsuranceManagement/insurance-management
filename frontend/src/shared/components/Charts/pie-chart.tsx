@@ -20,6 +20,7 @@ export type PieChartProps = BaseChartProps & {
 }
 export function PieChart({
   dataUrl,
+  queryParams,
   series: inputSeries,
   className,
   unit,
@@ -31,6 +32,7 @@ export function PieChart({
 }: Readonly<PieChartProps>) {
   const { data: points } = useChartData({
     dataUrl,
+    queryParams,
   })
   const highchartsTheme = useHighchartsTheme()
 
