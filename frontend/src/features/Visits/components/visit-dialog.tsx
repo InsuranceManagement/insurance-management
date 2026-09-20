@@ -85,6 +85,7 @@ export function VisitDialog({
         {isFormOpen ? (
           <VisitForm
             clients={clients}
+            isEditing={isEditing}
             initialValues={{
               name: visit?.name ?? "",
               description: visit?.description ?? "",

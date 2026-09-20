@@ -12,11 +12,6 @@ export type VisitDialogState =
   | { mode: "edit"; visit: Visit }
   | null
 
-export type CalendarVisibleRange = {
-  start: Date
-  end: Date
-}
-
 function createMonthDateRange(date: Date): VisitDateRange {
   const start = new Date(date.getFullYear(), date.getMonth(), 1)
   const end = new Date(date.getFullYear(), date.getMonth() + 1, 1)
@@ -63,29 +58,16 @@ function localDateTime(date: Date) {
   return formatDate(date, "YYYY-MM-DDTHH:mm", "")
 }
 
-function formatSlotTime(hour: number) {
-  return `${String(hour).padStart(2, "0")}:00:00`
-}
-
 export function useVisitDateRange() {
   const [dateRanges, setDateRanges] = useState<VisitDateRange[]>(() => [
     createMonthDateRange(new Date()),
   ])
-  const [visibleRange, setVisibleRange] = useState<CalendarVisibleRange>(() => {
-    const date = new Date()
-    return {
-      start: new Date(date.getFullYear(), date.getMonth(), 1),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, 1),
-    }
-  })
 
   const handleDatesSet = (info: DatesSetArg) => {
     const nextDateRanges =
       info.view.type === "dayGridMonth"
         ? [createMonthDateRange(info.view.calendar.getDate())]
         : createVisibleMonthRanges(info.start, info.end)
-
-    setVisibleRange({ start: info.start, end: info.end })
 
     setDateRanges((currentDateRanges) =>
       hasSameDateRanges(currentDateRanges, nextDateRanges)
@@ -94,13 +76,12 @@ export function useVisitDateRange() {
     )
   }
 
-  return { dateRanges, visibleRange, handleDatesSet }
+  return { dateRanges, handleDatesSet }
 }
 
 export function useVisitsCalendar(
   visits: Visit[],
   clients: Client[],
-  visibleRange: CalendarVisibleRange,
 ) {
   const [dialogState, setDialogState] = useState<VisitDialogState>(null)
 
@@ -116,28 +97,6 @@ export function useVisitsCalendar(
       extendedProps: { visitName: visit.name },
     }))
   }, [clients, visits])
-
-  const slotRange = useMemo(() => {
-    let earliestHour = 7
-    let latestHour = 20
-
-    for (const visit of visits) {
-      const visitDate = new Date(visit.date)
-
-      if (visitDate < visibleRange.start || visitDate >= visibleRange.end) {
-        continue
-      }
-
-      const visitHour = new Date(visit.date).getHours()
-      earliestHour = Math.min(earliestHour, visitHour)
-      latestHour = Math.max(latestHour, Math.min(visitHour + 1, 24))
-    }
-
-    return {
-      minTime: formatSlotTime(earliestHour),
-      maxTime: formatSlotTime(latestHour),
-    }
-  }, [visits, visibleRange])
 
   const handleDateClick = (info: DateClickArg) => {
     setDialogState({
@@ -158,7 +117,6 @@ export function useVisitsCalendar(
   return {
     dialogState,
     events,
-    slotRange,
     handleDateClick,
     handleEventClick,
     openEdit,

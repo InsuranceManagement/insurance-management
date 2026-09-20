@@ -29,9 +29,9 @@ import { formatDate } from "@/shared/lib/date-format"
 
 export function VisitsCalendar() {
   const { data: clients = [] } = useVisitClients()
-  const { dateRanges, visibleRange, handleDatesSet } = useVisitDateRange()
+  const { dateRanges, handleDatesSet } = useVisitDateRange()
   const visitsQuery = useVisits(dateRanges)
-  const calendar = useVisitsCalendar(visitsQuery.data, clients, visibleRange)
+  const calendar = useVisitsCalendar(visitsQuery.data, clients)
   const { createVisit, updateVisit, deleteVisit } = useVisitMutations()
 
   const handleCreate = (payload: VisitUpsertPayload) => {
@@ -97,8 +97,8 @@ export function VisitsCalendar() {
                 day: "Dia",
               }}
               allDaySlot={false}
-              slotMinTime={calendar.slotRange.minTime}
-              slotMaxTime={calendar.slotRange.maxTime}
+              slotMinTime="00:00:00"
+              slotMaxTime="24:00:00"
               events={calendar.events}
               eventDisplay="block"
               eventContent={(info) => {

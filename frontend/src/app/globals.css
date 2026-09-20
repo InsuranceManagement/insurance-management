@@ -49,6 +49,8 @@
 }
 
 :root {
+  --action-primary: #0073e6;
+  --action-primary-hover: #0061c2;
   --brand-gradient: linear-gradient(
     135deg,
     #044766 0%,
@@ -90,6 +92,8 @@
 }
 
 .dark {
+  --action-primary: #0073e6;
+  --action-primary-hover: #0061c2;
   --brand-gradient: linear-gradient(
     135deg,
     #01131c 0%,
@@ -140,12 +144,12 @@
   --fc-neutral-bg-color: var(--muted);
   --fc-page-bg-color: transparent;
   --fc-today-bg-color: color-mix(in oklab, var(--primary) 8%, transparent);
-  --fc-button-bg-color: var(--primary);
-  --fc-button-border-color: var(--primary);
-  --fc-button-hover-bg-color: color-mix(in oklab, var(--primary) 85%, black);
-  --fc-button-hover-border-color: color-mix(in oklab, var(--primary) 85%, black);
-  --fc-button-active-bg-color: color-mix(in oklab, var(--primary) 75%, black);
-  --fc-button-active-border-color: color-mix(in oklab, var(--primary) 75%, black);
+  --fc-button-bg-color: var(--action-primary);
+  --fc-button-border-color: var(--action-primary);
+  --fc-button-hover-bg-color: var(--action-primary-hover);
+  --fc-button-hover-border-color: var(--action-primary-hover);
+  --fc-button-active-bg-color: var(--action-primary-hover);
+  --fc-button-active-border-color: var(--action-primary-hover);
 }
 
 .visits-calendar .fc {
@@ -169,8 +173,23 @@
   text-transform: none;
 }
 
-.visits-calendar .fc .fc-button:focus {
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 45%, transparent);
+.visits-calendar .fc .fc-button-primary:not(:disabled):active,
+.visits-calendar .fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
+  box-shadow: none;
+  outline: none;
+}
+
+.visits-calendar .fc .fc-button-primary:focus,
+.visits-calendar .fc .fc-button-primary:not(:disabled):active:focus,
+.visits-calendar
+  .fc
+  .fc-button-primary:not(:disabled).fc-button-active:focus {
+  background-color: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
+  box-shadow: none;
+  outline: none;
 }
 
 .visits-calendar .fc .fc-col-header-cell-cushion {
