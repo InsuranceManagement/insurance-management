@@ -188,7 +188,6 @@ export default function ClientCrud() {
       editFormTitle="Editar cliente"
       formModalContentClassName="sm:max-w-3xl"
       viewModalTitle="Detalhes do Cliente"
-      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
       viewModalContentClassName="sm:max-w-3xl"
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({

@@ -56,7 +56,6 @@ const viewFields: EntityViewField<NotificationTemplate>[] = [
       </Typography>
     ),
   },
-  { accessorKey: "notificationTypeId", label: "ID do tipo de notificação" },
   {
     accessorKey: "variableSchema",
     label: "Variáveis",

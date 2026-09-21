@@ -20,7 +20,7 @@ export function AddButton({
       onClick={onClick}
       disabled={disabled}
     >
-      <PlusIcon className="size-4" />
+      <PlusIcon className="size-5" />
       {label}
     </Button>
   )

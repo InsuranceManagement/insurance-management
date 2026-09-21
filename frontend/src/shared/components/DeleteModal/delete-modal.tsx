@@ -34,6 +34,7 @@ function DeleteModal({
       open={open}
       onOpenChange={onOpenChange}
       title={title}
+      contentClassName="max-w-sm"
       footer={
         <>
           <Button

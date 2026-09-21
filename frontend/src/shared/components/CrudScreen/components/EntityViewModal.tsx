@@ -3,7 +3,6 @@
 import { type ReactNode } from "react"
 
 import { Box } from "@/shared/components/ui/box"
-import { Button } from "@/shared/components/ui/button"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
 
@@ -24,8 +23,6 @@ type EntityViewModalProps<TData> = {
   onOpenChange: (open: boolean) => void
   entity: TData | null
   fields: EntityViewField<TData>[]
-  subtitle?: ReactNode | ((entity: TData) => ReactNode)
-  closeLabel?: string
   emptyValue?: ReactNode
   contentClassName?: string
 }
@@ -36,18 +33,9 @@ export function EntityViewModal<TData>({
   onOpenChange,
   entity,
   fields,
-  subtitle,
-  closeLabel = "Fechar",
   emptyValue = "-",
   contentClassName,
 }: Readonly<EntityViewModalProps<TData>>) {
-  const subtitleContent =
-    entity && typeof subtitle === "function"
-      ? subtitle(entity)
-      : typeof subtitle === "function"
-        ? null
-        : subtitle
-
   const renderFieldValue = (value: ReactNode) => {
     if (
       typeof value === "string" ||
@@ -77,23 +65,9 @@ export function EntityViewModal<TData>({
       onOpenChange={onOpenChange}
       title={title}
       contentClassName={contentClassName}
-      footer={
-        <Box className="w-full justify-end [&>button]:w-full sm:[&>button]:w-auto">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
-            {closeLabel}
-          </Button>
-        </Box>
-      }
+      mobileFullscreen
     >
       <Box className="w-full flex-col gap-4">
-        {subtitleContent ? (
-          <Typography variant="muted">{subtitleContent}</Typography>
-        ) : null}
-
         <Box className="grid grid-cols-1 gap-px overflow-hidden rounded-md border bg-border sm:grid-cols-2">
           {fields.map((field) => {
             const rawValue = entity?.[field.accessorKey]

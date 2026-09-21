@@ -54,7 +54,7 @@ const viewFields: EntityViewField<Product>[] = [
     label: "Tipo",
     cell: ({ entity }) => (
       <Typography asChild variant="small">
-        <span>{entity?.productType?.name ?? entity?.productTypeId}</span>
+        <span>{entity?.productType?.name ?? "Não informado"}</span>
       </Typography>
     ),
   },
@@ -64,7 +64,7 @@ const viewFields: EntityViewField<Product>[] = [
     cell: ({ entity }) => (
       <Typography asChild variant="small">
         <span>
-          {entity?.insuranceCompany?.name ?? entity?.insuranceCompanyId}
+          {entity?.insuranceCompany?.name ?? "Não informado"}
         </span>
       </Typography>
     ),
@@ -93,7 +93,6 @@ export default function ProductCrud() {
       createFormTitle="Novo produto"
       editFormTitle="Editar produto"
       viewModalTitle="Detalhes do Produto"
-      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

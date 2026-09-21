@@ -124,9 +124,10 @@ export function VisitForm({
           {form.formState.errors.date?.message ? <Typography variant="small" className="text-destructive">{form.formState.errors.date.message}</Typography> : null}
         </Box>
 
-        <Box className="flex-col gap-2 border-t pt-4 sm:flex-row sm:justify-between [&>button]:w-full sm:[&>button]:w-auto">
-          {onDelete ? <Button type="button" variant="destructive" onClick={onDelete} disabled={isSubmitting}>Excluir</Button> : <Box />}
-          <Box className="flex-col-reverse gap-2 sm:flex-row [&>button]:w-full sm:[&>button]:w-auto"><Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancelar</Button><Button type="submit" disabled={isSubmitting}>{submitLabel}</Button></Box>
+        <Box className="flex-row gap-2 border-t pt-4 [&>button]:h-auto [&>button]:min-h-9 [&>button]:min-w-0 [&>button]:flex-1 [&>button]:whitespace-normal">
+          {onDelete ? <Button type="button" variant="destructive" onClick={onDelete} disabled={isSubmitting}>Excluir</Button> : null}
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancelar</Button>
+          <Button type="submit" disabled={isSubmitting}>{submitLabel}</Button>
         </Box>
       </form>
     </Box>

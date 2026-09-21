@@ -133,7 +133,7 @@ export const Dashboard = () => {
         )}
       </form>
 
-      <section className="relative grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-8 xl:auto-rows-[6rem]">
+      <section className="relative grid min-w-0 grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-8 xl:auto-rows-[6rem]">
         {kpis.map((kpi) => (
           <KPIChart
             key={kpi.id}

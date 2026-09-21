@@ -106,7 +106,6 @@ export default function InsuranceCompanyCrud() {
       createFormTitle="Nova seguradora"
       editFormTitle="Editar seguradora"
       viewModalTitle="Detalhes da Seguradora"
-      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

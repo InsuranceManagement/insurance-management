@@ -22,6 +22,7 @@ type ModalProps = React.ComponentProps<typeof Dialog> & {
   footer?: React.ReactNode
   trigger?: React.ReactNode
   contentClassName?: string
+  mobileFullscreen?: boolean
 }
 
 function Modal({
@@ -30,6 +31,7 @@ function Modal({
   trigger,
   children,
   contentClassName,
+  mobileFullscreen = false,
   ...dialogProps
 }: ModalProps) {
   return (
@@ -39,7 +41,9 @@ function Modal({
       <DialogContent
         showCloseButton={false}
         className={cn(
-          "grid-rows-[auto_minmax(0,1fr)_auto] max-w-lg gap-0 p-0",
+          "w-[calc(100%-2rem)] grid-rows-[auto_minmax(0,1fr)_auto] max-w-lg gap-0 p-0",
+          mobileFullscreen &&
+            "max-md:top-0 max-md:left-0 max-md:h-dvh max-md:max-h-dvh max-md:w-full! max-md:max-w-none! max-md:translate-x-0 max-md:translate-y-0 max-md:rounded-none max-md:ring-0",
           contentClassName,
         )}
       >
@@ -66,7 +70,7 @@ function Modal({
         </DialogDescription>
 
         {footer && (
-          <DialogFooter className="shrink-0 border-t px-4 py-4 sm:px-6 [&>button]:w-full sm:[&>button]:w-auto">
+          <DialogFooter className="shrink-0 border-t px-4 py-4 sm:px-6 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
             {footer}
           </DialogFooter>
         )}

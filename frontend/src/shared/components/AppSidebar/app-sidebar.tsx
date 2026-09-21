@@ -135,7 +135,7 @@ export function AppSidebar() {
               asChild
               size="lg"
               tooltip="Mainiere"
-              className="h-24 group-data-[collapsible=icon]:justify-center"
+              className="h-24 hover:bg-transparent! active:bg-transparent! data-open:hover:bg-transparent! group-data-[collapsible=icon]:justify-center"
             >
               <Link href="/dashboard" onClick={handleNavigate}>
                 <Image

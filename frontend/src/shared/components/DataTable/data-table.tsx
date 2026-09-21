@@ -283,9 +283,9 @@ function DataTable<TData, TValue>({
                         )}
 
                         {header.column.getIsSorted() === "asc"
-                          ? <ChevronUpIcon className="size-3" />
+                          ? <ChevronUpIcon className="size-4" />
                           : header.column.getIsSorted() === "desc"
-                            ? <ChevronDownIcon className="size-3" />
+                            ? <ChevronDownIcon className="size-4" />
                             : null}
                       </Box>
                     )}

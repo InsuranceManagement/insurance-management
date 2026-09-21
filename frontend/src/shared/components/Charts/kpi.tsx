@@ -36,16 +36,22 @@ export function KPIChart({
     <ChartCard
       preset={ChartTypeSizePreset.ONE_BY_ONE}
       className="py-3"
-      contentClassName="px-4"
+      contentClassName="px-3 sm:px-4"
     >
       <Box
         className={cn("h-full w-full flex-col justify-start gap-1", className)}
       >
-        <Typography variant="large" className="break-words">
+        <Typography
+          variant="large"
+          className="break-words text-sm leading-tight sm:text-base"
+        >
           {title}
         </Typography>
 
-        <Typography variant="small" className="text-3xl sm:text-4xl">
+        <Typography
+          variant="small"
+          className="break-words text-2xl sm:text-3xl xl:text-4xl"
+        >
           {formattedValue + (unit ?? "")}
         </Typography>
       </Box>

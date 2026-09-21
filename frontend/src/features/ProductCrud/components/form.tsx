@@ -172,7 +172,7 @@ export function ProductForm({
           )}
         </Box>
 
-        <Box className="flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
+        <Box className="flex-row justify-end gap-2 pt-2 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

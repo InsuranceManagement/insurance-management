@@ -63,8 +63,6 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   mapEditEntityToFormValues?: (entity: TData) => Partial<TCreatePayload>
   viewFields?: EntityViewField<TData>[]
   viewModalTitle?: string
-  viewModalSubtitle?: ReactNode | ((entity: TData) => ReactNode)
-  viewModalCloseLabel?: string
   viewModalEmptyValue?: ReactNode
   viewModalContentClassName?: string
   caption?: string
@@ -84,8 +82,6 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   mapEditEntityToFormValues,
   viewFields,
   viewModalTitle = "Detalhes",
-  viewModalSubtitle,
-  viewModalCloseLabel,
   viewModalEmptyValue,
   viewModalContentClassName,
   caption,
@@ -199,6 +195,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           onOpenChange={handleCreateModalOpenChange}
           title={createFormTitle}
           contentClassName={formModalContentClassName}
+          mobileFullscreen
         >
           <CreateFormComponent
             onSubmit={handleCreate}
@@ -213,6 +210,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           onOpenChange={handleEditModalOpenChange}
           title={editFormTitle}
           contentClassName={formModalContentClassName}
+          mobileFullscreen
         >
           <CreateFormComponent
             initialValues={editFormInitialValues}
@@ -226,8 +224,6 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
         {hasEntityView ? (
           <EntityViewModal<TData>
             title={viewModalTitle}
-            subtitle={viewModalSubtitle}
-            closeLabel={viewModalCloseLabel}
             emptyValue={viewModalEmptyValue}
             contentClassName={viewModalContentClassName}
             open={isEntityViewOpen}
