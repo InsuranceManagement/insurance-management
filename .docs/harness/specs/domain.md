@@ -27,6 +27,7 @@
 - E-mails de User e Client sao unicos no banco; CPF e CNPJ de Client tambem sao unicos quando presentes.
 - O DTO de Client exige ao menos CPF ou CNPJ, telefone com 10-15 digitos, birthDate ISO e endereco.
 - Produtos associados na criacao/edicao do cliente precisam existir e estar ativos.
+- Produtos ativos precisam referenciar seguradora e tipo de produto ativos; pais com produtos ativos nao podem ser excluidos logicamente.
 - Senhas tem no minimo oito caracteres e quatro classes de caracteres.
 - IDs de delete batch devem ser strings, nao vazios e sem duplicatas.
 - Operacoes de leitura/edicao dos agregados soft-delete tratam `deletedAt != null` como inexistente.

@@ -2,6 +2,7 @@ import { PrismaService } from '@/modules/database/prisma.service'
 import { ProductType } from '@/modules/product-type/entities/product-type'
 import { CreateProductTypeInput } from '@/modules/product-type/inputs/create-product-type.input'
 import { UpdateProductTypeInput } from '@/modules/product-type/inputs/update-product-type.input'
+import { Prisma } from '@generated/prisma'
 import { Injectable } from '@nestjs/common'
 
 type ProductTypeRecord = {
@@ -77,24 +78,39 @@ export class ProductTypeRepository {
     })
   }
 
-  async softDeleteMany(productTypeIds: string[]): Promise<number> {
+  async softDeleteMany(
+    productTypeIds: string[],
+  ): Promise<{ deletedCount: number; hasActiveProducts: boolean }> {
     if (productTypeIds.length === 0) {
-      return 0
+      return { deletedCount: 0, hasActiveProducts: false }
     }
 
-    const { count } = await this.prismaService.productType.updateMany({
-      where: {
-        id: {
-          in: productTypeIds,
-        },
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: new Date(),
-      },
-    })
+    return this.prismaService.$transaction(
+      async (transaction) => {
+        const productTypesWithActiveProducts = await transaction.productType.count({
+          where: {
+            id: { in: productTypeIds },
+            deletedAt: null,
+            products: { some: { deletedAt: null } },
+          },
+        })
 
-    return count
+        if (productTypesWithActiveProducts > 0) {
+          return { deletedCount: 0, hasActiveProducts: true }
+        }
+
+        const { count } = await transaction.productType.updateMany({
+          where: {
+            id: { in: productTypeIds },
+            deletedAt: null,
+          },
+          data: { deletedAt: new Date() },
+        })
+
+        return { deletedCount: count, hasActiveProducts: false }
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    )
   }
 
   async list(): Promise<ProductType[]> {

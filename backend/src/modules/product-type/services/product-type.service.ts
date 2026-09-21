@@ -60,7 +60,14 @@ export class ProductTypeService {
   }
 
   async delete(productTypeIds: string[]): Promise<void> {
-    const deletedCount = await this.productTypeRepository.softDeleteMany(productTypeIds)
+    const { deletedCount, hasActiveProducts } =
+      await this.productTypeRepository.softDeleteMany(productTypeIds)
+
+    if (hasActiveProducts) {
+      throw new BadRequestException(
+        'Não é possível excluir tipos de produto com produtos ativos. Exclua ou transfira os produtos primeiro.',
+      )
+    }
 
     if (deletedCount === 0) {
       throw new NotFoundException('Tipo de produto não encontrado')

@@ -3,7 +3,7 @@ import { CreateProductTypeDto } from '@/modules/product-type/dto/create-product-
 import { UpdateProductTypeDto } from '@/modules/product-type/dto/update-product-type.dto'
 import { ProductTypeService } from '@/modules/product-type/services/product-type.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiCookieAuth('access_token')
 @ApiTags('Product Types')
@@ -32,6 +32,9 @@ export class ProductTypeController {
   }
 
   @Delete()
+  @ApiBadRequestResponse({
+    description: 'A exclusão foi bloqueada porque há produtos ativos associados.',
+  })
   delete(@Body() input: DeleteManyDto) {
     return this.productTypeService.delete(input.ids)
   }

@@ -39,6 +39,8 @@ Cada grupo abaixo oferece `POST /recurso`, `GET /recurso`, `GET /recurso/:id`, `
 
 Todos exigem JWT. Seguradoras, tipos de produto e produtos usam soft delete; charts e chart types usam delete fisico.
 
+Produtos só podem ser criados ou atualizados com seguradora e tipo de produto ativos; referências existentes, mas excluídas, retornam HTTP 400. A exclusão em lote de seguradoras e tipos de produto também retorna HTTP 400, sem excluir parcialmente o lote, se algum item tiver produto ativo associado. Exclua ou transfira os produtos antes de excluir o pai; produtos já excluídos não bloqueiam.
+
 ### Clientes
 
 | Metodo | Path                    | Contrato                                                  |

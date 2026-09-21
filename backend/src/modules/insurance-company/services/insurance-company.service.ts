@@ -55,7 +55,14 @@ export class InsuranceCompanyService {
   }
 
   async delete(companyIds: string[]): Promise<void> {
-    const deletedCount = await this.insuranceCompanyRepository.softDeleteMany(companyIds)
+    const { deletedCount, hasActiveProducts } =
+      await this.insuranceCompanyRepository.softDeleteMany(companyIds)
+
+    if (hasActiveProducts) {
+      throw new BadRequestException(
+        'Não é possível excluir seguradoras com produtos ativos. Exclua ou transfira os produtos primeiro.',
+      )
+    }
 
     if (deletedCount === 0) {
       throw new NotFoundException('Seguradora não encontrada')

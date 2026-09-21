@@ -1,7 +1,7 @@
 import { DeleteManyDto } from '@/common/dto/delete-many.dto'
 import { ProductService } from '@/modules/product/product.service'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiCookieAuth, ApiTags } from '@nestjs/swagger'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 
@@ -12,6 +12,9 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
+  @ApiBadRequestResponse({
+    description: 'A seguradora ou o tipo de produto informado está excluído.',
+  })
   create(@Body() input: CreateProductDto) {
     return this.productService.create(input)
   }
@@ -27,6 +30,9 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @ApiBadRequestResponse({
+    description: 'A seguradora ou o tipo de produto informado está excluído.',
+  })
   update(@Param('id') id: string, @Body() input: UpdateProductDto) {
     return this.productService.update(id, input)
   }
