@@ -53,7 +53,7 @@ export function VisitsCalendar() {
   }
 
   return (
-    <Box className="w-full flex-col gap-6">
+    <Box className="min-w-0 w-full flex-col gap-6">
       <Box className="items-start gap-3">
         <Box className="mt-1 size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <CalendarDaysIcon className="size-5" />
@@ -66,16 +66,16 @@ export function VisitsCalendar() {
         </Box>
       </Box>
 
-      <Card>
-        <CardHeader className="gap-1 border-b">
+      <Card className="min-w-0">
+        <CardHeader className="gap-1 border-b px-4 sm:px-6">
           <CardTitle>Agenda de visitas</CardTitle>
           <CardDescription>
             Clique em uma data para criar uma visita ou em um evento para editar
             e excluir.
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-6">
-          <Box className="visits-calendar w-full">
+        <CardContent className="min-w-0 px-2 pt-4 sm:px-6 sm:pt-6">
+          <Box className="visits-calendar min-w-0 w-full">
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               datesSet={handleDatesSet}

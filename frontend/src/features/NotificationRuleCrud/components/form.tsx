@@ -147,7 +147,7 @@ export function NotificationRuleForm({
 
   return (
     <Box asChild>
-      <form className="max-h-[76vh] flex-col gap-4 overflow-y-auto pr-1" onSubmit={handleSubmit} noValidate>
+      <form className="min-w-0 flex-col gap-4" onSubmit={handleSubmit} noValidate>
         <Box className="flex-col gap-1.5">
           <Label htmlFor="notification-rule-name">Nome</Label>
           <Input id="notification-rule-name" {...form.register("name")} aria-invalid={!!form.formState.errors.name} />
@@ -192,7 +192,7 @@ export function NotificationRuleForm({
           ))}
         </Box>
 
-        <Box className="justify-end gap-2 border-t pt-4">
+        <Box className="flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
           {onCancel ? <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancelar</Button> : null}
           <Button type="submit" disabled={isSubmitting}>{submitLabel}</Button>
         </Box>

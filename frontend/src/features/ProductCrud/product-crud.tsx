@@ -85,6 +85,10 @@ export default function ProductCrud() {
     <CrudScreen<Product, ProductUpsertFormValues>
       title="Produtos"
       columns={columns}
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["createdAt"],
+      }}
       createForm={ProductForm}
       createFormTitle="Novo produto"
       editFormTitle="Editar produto"

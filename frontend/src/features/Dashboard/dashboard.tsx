@@ -76,9 +76,9 @@ export const Dashboard = () => {
   }
 
   return (
-    <Box className="w-full flex-col gap-4">
+    <Box className="min-w-0 w-full flex-col gap-4">
       <form
-        className="grid gap-3 rounded-xl border bg-card p-4 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-end"
+        className="grid min-w-0 gap-4 rounded-xl border bg-card p-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-end"
         onSubmit={handleApply}
         noValidate
       >
@@ -89,7 +89,7 @@ export const Dashboard = () => {
           </Typography>
         </Box>
 
-        <Box className="grid flex-1 gap-3 sm:max-w-xl sm:grid-cols-2">
+        <Box className="grid min-w-0 flex-1 gap-3 sm:max-w-xl sm:grid-cols-2">
           <Box className="min-w-0 flex-col gap-2">
             <Label htmlFor="dashboard-start-date">Data inicial</Label>
             <Input
@@ -114,7 +114,7 @@ export const Dashboard = () => {
           </Box>
         </Box>
 
-        <Box className="flex-wrap gap-2 lg:justify-end">
+        <Box className="flex-col gap-2 sm:flex-row sm:flex-wrap xl:justify-end [&>button]:w-full sm:[&>button]:w-auto">
           <Button type="submit">Aplicar</Button>
           <Button type="button" variant="outline" onClick={handleClear}>
             Limpar
@@ -126,14 +126,14 @@ export const Dashboard = () => {
             id="dashboard-date-error"
             role="alert"
             variant="small"
-            className="text-destructive lg:col-span-3"
+            className="text-destructive xl:col-span-3"
           >
             {dateError}
           </Typography>
         )}
       </form>
 
-      <section className="relative grid grid-cols-8 auto-rows-[6rem] gap-4">
+      <section className="relative grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-8 xl:auto-rows-[6rem]">
         {kpis.map((kpi) => (
           <KPIChart
             key={kpi.id}

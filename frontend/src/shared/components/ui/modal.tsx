@@ -38,9 +38,12 @@ function Modal({
 
       <DialogContent
         showCloseButton={false}
-        className={cn("max-w-lg gap-0 p-0", contentClassName)}
+        className={cn(
+          "grid-rows-[auto_minmax(0,1fr)_auto] max-w-lg gap-0 p-0",
+          contentClassName,
+        )}
       >
-        <DialogHeader className="border-b px-6 py-4">
+        <DialogHeader className="shrink-0 border-b px-4 py-4 sm:px-6">
           <DialogTitle className="font-heading text-base leading-normal font-medium">
             {title}
           </DialogTitle>
@@ -57,11 +60,15 @@ function Modal({
         </DialogHeader>
 
         <DialogDescription asChild>
-          <Box className="px-6 py-6 text-foreground">{children}</Box>
+          <Box className="min-h-0 overflow-y-auto px-4 py-4 text-foreground sm:px-6 sm:py-6">
+            {children}
+          </Box>
         </DialogDescription>
 
         {footer && (
-          <DialogFooter className="border-t px-6 py-4">{footer}</DialogFooter>
+          <DialogFooter className="shrink-0 border-t px-4 py-4 sm:px-6 [&>button]:w-full sm:[&>button]:w-auto">
+            {footer}
+          </DialogFooter>
         )}
       </DialogContent>
     </Dialog>

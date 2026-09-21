@@ -78,7 +78,7 @@ export function EntityViewModal<TData>({
       title={title}
       contentClassName={contentClassName}
       footer={
-        <Box className="w-full justify-end">
+        <Box className="w-full justify-end [&>button]:w-full sm:[&>button]:w-auto">
           <Button
             type="button"
             variant="outline"

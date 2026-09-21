@@ -96,6 +96,10 @@ export default function NotificationTemplateCrud() {
       title="Templates de mensagem"
       listQueryKey={["notification-templates"]}
       columns={columns}
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["updatedAt"],
+      }}
       createForm={NotificationTemplateForm}
       createFormTitle="Novo template"
       editFormTitle="Editar template"

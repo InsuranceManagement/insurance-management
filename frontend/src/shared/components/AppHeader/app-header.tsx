@@ -13,12 +13,12 @@ export function AppHeader() {
 
   return (
     <header className="border-b bg-background">
-      <Box className="h-14 items-center gap-3 px-4 md:px-6">
-        <SidebarTrigger className="-ml-1" />
+      <Box className="h-14 min-w-0 items-center gap-2 px-3 sm:gap-3 sm:px-4 lg:px-6">
+        <SidebarTrigger className="-ml-1 size-10 lg:size-8" />
 
         <Typography
           variant="large"
-          className="min-w-0 flex-1 truncate text-base md:text-3xl"
+          className="min-w-0 flex-1 truncate text-base sm:text-lg lg:text-3xl"
         >
           Olá, Wladmir Mainiere!
         </Typography>
@@ -27,6 +27,7 @@ export function AppHeader() {
           type="button"
           variant="ghost"
           size="icon-sm"
+          className="size-10 lg:size-8"
           aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
           onClick={toggleTheme}
         >
@@ -36,7 +37,7 @@ export function AppHeader() {
         <Button
           variant="ghost"
           size="icon-sm"
-          className="relative"
+          className="relative size-10 lg:size-8"
           aria-label="Notificacoes"
         >
           <BellIcon />

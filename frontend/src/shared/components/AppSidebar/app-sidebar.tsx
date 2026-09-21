@@ -33,6 +33,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/shared/components/ui/sidebar"
 import { Typography } from "@/shared/components/ui/typography"
 
@@ -108,10 +109,16 @@ export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const activeHref = useMemo(() => getActiveHref(pathname), [pathname])
+  const { isMobile, setOpenMobile } = useSidebar()
 
   const { logout } = useAuth()
 
+  const handleNavigate = () => {
+    if (isMobile) setOpenMobile(false)
+  }
+
   const handleLogout = () => {
+    handleNavigate()
     logout()
     router.replace("/login")
   }
@@ -130,7 +137,7 @@ export function AppSidebar() {
               tooltip="Mainiere"
               className="h-24 group-data-[collapsible=icon]:justify-center"
             >
-              <Link href="/dashboard">
+              <Link href="/dashboard" onClick={handleNavigate}>
                 <Image
                   src={logoBranca}
                   alt="Mainiere"
@@ -165,7 +172,7 @@ export function AppSidebar() {
                     className="text-sidebar-foreground"
                     isActive={item.href === activeHref}
                   >
-                    <Link href={item.href}>
+                    <Link href={item.href} onClick={handleNavigate}>
                       <item.icon />
 
                       <Typography
@@ -198,7 +205,7 @@ export function AppSidebar() {
                     className="text-sidebar-foreground"
                     isActive={item.href === activeHref}
                   >
-                    <Link href={item.href}>
+                    <Link href={item.href} onClick={handleNavigate}>
                       <item.icon />
 
                       <Typography

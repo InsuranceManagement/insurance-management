@@ -58,7 +58,7 @@ export function ApplicationLogs() {
   return (
     <Box
       asChild
-      className="min-w-0 flex-1 flex-col gap-6 bg-muted/20 p-4 md:p-8"
+      className="min-w-0 flex-1 flex-col gap-6 bg-muted/20 p-4 sm:p-6 lg:p-8"
     >
       <main>
         <Box className="flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -80,7 +80,7 @@ export function ApplicationLogs() {
           </Box>
           <Button
             variant="outline"
-            className="self-start sm:self-center"
+            className="h-10 w-full self-start sm:w-auto sm:self-center"
             onClick={() => void query.refetch()}
             disabled={query.isFetching}
           >
@@ -89,7 +89,7 @@ export function ApplicationLogs() {
           </Button>
         </Box>
 
-        <Box className="grid gap-3 sm:grid-cols-3">
+        <Box className="grid gap-3 md:grid-cols-3">
           {stats.map((stat) => (
             <Box
               key={stat.label}
@@ -278,13 +278,13 @@ export function ApplicationLogs() {
           )}
 
           {hasData && logs.filteredCount > 0 && (
-            <Box className="flex-wrap items-center justify-between gap-3 border-t px-5 py-4">
+            <Box className="flex-col items-stretch gap-3 border-t px-5 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <Typography variant="muted" className="text-xs">
                 Exibindo {logs.startIndex + 1}–
                 {logs.startIndex + logs.visibleLogs.length} de{" "}
                 {logs.filteredCount}
               </Typography>
-              <Box className="items-center gap-3">
+              <Box className="items-center justify-between gap-3 sm:justify-start">
                 <Typography variant="muted" className="text-xs">
                   Página {logs.currentPage} de {logs.pageCount}
                 </Typography>

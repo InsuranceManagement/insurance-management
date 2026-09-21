@@ -25,78 +25,151 @@ type LogTableProps = {
 
 export function LogTable({ logs, onSelect }: Readonly<LogTableProps>) {
   return (
-    <Table className="min-w-[760px] table-fixed">
-      <caption className="sr-only">
-        Histórico de mensagens, dos registros mais recentes aos mais antigos
-      </caption>
-      <TableHeader className="bg-muted/40">
-        <TableRow className="hover:bg-transparent">
-          <TableHead scope="col" className="w-[38%] pl-6 text-xs text-muted-foreground">
-            TIPO / DESTINATÁRIO
-          </TableHead>
-          <TableHead scope="col" className="w-[18%] text-xs text-muted-foreground">
-            STATUS
-          </TableHead>
-          <TableHead scope="col" className="w-[17%] text-xs text-muted-foreground">
-            REMETENTE
-          </TableHead>
-          <TableHead scope="col" className="w-[18%] text-xs text-muted-foreground">
-            DATA E HORA
-          </TableHead>
-          <TableHead scope="col" className="w-[9%]">
-            <span className="sr-only">Detalhes</span>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <>
+      <Box className="flex-col divide-y md:hidden">
         {logs.map((log) => (
-          <TableRow key={log.id} className="group">
-            <TableCell className="py-5 pl-6">
-              <Box className="items-center gap-3">
-                <Box className="size-10 shrink-0 items-center justify-center rounded-xl border bg-background text-muted-foreground group-hover:text-primary">
+          <article key={log.id} className="min-w-0 p-4">
+            <Box className="min-w-0 flex-col gap-4">
+              <Box className="min-w-0 items-start gap-3">
+                <Box className="size-10 shrink-0 items-center justify-center rounded-xl border bg-background text-muted-foreground">
                   <MessageSquareTextIcon aria-hidden="true" className="size-4" />
                 </Box>
-                <Box className="min-w-0 flex-col gap-1">
-                  <Typography variant="small" className="truncate">
+                <Box className="min-w-0 flex-1 flex-col gap-1">
+                  <Typography variant="small" className="break-words">
                     {getTypeLabel(log)}
                   </Typography>
-                  <Typography variant="muted" className="truncate">
+                  <Typography
+                    variant="muted"
+                    className="break-words [overflow-wrap:anywhere]"
+                  >
                     {log.recipient || "Destinatário não informado"}
                   </Typography>
                 </Box>
+                <LogStatus log={log} />
               </Box>
-            </TableCell>
-            <TableCell>
-              <LogStatus log={log} />
-            </TableCell>
-            <TableCell>
-              <Typography variant="muted" className="truncate">
-                {log.sentBy || "Sistema"}
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Box className="flex-col gap-1">
-                <Typography variant="small" className="tabular-nums">
-                  {formatDate(log.timestamp, "DD/MM/YYYY")}
-                </Typography>
-                <Typography variant="muted" className="text-xs tabular-nums">
-                  {formatDate(log.timestamp, "HH:mm:ss")}
-                </Typography>
+
+              <Box className="grid grid-cols-2 gap-4">
+                <Box className="min-w-0 flex-col gap-1">
+                  <Typography
+                    variant="muted"
+                    className="text-xs font-semibold uppercase"
+                  >
+                    Remetente
+                  </Typography>
+                  <Typography
+                    variant="small"
+                    className="break-words [overflow-wrap:anywhere]"
+                  >
+                    {log.sentBy || "Sistema"}
+                  </Typography>
+                </Box>
+                <Box className="min-w-0 flex-col gap-1">
+                  <Typography
+                    variant="muted"
+                    className="text-xs font-semibold uppercase"
+                  >
+                    Data e hora
+                  </Typography>
+                  <Typography variant="small" className="tabular-nums">
+                    {formatDate(log.timestamp, "DD/MM/YYYY")}
+                  </Typography>
+                  <Typography
+                    variant="muted"
+                    className="text-xs tabular-nums"
+                  >
+                    {formatDate(log.timestamp, "HH:mm:ss")}
+                  </Typography>
+                </Box>
               </Box>
-            </TableCell>
-            <TableCell className="pr-4 text-right">
+
               <Button
-                variant="ghost"
-                size="icon"
+                variant="outline"
+                className="h-10 w-full"
                 aria-label={`Ver detalhes da mensagem para ${log.recipient || "destinatário não informado"}`}
                 onClick={() => onSelect(log)}
               >
-                <ArrowUpRightIcon />
+                Ver detalhes <ArrowUpRightIcon />
               </Button>
-            </TableCell>
-          </TableRow>
+            </Box>
+          </article>
         ))}
-      </TableBody>
-    </Table>
+      </Box>
+
+      <Box className="hidden min-w-0 md:block">
+        <Table className="min-w-[760px] table-fixed">
+          <caption className="sr-only">
+            Histórico de mensagens, dos registros mais recentes aos mais antigos
+          </caption>
+          <TableHeader className="bg-muted/40">
+            <TableRow className="hover:bg-transparent">
+              <TableHead scope="col" className="w-[38%] pl-6 text-xs text-muted-foreground">
+                TIPO / DESTINATÁRIO
+              </TableHead>
+              <TableHead scope="col" className="w-[18%] text-xs text-muted-foreground">
+                STATUS
+              </TableHead>
+              <TableHead scope="col" className="w-[17%] text-xs text-muted-foreground">
+                REMETENTE
+              </TableHead>
+              <TableHead scope="col" className="w-[18%] text-xs text-muted-foreground">
+                DATA E HORA
+              </TableHead>
+              <TableHead scope="col" className="w-[9%]">
+                <span className="sr-only">Detalhes</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {logs.map((log) => (
+              <TableRow key={log.id} className="group">
+                <TableCell className="py-5 pl-6">
+                  <Box className="items-center gap-3">
+                    <Box className="size-10 shrink-0 items-center justify-center rounded-xl border bg-background text-muted-foreground group-hover:text-primary">
+                      <MessageSquareTextIcon aria-hidden="true" className="size-4" />
+                    </Box>
+                    <Box className="min-w-0 flex-col gap-1">
+                      <Typography variant="small" className="truncate">
+                        {getTypeLabel(log)}
+                      </Typography>
+                      <Typography variant="muted" className="truncate">
+                        {log.recipient || "Destinatário não informado"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <LogStatus log={log} />
+                </TableCell>
+                <TableCell>
+                  <Typography variant="muted" className="truncate">
+                    {log.sentBy || "Sistema"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Box className="flex-col gap-1">
+                    <Typography variant="small" className="tabular-nums">
+                      {formatDate(log.timestamp, "DD/MM/YYYY")}
+                    </Typography>
+                    <Typography variant="muted" className="text-xs tabular-nums">
+                      {formatDate(log.timestamp, "HH:mm:ss")}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell className="pr-4 text-right">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Ver detalhes da mensagem para ${log.recipient || "destinatário não informado"}`}
+                    onClick={() => onSelect(log)}
+                  >
+                    <ArrowUpRightIcon />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+    </>
   )
 }

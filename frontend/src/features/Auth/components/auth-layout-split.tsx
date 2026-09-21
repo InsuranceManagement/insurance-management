@@ -7,10 +7,10 @@ interface AuthLayoutProps {
 
 export function AuthLayoutSplit({ children }: AuthLayoutProps) {
   return (
-    <Box className="grid min-h-screen lg:grid-cols-2">
+    <Box className="grid min-h-dvh lg:grid-cols-2">
       <BrandPanel />
 
-      <Box className="flex items-center justify-center bg-background p-6 lg:p-12">
+      <Box className="min-w-0 items-center justify-center bg-background p-4 sm:p-6 lg:p-12">
         {children}
       </Box>
     </Box>

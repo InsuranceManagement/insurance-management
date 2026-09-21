@@ -31,18 +31,22 @@ export function ActionsPopover({
   }
 
   return (
-    <Box className="absolute -top-12 right-3 z-10 items-center gap-2 rounded-lg border bg-card p-2 shadow-sm">
+    <Box className="z-10 mb-3 w-full flex-wrap items-center justify-between gap-2 rounded-lg border bg-card p-2 shadow-sm md:absolute md:-top-12 md:right-3 md:mb-0 md:w-auto md:justify-start">
       <Button
         type="button"
         variant="ghost"
         size="icon-xs"
+        className="size-10 md:size-6"
         aria-label="Limpar selecao"
         onClick={onClearSelection}
       >
         <XIcon />
       </Button>
 
-      <Typography variant="small" className="text-muted-foreground">
+      <Typography
+        variant="small"
+        className="min-w-0 flex-1 text-muted-foreground md:flex-none"
+      >
         {selectedCount} itens selecionados
       </Typography>
 
@@ -51,6 +55,7 @@ export function ActionsPopover({
           type="button"
           variant="ghost"
           size="icon-xs"
+          className="size-10 md:size-6"
           aria-label="Deletar selecionados"
           onClick={onDeleteSelected}
         >
@@ -65,7 +70,10 @@ export function ActionsPopover({
         aria-label="Editar selecionado"
         aria-pressed={isSingleSelection}
         disabled={!isSingleSelection}
-        className={cn(isSingleSelection ? "bg-muted text-foreground" : "")}
+        className={cn(
+          "size-10 md:size-6",
+          isSingleSelection ? "bg-muted text-foreground" : "",
+        )}
         onClick={onEditSelected}
       >
         <PencilIcon
@@ -83,6 +91,7 @@ export function ActionsPopover({
         aria-pressed={canViewEntity && isSingleSelection}
         disabled={!canViewEntity || !isSingleSelection}
         className={cn(
+          "size-10 md:size-6",
           canViewEntity && isSingleSelection ? "bg-muted text-foreground" : "",
         )}
         onClick={onViewEntity}

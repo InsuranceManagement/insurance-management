@@ -126,7 +126,7 @@ export function ClientForm({
   return (
     <Box asChild>
       <form
-        className="max-h-[76vh] w-full flex-col gap-6 overflow-x-hidden overflow-y-auto pr-1"
+        className="w-full min-w-0 flex-col gap-6 overflow-x-hidden"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -450,7 +450,7 @@ export function ClientForm({
           />
         </Box>
 
-        <Box className="sticky bottom-0 justify-end gap-2 border-t bg-popover pt-4">
+        <Box className="flex-col-reverse gap-2 border-t bg-popover pt-4 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
           {onCancel ? (
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

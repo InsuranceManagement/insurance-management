@@ -179,6 +179,10 @@ export default function ClientCrud() {
     <CrudScreen<Client, ClientUpsertFormValues>
       title="Clientes"
       columns={columns}
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["createdAt"],
+      }}
       createForm={ClientForm}
       createFormTitle="Novo cliente"
       editFormTitle="Editar cliente"

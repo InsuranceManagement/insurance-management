@@ -47,6 +47,9 @@ export default function ForgotPasswordForm({
       body: values,
     })
 
+    // The timestamp is intentionally created only after the user-triggered
+    // request succeeds.
+    // eslint-disable-next-line react-hooks/purity
     setResendAvailableAt(Date.now() + 60_000)
     onSuccess(values.email)
   })
@@ -84,7 +87,7 @@ export default function ForgotPasswordForm({
       setCooldown(remaining)
 
       if (remaining === 0) {
-        emailSent = true
+        onCooldownFinished()
       }
     }
 

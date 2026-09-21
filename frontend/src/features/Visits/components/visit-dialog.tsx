@@ -110,7 +110,7 @@ export function VisitDialog({
         onOpenChange={(open) => !open && handleClose()}
         title="Detalhes da visita"
         footer={
-          <Box className="w-full flex-wrap justify-between gap-2">
+          <Box className="w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-between [&>button]:w-full sm:[&>button]:w-auto">
             <Button
               type="button"
               variant="destructive"
@@ -119,7 +119,7 @@ export function VisitDialog({
             >
               Excluir
             </Button>
-            <Box className="gap-2">
+            <Box className="flex-col-reverse gap-2 sm:flex-row [&>button]:w-full sm:[&>button]:w-auto">
               <Button type="button" variant="outline" onClick={handleClose}>
                 Fechar
               </Button>

@@ -118,7 +118,7 @@ export function ProductTypeForm({
           ) : null}
         </Box>
 
-        <Box className="justify-end gap-2 pt-2">
+        <Box className="flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
           {onCancel ? (
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

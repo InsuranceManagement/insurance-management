@@ -108,7 +108,7 @@ export function NotificationTemplateForm({
   return (
     <Box asChild>
       <form
-        className="w-full max-h-[76vh] flex-col gap-4 overflow-y-auto pr-1"
+        className="w-full min-w-0 flex-col gap-4"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -243,7 +243,7 @@ export function NotificationTemplateForm({
           ))}
         </Box>
 
-        <Box className="justify-end gap-2 border-t pt-4">
+        <Box className="flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end [&>button]:w-full sm:[&>button]:w-auto">
           {onCancel ? (
             <Button
               type="button"

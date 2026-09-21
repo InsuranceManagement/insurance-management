@@ -98,6 +98,10 @@ export default function InsuranceCompanyCrud() {
     <CrudScreen<InsuranceCompany, InsuranceCompanyUpsertFormValues>
       title="Seguradoras"
       columns={columns}
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["createdAt", "updatedAt"],
+      }}
       createForm={InsuranceCompanyForm}
       createFormTitle="Nova seguradora"
       editFormTitle="Editar seguradora"

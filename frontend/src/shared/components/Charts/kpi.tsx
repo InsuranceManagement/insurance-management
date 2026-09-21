@@ -41,9 +41,11 @@ export function KPIChart({
       <Box
         className={cn("h-full w-full flex-col justify-start gap-1", className)}
       >
-        <Typography variant="large">{title}</Typography>
+        <Typography variant="large" className="break-words">
+          {title}
+        </Typography>
 
-        <Typography variant="small" className="text-4xl">
+        <Typography variant="small" className="text-3xl sm:text-4xl">
           {formattedValue + (unit ?? "")}
         </Typography>
       </Box>

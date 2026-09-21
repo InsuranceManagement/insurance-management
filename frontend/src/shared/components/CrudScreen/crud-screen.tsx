@@ -24,7 +24,10 @@ import { useDeleteEntity } from "@/shared/components/CrudScreen/hooks/use-delete
 import { useEditEntity } from "@/shared/components/CrudScreen/hooks/use-edit-entity"
 import { useEntityView } from "@/shared/components/CrudScreen/hooks/use-entity-view"
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
-import { DataTable } from "@/shared/components/DataTable/data-table"
+import {
+  DataTable,
+  type MobileCardConfig,
+} from "@/shared/components/DataTable/data-table"
 import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
@@ -51,6 +54,7 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   sourceRoutes: CrudSourceRoutes
   listQueryKey?: QueryKey
   columns?: ColumnDef<TData>[]
+  mobileCard?: MobileCardConfig<TData>
   cardView?: CrudCardView<TData>
   createForm: ComponentType<CrudFormProps<TCreatePayload>>
   createFormTitle?: string
@@ -71,6 +75,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   sourceRoutes,
   listQueryKey: listQueryKeyProp,
   columns,
+  mobileCard,
   cardView,
   createForm: CreateFormComponent,
   createFormTitle = "Novo registro",
@@ -178,9 +183,9 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   })
 
   return (
-    <main className="flex flex-1 flex-col p-6 md:p-8">
+    <main className="flex min-w-0 flex-1 flex-col p-4 sm:p-6 lg:p-8">
       <Box className="flex-col gap-5">
-        <Box className="mx-1 items-center justify-between gap-4">
+        <Box className="mx-1 flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 [&>button]:w-full sm:[&>button]:w-auto">
           <Typography variant="h3">{title}</Typography>
 
           <AddButton
@@ -258,6 +263,11 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             <DataTable
               caption={caption ?? "Tabela de registros"}
               columns={columns ?? []}
+              mobileCard={
+                mobileCard ?? {
+                  titleColumnId: "name" as Extract<keyof TData, string>,
+                }
+              }
               data={rows}
               className="w-full"
               rowSelection={rowSelection}

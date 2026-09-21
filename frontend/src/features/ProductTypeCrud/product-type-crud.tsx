@@ -74,6 +74,10 @@ export default function ProductTypeCrud() {
     <CrudScreen<ProductType, ProductTypeUpsertFormValues>
       title="Tipos de Produto"
       columns={columns}
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["updatedAt"],
+      }}
       createForm={ProductTypeForm}
       createFormTitle="Novo tipo de produto"
       editFormTitle="Editar tipo de produto"
