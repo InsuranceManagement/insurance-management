@@ -36,7 +36,7 @@ export function ActionsPopover({
         type="button"
         variant="ghost"
         size="icon-xs"
-        className="size-10 md:size-6"
+        className="size-10 xl:size-6"
         aria-label="Limpar selecao"
         onClick={onClearSelection}
       >
@@ -55,7 +55,7 @@ export function ActionsPopover({
           type="button"
           variant="ghost"
           size="icon-xs"
-          className="size-10 md:size-6"
+          className="size-10 xl:size-6"
           aria-label="Deletar selecionados"
           onClick={onDeleteSelected}
         >
@@ -71,7 +71,7 @@ export function ActionsPopover({
         aria-pressed={isSingleSelection}
         disabled={!isSingleSelection}
         className={cn(
-          "size-10 md:size-6",
+          "size-10 xl:size-6",
           isSingleSelection ? "bg-muted text-foreground" : "",
         )}
         onClick={onEditSelected}
@@ -91,7 +91,7 @@ export function ActionsPopover({
         aria-pressed={canViewEntity && isSingleSelection}
         disabled={!canViewEntity || !isSingleSelection}
         className={cn(
-          "size-10 md:size-6",
+          "size-10 xl:size-6",
           canViewEntity && isSingleSelection ? "bg-muted text-foreground" : "",
         )}
         onClick={onViewEntity}

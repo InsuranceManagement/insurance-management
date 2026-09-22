@@ -49,7 +49,7 @@ export default function RootLayout({
         </QueryProvider>
 
         <Toaster
-          position="top-right"
+          position="top-center"
           richColors
           closeButton
         />

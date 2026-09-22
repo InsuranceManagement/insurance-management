@@ -125,6 +125,7 @@ const createViewFields = (
   {
     accessorKey: "products",
     label: "Produtos",
+    className: "sm:col-span-2",
     cell: ({ entity }) => (
       <Box className="flex-col gap-1">
         {entity.products.length > 0 ? (
@@ -181,7 +182,7 @@ export default function ClientCrud() {
       columns={columns}
       mobileCard={{
         titleColumnId: "name",
-        hiddenColumnIds: ["createdAt"],
+        hiddenColumnIds: ["email", "cpf", "createdAt"],
       }}
       createForm={ClientForm}
       createFormTitle="Novo cliente"
@@ -189,6 +190,7 @@ export default function ClientCrud() {
       formModalContentClassName="sm:max-w-3xl"
       viewModalTitle="Detalhes do Cliente"
       viewModalContentClassName="sm:max-w-3xl"
+      viewModalExpandable
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

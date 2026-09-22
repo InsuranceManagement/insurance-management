@@ -76,7 +76,7 @@ export default function ProductTypeCrud() {
       columns={columns}
       mobileCard={{
         titleColumnId: "name",
-        hiddenColumnIds: ["updatedAt"],
+        hiddenColumnIds: ["description", "createdAt", "updatedAt"],
       }}
       createForm={ProductTypeForm}
       createFormTitle="Novo tipo de produto"

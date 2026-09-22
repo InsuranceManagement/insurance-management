@@ -105,7 +105,10 @@ export function CrudCardList<TData extends EntityWithName>({
                   />
                 </Box>
 
-                {cardView.renderCard({ entity, isSelected })}
+                {cardView.renderCard({
+                  entity,
+                  isSelected,
+                })}
               </Card>
             )
           })}

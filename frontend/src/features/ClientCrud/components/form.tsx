@@ -192,7 +192,7 @@ export function ClientForm({
                   id="client-cpf"
                   inputMode="numeric"
                   maxLength={11}
-                  placeholder="Somente numeros"
+                  placeholder="Somente números"
                   aria-invalid={!!form.formState.errors.cpf}
                 />
               )}
@@ -215,7 +215,7 @@ export function ClientForm({
                   id="client-cnpj"
                   inputMode="numeric"
                   maxLength={14}
-                  placeholder="Somente numeros"
+                  placeholder="Somente números"
                   aria-invalid={!!form.formState.errors.cnpj}
                 />
               )}
@@ -288,7 +288,7 @@ export function ClientForm({
                     id="client-cep"
                     inputMode="numeric"
                     maxLength={8}
-                    placeholder="Somente numeros"
+                    placeholder="Somente números"
                     aria-invalid={!!form.formState.errors.address?.cep}
                   />
                 )}
@@ -372,7 +372,7 @@ export function ClientForm({
                   <Input
                     {...field}
                     id="client-city"
-                    placeholder="Sao Paulo"
+                    placeholder="São Paulo"
                     aria-invalid={!!form.formState.errors.address?.city}
                   />
                 )}
@@ -385,7 +385,7 @@ export function ClientForm({
             </Box>
 
             <Box className="flex-col gap-1.5">
-              <Label htmlFor="client-number">Numero</Label>
+              <Label htmlFor="client-number">Número</Label>
               <Controller
                 control={form.control}
                 name="address.number"

@@ -202,35 +202,39 @@ function DataTable<TData, TValue>({
                     </Box>
 
                     <Box className="min-w-0 flex-1 flex-col gap-4">
-                      <Box className="min-w-0 text-base font-semibold break-words [overflow-wrap:anywhere] [&_*]:whitespace-normal">
-                        {titleCell
-                          ? flexRender(
+                      <Box className="min-w-0 items-start justify-between gap-2">
+                        {titleCell ? (
+                          <Box className="min-w-0 flex-1 text-base font-semibold break-words [overflow-wrap:anywhere] [&_*]:whitespace-normal">
+                            {flexRender(
                               titleCell.column.columnDef.cell,
                               titleCell.getContext(),
-                            )
-                          : null}
+                            )}
+                          </Box>
+                        ) : null}
                       </Box>
 
-                      <Box className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-3">
-                        {detailCells.map((cell) => (
-                          <Box
-                            key={cell.id}
-                            className="min-w-0 flex-col gap-1"
-                          >
-                            <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                              {typeof cell.column.columnDef.header === "string"
-                                ? cell.column.columnDef.header
-                                : cell.column.id}
-                            </span>
-                            <Box className="min-w-0 text-sm break-words [overflow-wrap:anywhere] [&_*]:whitespace-normal">
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext(),
-                              )}
+                      {detailCells.length > 0 ? (
+                        <Box className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-3">
+                          {detailCells.map((cell) => (
+                            <Box
+                              key={cell.id}
+                              className="min-w-0 flex-col gap-1"
+                            >
+                              <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                                {typeof cell.column.columnDef.header === "string"
+                                  ? cell.column.columnDef.header
+                                  : cell.column.id}
+                              </span>
+                              <Box className="min-w-0 text-sm break-words [overflow-wrap:anywhere] [&_*]:whitespace-normal">
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </Box>
                             </Box>
-                          </Box>
-                        ))}
-                      </Box>
+                          ))}
+                        </Box>
+                      ) : null}
                     </Box>
                   </Box>
                 </article>
@@ -272,6 +276,8 @@ function DataTable<TData, TValue>({
                     className={cn(
                       "text-xs font-semibold tracking-wide uppercase text-muted-foreground",
                       header.column.getCanSort() && "cursor-pointer select-none",
+                      ["createdAt", "updatedAt"].includes(header.column.id) &&
+                        "max-lg:hidden",
                     )}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -318,7 +324,13 @@ function DataTable<TData, TValue>({
                   </TableCell>
 
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        ["createdAt", "updatedAt"].includes(cell.column.id) &&
+                          "max-lg:hidden",
+                      )}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

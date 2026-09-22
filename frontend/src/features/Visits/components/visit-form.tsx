@@ -8,7 +8,6 @@ import { z } from "zod"
 
 import { type Client } from "@/features/ClientCrud/models/client"
 import { Box } from "@/shared/components/ui/box"
-import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
@@ -41,10 +40,7 @@ type VisitFormProps = {
   initialValues: VisitFormValues
   isEditing: boolean
   isSubmitting: boolean
-  submitLabel: string
-  onCancel: () => void
   onSubmit: (payload: VisitUpsertPayload) => void
-  onDelete?: () => void
 }
 
 export function VisitForm({
@@ -52,10 +48,7 @@ export function VisitForm({
   initialValues,
   isEditing,
   isSubmitting,
-  submitLabel,
-  onCancel,
   onSubmit,
-  onDelete,
 }: Readonly<VisitFormProps>) {
   const [minimumDateTime] = useState(getMinimumDateTime)
   const form = useForm<VisitFormValues>({
@@ -94,7 +87,12 @@ export function VisitForm({
 
   return (
     <Box asChild>
-      <form className="flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form
+        id="visit-form"
+        className="flex-col gap-4 max-md:mx-auto max-md:w-full max-md:max-w-lg max-md:flex-none"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <Box className="flex-col gap-1.5">
           <Label htmlFor="visit-name">Título</Label>
           <Input id="visit-name" {...form.register("name")} aria-invalid={!!form.formState.errors.name} />
@@ -124,11 +122,6 @@ export function VisitForm({
           {form.formState.errors.date?.message ? <Typography variant="small" className="text-destructive">{form.formState.errors.date.message}</Typography> : null}
         </Box>
 
-        <Box className="flex-row gap-2 border-t pt-4 [&>button]:h-auto [&>button]:min-h-9 [&>button]:min-w-0 [&>button]:flex-1 [&>button]:whitespace-normal">
-          {onDelete ? <Button type="button" variant="destructive" onClick={onDelete} disabled={isSubmitting}>Excluir</Button> : null}
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancelar</Button>
-          <Button type="submit" disabled={isSubmitting}>{submitLabel}</Button>
-        </Box>
       </form>
     </Box>
   )

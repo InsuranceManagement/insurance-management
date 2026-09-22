@@ -145,7 +145,23 @@ export const Dashboard = () => {
           />
         ))}
 
-        {charts.map((chart) => renderChartByType(chart))}
+        {charts.map((chart) => {
+          const isProductTypesByInsuranceCompany =
+            chart.id === "product-types-by-insurance-company"
+
+          return (
+            <Box
+              key={chart.id}
+              className={
+                isProductTypesByInsuranceCompany
+                  ? "hidden md:contents"
+                  : "contents"
+              }
+            >
+              {renderChartByType(chart)}
+            </Box>
+          )
+        })}
       </section>
     </Box>
   )

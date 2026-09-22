@@ -82,7 +82,7 @@ export function InsuranceCompanyForm({
               <Input
                 {...field}
                 id="insurance-company-name"
-                placeholder="Ex.: Protecao Total"
+                placeholder="Ex.: Proteção Total"
                 aria-invalid={!!form.formState.errors.name}
               />
             )}

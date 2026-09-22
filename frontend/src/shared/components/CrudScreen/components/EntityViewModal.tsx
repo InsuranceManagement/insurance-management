@@ -5,6 +5,7 @@ import { type ReactNode } from "react"
 import { Box } from "@/shared/components/ui/box"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
+import { cn } from "@/shared/lib/utils"
 
 type EntityViewFieldCellContext<TData> = {
   value: TData[keyof TData]
@@ -15,6 +16,7 @@ export type EntityViewField<TData> = {
   accessorKey: keyof TData
   label: string
   cell?: (context: EntityViewFieldCellContext<TData>) => ReactNode
+  className?: string
 }
 
 type EntityViewModalProps<TData> = {
@@ -25,6 +27,7 @@ type EntityViewModalProps<TData> = {
   fields: EntityViewField<TData>[]
   emptyValue?: ReactNode
   contentClassName?: string
+  expandable?: boolean
 }
 
 export function EntityViewModal<TData>({
@@ -35,6 +38,7 @@ export function EntityViewModal<TData>({
   fields,
   emptyValue = "-",
   contentClassName,
+  expandable = false,
 }: Readonly<EntityViewModalProps<TData>>) {
   const renderFieldValue = (value: ReactNode) => {
     if (
@@ -65,6 +69,7 @@ export function EntityViewModal<TData>({
       onOpenChange={onOpenChange}
       title={title}
       contentClassName={contentClassName}
+      expandable={expandable}
       mobileFullscreen
     >
       <Box className="w-full flex-col gap-4">
@@ -83,7 +88,10 @@ export function EntityViewModal<TData>({
             return (
               <Box
                 key={String(field.accessorKey)}
-                className="min-w-0 flex-col gap-1 bg-card p-3"
+                className={cn(
+                  "min-w-0 flex-col gap-1 bg-card p-3",
+                  field.className,
+                )}
               >
                 <Typography
                   variant="small"

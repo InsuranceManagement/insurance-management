@@ -65,6 +65,7 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   viewModalTitle?: string
   viewModalEmptyValue?: ReactNode
   viewModalContentClassName?: string
+  viewModalExpandable?: boolean
   caption?: string
 }
 
@@ -84,6 +85,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   viewModalTitle = "Detalhes",
   viewModalEmptyValue,
   viewModalContentClassName,
+  viewModalExpandable = false,
   caption,
 }: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -226,6 +228,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             title={viewModalTitle}
             emptyValue={viewModalEmptyValue}
             contentClassName={viewModalContentClassName}
+            expandable={viewModalExpandable}
             open={isEntityViewOpen}
             onOpenChange={handleEntityViewOpenChange}
             entity={entityInView}

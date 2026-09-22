@@ -20,9 +20,9 @@ function DeleteModal({
   onOpenChange,
   onConfirm,
   itemName,
-  title = "Confirmar exclusao",
+  title = "Confirmar exclusão",
   confirmLabel = "Sim",
-  cancelLabel = "Nao",
+  cancelLabel = "Não",
   isConfirming = false,
 }: Readonly<DeleteModalProps>) {
   const handleCancel = () => {
@@ -52,7 +52,7 @@ function DeleteModal({
       }
     >
       <Typography>
-        Voce tem certeza que quer deletar o item {itemName}?
+        Você tem certeza de que deseja excluir o item {itemName}?
       </Typography>
     </Modal>
   )

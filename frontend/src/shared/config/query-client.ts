@@ -11,7 +11,7 @@ function getErrorMessage(error: unknown): string {
         error.response?.status === 429 &&
         "remainingSeconds" in responseData
       ) {
-        return `Você poderá solicitar um novo email em ${responseData.remainingSeconds}s`
+        return `Você poderá solicitar um novo e-mail em ${responseData.remainingSeconds}s.`
       }
 
       if ("message" in responseData) {

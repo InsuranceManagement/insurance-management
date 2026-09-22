@@ -127,7 +127,7 @@ export default function ForgotPasswordForm({
             ? "Reenviando..."
             : cooldown > 0
               ? `Reenviar em ${cooldown}s`
-              : "Reenviar email"}
+              : "Reenviar e-mail"}
         </Button>
 
         <Button
@@ -154,7 +154,7 @@ export default function ForgotPasswordForm({
             variant="small"
             className="font-medium"
           >
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">E-mail</label>
           </Typography>
 
           <Controller
@@ -165,7 +165,7 @@ export default function ForgotPasswordForm({
                 {...field}
                 id="email"
                 type="email"
-                placeholder="Digite seu email"
+                placeholder="Digite seu e-mail"
                 aria-invalid={!!form.formState.errors.email}
               />
             )}

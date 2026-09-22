@@ -5,9 +5,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CircleAlertIcon,
-  LayersIcon,
+  CircleHelpIcon,
   LogsIcon,
-  MessageSquareTextIcon,
   RefreshCwIcon,
   SearchIcon,
 } from "lucide-react"
@@ -23,6 +22,11 @@ import { Label } from "@/shared/components/ui/label"
 import { SelectInput } from "@/shared/components/ui/select-input"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { Typography } from "@/shared/components/ui/typography"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shared/components/ui/tooltip"
 import { formatDate } from "@/shared/lib/date-format"
 import { cn } from "@/shared/lib/utils"
 
@@ -38,19 +42,16 @@ export function ApplicationLogs() {
     {
       label: "Mensagens registradas",
       value: logs.total,
-      icon: MessageSquareTextIcon,
       caption: "Todo o histórico disponível",
     },
     {
       label: "Registros com erro",
       value: logs.errorCount,
-      icon: CircleAlertIcon,
       caption: "Mensagens com erro informado",
     },
     {
       label: "Tipos de mensagem",
       value: logs.types.length,
-      icon: LayersIcon,
       caption: "Presentes neste histórico",
     },
   ]
@@ -96,20 +97,29 @@ export function ApplicationLogs() {
               className="flex-col gap-4 rounded-2xl border bg-card p-5 shadow-xs"
             >
               <Box className="items-center justify-between gap-3">
-                <Typography variant="small" className="text-muted-foreground">
-                  {stat.label}
-                </Typography>
-                <stat.icon
-                  aria-hidden="true"
-                  className="size-4 text-muted-foreground"
-                />
+                <Box className="min-w-0">
+                  <Typography variant="small" className="text-muted-foreground">
+                    {stat.label}
+                  </Typography>
+                </Box>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-xs"
+                      className="shrink-0 rounded-full text-muted-foreground"
+                      aria-label={`Sobre ${stat.label}`}
+                    >
+                      <CircleHelpIcon aria-hidden="true" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">{stat.caption}</TooltipContent>
+                </Tooltip>
               </Box>
               <Box className="flex-col gap-1">
                 <Typography variant="h2" asChild className="tabular-nums">
                   <p>{hasData ? stat.value.toLocaleString("pt-BR") : "—"}</p>
-                </Typography>
-                <Typography variant="muted" className="text-xs">
-                  {stat.caption}
                 </Typography>
               </Box>
             </Box>

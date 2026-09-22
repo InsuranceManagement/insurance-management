@@ -81,7 +81,33 @@ export function VisitDialog({
         open={isFormOpen}
         onOpenChange={handleFormOpenChange}
         title={visit ? "Editar visita" : "Nova visita"}
+        bodyClassName={isFormOpen ? "max-md:flex max-md:flex-col" : undefined}
         mobileFullscreen
+        footer={
+          <Box className="w-full gap-2 [&>button]:h-auto [&>button]:min-h-9 [&>button]:min-w-0 [&>button]:flex-1 [&>button]:whitespace-normal sm:[&>button]:flex-none">
+            {isEditing ? (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => setIsDeleteOpen(true)}
+                disabled={isSubmitting}
+              >
+                Excluir
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleFormOpenChange(false)}
+              disabled={isSubmitting}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" form="visit-form" disabled={isSubmitting}>
+              {visit ? "Salvar" : "Criar visita"}
+            </Button>
+          </Box>
+        }
       >
         {isFormOpen ? (
           <VisitForm
@@ -98,10 +124,7 @@ export function VisitDialog({
                   : "",
             }}
             isSubmitting={isSubmitting}
-            submitLabel={visit ? "Salvar alterações" : "Criar visita"}
-            onCancel={() => handleFormOpenChange(false)}
             onSubmit={handleSubmit}
-            onDelete={visit ? () => setIsDeleteOpen(true) : undefined}
           />
         ) : null}
       </Modal>

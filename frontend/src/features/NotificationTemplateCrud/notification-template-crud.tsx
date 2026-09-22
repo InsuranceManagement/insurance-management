@@ -102,7 +102,7 @@ export default function NotificationTemplateCrud() {
       createForm={NotificationTemplateForm}
       createFormTitle="Novo template"
       editFormTitle="Editar template"
-      formModalContentClassName="sm:max-w-2xl"
+      formModalContentClassName="sm:max-w-2xl pb-[2em]"
       viewFields={viewFields}
       viewModalTitle="Detalhes do template"
       caption="Tabela de templates de mensagem"

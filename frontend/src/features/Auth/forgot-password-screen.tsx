@@ -82,11 +82,11 @@ export default function ForgotPasswordScreen() {
   return (
     <AuthLayoutSplit>
       <AuthCard
-        title={emailSent ? "Verifique seu email" : "Recuperar senha"}
+        title={emailSent ? "Verifique seu e-mail" : "Recuperar senha"}
         description={
           emailSent
             ? undefined
-            : "Informe seu email para receber instruções de recuperação de senha."
+            : "Informe seu e-mail para receber instruções de recuperação de senha."
         }
       >
         <ForgotPasswordForm

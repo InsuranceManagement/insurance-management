@@ -108,7 +108,7 @@ export function NotificationTemplateForm({
   return (
     <Box asChild>
       <form
-        className="w-full min-w-0 flex-col gap-4"
+        className="w-full min-w-0 flex-col gap-4 pb-8"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -196,11 +196,12 @@ export function NotificationTemplateForm({
         />
 
         <Box className="flex-col gap-3 border-t pt-4">
-          <Box className="items-center justify-between gap-3">
+          <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Typography variant="small" className="font-medium">
               Variáveis do template
             </Typography>
             <Button
+              className="w-full sm:w-auto"
               type="button"
               size="sm"
               variant="outline"
@@ -220,17 +221,20 @@ export function NotificationTemplateForm({
           {fields.map((item, index) => (
             <Box
               key={item.id}
-              className="items-center gap-2 rounded-md border p-3"
+              className="min-w-0 flex-col items-stretch gap-2 rounded-md border p-3 sm:flex-row sm:items-center"
             >
               <Input
+                className="min-w-0 w-full"
                 {...form.register(`variablePairs.${index}.key`)}
                 placeholder="Chave"
               />
               <Input
+                className="min-w-0 w-full"
                 {...form.register(`variablePairs.${index}.value`)}
                 placeholder="Descrição da variável"
               />
               <Button
+                className="self-end sm:self-auto"
                 type="button"
                 size="icon-sm"
                 variant="ghost"
@@ -243,7 +247,7 @@ export function NotificationTemplateForm({
           ))}
         </Box>
 
-        <Box className="flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
+        <Box className="mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? (
             <Button
               type="button"

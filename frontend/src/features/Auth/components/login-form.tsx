@@ -49,7 +49,7 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit} className="w-full flex-col gap-4" noValidate>
         <Box className="flex-col gap-1.5">
           <Typography asChild variant="small" className="font-medium">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">E-mail</label>
           </Typography>
 
           <Controller

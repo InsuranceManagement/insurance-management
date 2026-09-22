@@ -109,7 +109,9 @@ function createCardView(
       return (
         <>
           <CardHeader className="pr-12">
-            <CardTitle>{rule.name}</CardTitle>
+            <CardTitle className="min-w-0 flex-1 break-words [overflow-wrap:anywhere]">
+              {rule.name}
+            </CardTitle>
             <CardDescription>
               {templateNames.get(rule.templateId) ?? "Template não encontrado"}
             </CardDescription>
@@ -194,7 +196,7 @@ export default function NotificationRuleCrud() {
       createForm={NotificationRuleForm}
       createFormTitle="Nova regra"
       editFormTitle="Editar regra"
-      formModalContentClassName="sm:max-w-2xl"
+      formModalContentClassName="sm:max-w-2xl pb-[2em]"
       viewFields={viewFields}
       viewModalTitle="Detalhes da regra"
       mapEditEntityToFormValues={(rule) => ({

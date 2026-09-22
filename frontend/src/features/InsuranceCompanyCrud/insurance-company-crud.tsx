@@ -26,9 +26,6 @@ const columns: ColumnDef<InsuranceCompany>[] = [
           className="size-4 rounded-full border"
           style={{ backgroundColor: row.original.color }}
         />
-        <Typography asChild variant="small">
-          <span>{row.original.color}</span>
-        </Typography>
       </Box>
     ),
   },
@@ -67,9 +64,6 @@ const viewFields: EntityViewField<InsuranceCompany>[] = [
           className="size-4 rounded-full border"
           style={{ backgroundColor: String(value) }}
         />
-        <Typography asChild variant="small">
-          <span>{String(value)}</span>
-        </Typography>
       </Box>
     ),
   },
