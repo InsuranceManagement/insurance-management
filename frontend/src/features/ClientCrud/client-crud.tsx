@@ -22,6 +22,29 @@ function getDocumentLabel(client: Client) {
   return client.cpf ?? client.cnpj ?? "-"
 }
 
+const clientAvatarColors = [
+  { background: "#dbeafe", foreground: "#1e3a8a" },
+  { background: "#dcfce7", foreground: "#166534" },
+  { background: "#fef3c7", foreground: "#92400e" },
+  { background: "#fce7f3", foreground: "#9d174d" },
+  { background: "#ede9fe", foreground: "#5b21b6" },
+  { background: "#ffedd5", foreground: "#9a3412" },
+]
+
+function getClientInitials(name: string) {
+  const nameParts = name.trim().split(/\s+/).filter(Boolean)
+
+  if (nameParts.length === 0) return "?"
+  if (nameParts.length === 1) return nameParts[0].slice(0, 2).toUpperCase()
+
+  return `${nameParts[0][0]}${nameParts.at(-1)?.[0] ?? ""}`.toUpperCase()
+}
+
+function getClientAvatarColor(name: string) {
+  const hash = [...name].reduce((total, character) => total + character.charCodeAt(0), 0)
+  return clientAvatarColors[hash % clientAvatarColors.length]
+}
+
 function formatAddress(client: Client) {
   const { address } = client
   const addressLine = [
@@ -43,6 +66,27 @@ const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "name",
     header: "Nome",
+    cell: ({ row }) => {
+      const avatarColor = getClientAvatarColor(row.original.name)
+
+      return (
+        <Box className="min-w-0 items-center gap-3">
+          <Box
+            aria-hidden="true"
+            className="size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+            style={{
+              backgroundColor: avatarColor.background,
+              color: avatarColor.foreground,
+            }}
+          >
+            {getClientInitials(row.original.name)}
+          </Box>
+          <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+            {row.original.name}
+          </span>
+        </Box>
+      )
+    },
   },
   {
     accessorKey: "email",
@@ -116,6 +160,7 @@ const createViewFields = (
   {
     accessorKey: "address",
     label: "Endereço",
+    className: "sm:col-span-2",
     cell: ({ entity }) => (
       <Typography asChild variant="small">
         <span>{formatAddress(entity)}</span>
@@ -125,6 +170,7 @@ const createViewFields = (
   {
     accessorKey: "products",
     label: "Produtos",
+    className: "sm:col-span-2",
     cell: ({ entity }) => (
       <Box className="flex-col gap-1">
         {entity.products.length > 0 ? (
@@ -179,13 +225,19 @@ export default function ClientCrud() {
     <CrudScreen<Client, ClientUpsertFormValues>
       title="Clientes"
       columns={columns}
+      inlineRowActions
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["email", "cpf", "createdAt"],
+        tabletHiddenColumnIds: ["cpf"],
+      }}
       createForm={ClientForm}
       createFormTitle="Novo cliente"
       editFormTitle="Editar cliente"
       formModalContentClassName="sm:max-w-3xl"
       viewModalTitle="Detalhes do Cliente"
-      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
       viewModalContentClassName="sm:max-w-3xl"
+      viewModalExpandable
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

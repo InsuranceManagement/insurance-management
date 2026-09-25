@@ -1,6 +1,8 @@
 import * as React from "react"
 
-const MOBILE_BREAKPOINT = 768
+// The protected navigation stays in its compact, overlay mode on phones and
+// tablets. Keep this value aligned with Tailwind's `lg` breakpoint.
+const MOBILE_BREAKPOINT = 1024
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(false)

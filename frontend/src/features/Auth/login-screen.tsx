@@ -8,6 +8,7 @@ export default function LoginScreen() {
       <AuthCard
         title="Entrar"
         description="Acesse sua conta para gerenciar seus segurados."
+        plainOnMobile
       >
         <LoginForm />
       </AuthCard>

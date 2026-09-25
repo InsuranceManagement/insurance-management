@@ -41,6 +41,7 @@ export function LogDetails({ log, onClose }: Readonly<LogDetailsProps>) {
         if (!open) onClose()
       }}
       contentClassName="sm:max-w-3xl"
+      mobileFullscreen
     >
       <Box className="w-full min-w-0 flex-col gap-4">
         <Typography variant="muted">

@@ -126,7 +126,7 @@ export function ClientForm({
   return (
     <Box asChild>
       <form
-        className="max-h-[76vh] w-full flex-col gap-6 overflow-x-hidden overflow-y-auto pr-1"
+        className="crud-modal-form w-full min-w-0 flex-col gap-6 overflow-x-hidden"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -192,7 +192,7 @@ export function ClientForm({
                   id="client-cpf"
                   inputMode="numeric"
                   maxLength={11}
-                  placeholder="Somente numeros"
+                  placeholder="Somente números"
                   aria-invalid={!!form.formState.errors.cpf}
                 />
               )}
@@ -215,7 +215,7 @@ export function ClientForm({
                   id="client-cnpj"
                   inputMode="numeric"
                   maxLength={14}
-                  placeholder="Somente numeros"
+                  placeholder="Somente números"
                   aria-invalid={!!form.formState.errors.cnpj}
                 />
               )}
@@ -288,7 +288,7 @@ export function ClientForm({
                     id="client-cep"
                     inputMode="numeric"
                     maxLength={8}
-                    placeholder="Somente numeros"
+                    placeholder="Somente números"
                     aria-invalid={!!form.formState.errors.address?.cep}
                   />
                 )}
@@ -372,7 +372,7 @@ export function ClientForm({
                   <Input
                     {...field}
                     id="client-city"
-                    placeholder="Sao Paulo"
+                    placeholder="São Paulo"
                     aria-invalid={!!form.formState.errors.address?.city}
                   />
                 )}
@@ -385,7 +385,7 @@ export function ClientForm({
             </Box>
 
             <Box className="flex-col gap-1.5">
-              <Label htmlFor="client-number">Numero</Label>
+              <Label htmlFor="client-number">Número</Label>
               <Controller
                 control={form.control}
                 name="address.number"
@@ -450,7 +450,7 @@ export function ClientForm({
           />
         </Box>
 
-        <Box className="sticky bottom-0 justify-end gap-2 border-t bg-popover pt-4">
+        <Box className="crud-modal-form-actions flex-row justify-end gap-2 border-t bg-popover pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? (
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

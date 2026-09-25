@@ -37,6 +37,11 @@ export function useEditEntity<
     },
   })
 
+  const handleEditEntity = (entity: TData) => {
+    setEditingRow(entity)
+    setIsEditModalOpen(true)
+  }
+
   const handleEditSelected = () => {
     if (selectedRows.length !== 1) {
       return
@@ -48,8 +53,7 @@ export function useEditEntity<
       return
     }
 
-    setEditingRow(selectedRow)
-    setIsEditModalOpen(true)
+    handleEditEntity(selectedRow)
   }
 
   const handleEditModalOpenChange = (open: boolean) => {
@@ -88,6 +92,7 @@ export function useEditEntity<
     editingRow,
     isEditModalOpen,
     handleEditSelected,
+    handleEditEntity,
     handleEditModalOpenChange,
     handleEdit,
     clearEditingRow,

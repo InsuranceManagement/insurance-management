@@ -30,34 +30,50 @@ import { routes } from "@/shared/constants/routes"
 import { useApiQuery } from "@/shared/hooks/use-api-query"
 import { formatDate } from "@/shared/lib/date-format"
 
-const viewFields: EntityViewField<NotificationRule>[] = [
-  { accessorKey: "templateId", label: "Template" },
-  {
-    accessorKey: "isActive",
-    label: "Status",
-    cell: ({ entity }) => (
-      <Typography variant="small">
-        {entity.isActive ? "Ativa" : "Inativa"}
-      </Typography>
-    ),
-  },
-  {
-    accessorKey: "condition",
-    label: "Condição",
-    cell: ({ entity }) => (
-      <Box asChild>
-        <pre className="overflow-auto rounded-md bg-muted p-3 text-xs">
-          {JSON.stringify(entity.condition, null, 2)}
-        </pre>
-      </Box>
-    ),
-  },
-  {
-    accessorKey: "id",
-    label: "Prévia de disparo",
-    cell: ({ entity }) => <NotificationRulePreview rule={entity} />,
-  },
-]
+function createViewFields(
+  templates: NotificationTemplate[],
+): EntityViewField<NotificationRule>[] {
+  const templateNames = new Map(
+    templates.map((template) => [template.id, template.name]),
+  )
+
+  return [
+    {
+      accessorKey: "templateId",
+      label: "Template",
+      cell: ({ entity }) => (
+        <Typography variant="small">
+          {templateNames.get(entity.templateId) ?? "Template não encontrado"}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: "isActive",
+      label: "Status",
+      cell: ({ entity }) => (
+        <Typography variant="small">
+          {entity.isActive ? "Ativa" : "Inativa"}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: "condition",
+      label: "Condição",
+      cell: ({ entity }) => (
+        <Box asChild>
+          <pre className="overflow-auto rounded-md bg-muted p-3 text-xs">
+            {JSON.stringify(entity.condition, null, 2)}
+          </pre>
+        </Box>
+      ),
+    },
+    {
+      accessorKey: "id",
+      label: "Prévia de disparo",
+      cell: ({ entity }) => <NotificationRulePreview rule={entity} />,
+    },
+  ]
+}
 
 function formatConditionValue(value: unknown): string {
   if (value === "context.today") return "Data atual"
@@ -93,9 +109,11 @@ function createCardView(
       return (
         <>
           <CardHeader className="pr-12">
-            <CardTitle>{rule.name}</CardTitle>
+            <CardTitle className="min-w-0 flex-1 break-words [overflow-wrap:anywhere]">
+              {rule.name}
+            </CardTitle>
             <CardDescription>
-              {templateNames.get(rule.templateId) ?? rule.templateId}
+              {templateNames.get(rule.templateId) ?? "Template não encontrado"}
             </CardDescription>
           </CardHeader>
 
@@ -169,6 +187,7 @@ export default function NotificationRuleCrud() {
     meta: { errorMessage: "Erro ao carregar templates." },
   })
   const cardView = useMemo(() => createCardView(templates), [templates])
+  const viewFields = useMemo(() => createViewFields(templates), [templates])
 
   return (
     <CrudScreen<NotificationRule, NotificationRuleUpsertPayload>
@@ -177,7 +196,7 @@ export default function NotificationRuleCrud() {
       createForm={NotificationRuleForm}
       createFormTitle="Nova regra"
       editFormTitle="Editar regra"
-      formModalContentClassName="sm:max-w-2xl"
+      formModalContentClassName="sm:max-w-2xl pb-[2em]"
       viewFields={viewFields}
       viewModalTitle="Detalhes da regra"
       mapEditEntityToFormValues={(rule) => ({

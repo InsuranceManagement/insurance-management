@@ -6,13 +6,13 @@ export const insuranceCompanyUpsertSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, "Nome é obrigatorio.")
+    .min(1, "Nome é obrigatório.")
     .min(2, "Nome deve ter pelo menos 2 caracteres.")
-    .max(120, "Nome deve ter no maximo 120 caracteres."),
+    .max(120, "Nome deve ter no máximo 120 caracteres."),
   color: z
     .string()
     .trim()
-    .min(1, "Cor é obrigatoria.")
+    .min(1, "Cor é obrigatória.")
     .regex(hexColorRegex, "Cor deve estar no formato HEX (#RRGGBB)."),
 });
 
@@ -41,31 +41,31 @@ const optionalDigitsSchema = z.string().trim().optional();
 
 export const clientUpsertSchema = z
   .object({
-    name: z.string().trim().min(1, "O nome e obrigatorio"),
-    email: z.string().trim().email("Informe um e-mail valido"),
+    name: z.string().trim().min(1, "O nome é obrigatório."),
+    email: z.string().trim().email("Informe um e-mail válido."),
     cpf: optionalDigitsSchema.refine(
       (value) => !value || /^\d{11}$/.test(value),
-      "O CPF deve conter exatamente 11 numeros",
+      "O CPF deve conter exatamente 11 dígitos.",
     ),
     cnpj: optionalDigitsSchema.refine(
       (value) => !value || /^\d{14}$/.test(value),
-      "O CNPJ deve conter exatamente 14 numeros",
+      "O CNPJ deve conter exatamente 14 dígitos.",
     ),
     phoneNumber: z
       .string()
       .trim()
-      .regex(/^\d{10,15}$/, "O telefone deve conter entre 10 e 15 numeros"),
-    birthDate: z.string().trim().min(1, "A data de nascimento e obrigatoria"),
+      .regex(/^\d{10,15}$/, "O telefone deve conter entre 10 e 15 dígitos."),
+    birthDate: z.string().trim().min(1, "A data de nascimento é obrigatória."),
     address: z.object({
       cep: optionalDigitsSchema.refine(
         (value) => !value || /^\d{8}$/.test(value),
-        "O CEP deve conter exatamente 8 numeros",
+        "O CEP deve conter exatamente 8 dígitos.",
       ),
-      street: z.string().trim().min(1, "A rua e obrigatoria"),
-      district: z.string().trim().min(1, "O bairro e obrigatorio"),
-      state: z.string().trim().min(1, "O estado e obrigatorio"),
-      city: z.string().trim().min(1, "A cidade e obrigatoria"),
-      number: z.string().trim().min(1, "O numero e obrigatorio"),
+      street: z.string().trim().min(1, "A rua é obrigatória."),
+      district: z.string().trim().min(1, "O bairro é obrigatório."),
+      state: z.string().trim().min(1, "O estado é obrigatório."),
+      city: z.string().trim().min(1, "A cidade é obrigatória."),
+      number: z.string().trim().min(1, "O número é obrigatório."),
       complement: z.string().trim().optional(),
     }),
     productIds: z.array(z.string()),
@@ -78,7 +78,7 @@ export const clientUpsertSchema = z
     context.addIssue({
       code: "custom",
       path: ["cpf"],
-      message: "Informe pelo menos um CPF ou CNPJ",
+      message: "Informe pelo menos um CPF ou CNPJ.",
     });
   });
 

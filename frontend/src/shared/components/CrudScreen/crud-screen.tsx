@@ -24,7 +24,10 @@ import { useDeleteEntity } from "@/shared/components/CrudScreen/hooks/use-delete
 import { useEditEntity } from "@/shared/components/CrudScreen/hooks/use-edit-entity"
 import { useEntityView } from "@/shared/components/CrudScreen/hooks/use-entity-view"
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
-import { DataTable } from "@/shared/components/DataTable/data-table"
+import {
+  DataTable,
+  type MobileCardConfig,
+} from "@/shared/components/DataTable/data-table"
 import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
 import { Modal } from "@/shared/components/ui/modal"
 import { Typography } from "@/shared/components/ui/typography"
@@ -51,6 +54,7 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   sourceRoutes: CrudSourceRoutes
   listQueryKey?: QueryKey
   columns?: ColumnDef<TData>[]
+  mobileCard?: MobileCardConfig<TData>
   cardView?: CrudCardView<TData>
   createForm: ComponentType<CrudFormProps<TCreatePayload>>
   createFormTitle?: string
@@ -59,10 +63,11 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   mapEditEntityToFormValues?: (entity: TData) => Partial<TCreatePayload>
   viewFields?: EntityViewField<TData>[]
   viewModalTitle?: string
-  viewModalSubtitle?: ReactNode | ((entity: TData) => ReactNode)
-  viewModalCloseLabel?: string
   viewModalEmptyValue?: ReactNode
   viewModalContentClassName?: string
+  viewModalExpandable?: boolean
+  inlineRowActions?: boolean
+  hideInlineViewActionOnDesktop?: boolean
   caption?: string
 }
 
@@ -71,6 +76,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   sourceRoutes,
   listQueryKey: listQueryKeyProp,
   columns,
+  mobileCard,
   cardView,
   createForm: CreateFormComponent,
   createFormTitle = "Novo registro",
@@ -79,10 +85,11 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   mapEditEntityToFormValues,
   viewFields,
   viewModalTitle = "Detalhes",
-  viewModalSubtitle,
-  viewModalCloseLabel,
   viewModalEmptyValue,
   viewModalContentClassName,
+  viewModalExpandable = false,
+  inlineRowActions = false,
+  hideInlineViewActionOnDesktop = false,
   caption,
 }: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -112,6 +119,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   const selectedCount = selectedRows.length
   const isSingleSelection = selectedCount === 1
   const hasEntityView = !!viewFields?.length
+  const hasInlineRowActions = inlineRowActions && hasEntityView
 
   const handleClearSelection = () => {
     setRowSelection({})
@@ -121,6 +129,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
     isEntityViewOpen,
     entityInView,
     handleViewEntity,
+    handleViewEntityRecord,
     handleEntityViewOpenChange,
   } = useEntityView<TData>({
     selectedRows,
@@ -132,6 +141,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
     editingRow,
     isEditModalOpen,
     handleEditSelected,
+    handleEditEntity,
     handleEditModalOpenChange,
     handleEdit,
     clearEditingRow,
@@ -178,9 +188,9 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   })
 
   return (
-    <main className="flex flex-1 flex-col p-6 md:p-8">
+    <main className="flex min-w-0 flex-1 flex-col px-5 py-4 sm:p-6 lg:p-8">
       <Box className="flex-col gap-5">
-        <Box className="mx-1 items-center justify-between gap-4">
+        <Box className="mx-1 flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between [&>button]:w-full sm:[&>button]:w-auto">
           <Typography variant="h3">{title}</Typography>
 
           <AddButton
@@ -194,6 +204,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           onOpenChange={handleCreateModalOpenChange}
           title={createFormTitle}
           contentClassName={formModalContentClassName}
+          mobileFullscreen
         >
           <CreateFormComponent
             onSubmit={handleCreate}
@@ -208,6 +219,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
           onOpenChange={handleEditModalOpenChange}
           title={editFormTitle}
           contentClassName={formModalContentClassName}
+          mobileFullscreen
         >
           <CreateFormComponent
             initialValues={editFormInitialValues}
@@ -221,10 +233,9 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
         {hasEntityView ? (
           <EntityViewModal<TData>
             title={viewModalTitle}
-            subtitle={viewModalSubtitle}
-            closeLabel={viewModalCloseLabel}
             emptyValue={viewModalEmptyValue}
             contentClassName={viewModalContentClassName}
+            expandable={viewModalExpandable}
             open={isEntityViewOpen}
             onOpenChange={handleEntityViewOpenChange}
             entity={entityInView}
@@ -238,6 +249,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             isSingleSelection={isSingleSelection}
             canViewEntity={hasEntityView}
             canDelete={!!sourceRoutes.delete}
+            showEditAndView={!hasInlineRowActions}
             onClearSelection={handleClearSelection}
             onDeleteSelected={handleDeleteSelected}
             onEditSelected={handleEditSelected}
@@ -258,6 +270,20 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             <DataTable
               caption={caption ?? "Tabela de registros"}
               columns={columns ?? []}
+              mobileCard={
+                mobileCard ?? {
+                  titleColumnId: "name" as Extract<keyof TData, string>,
+                }
+              }
+              rowActions={
+                hasInlineRowActions
+                  ? {
+                      onEdit: handleEditEntity,
+                      onViewDetails: handleViewEntityRecord,
+                      hideViewOnDesktop: hideInlineViewActionOnDesktop,
+                    }
+                  : undefined
+              }
               data={rows}
               className="w-full"
               rowSelection={rowSelection}

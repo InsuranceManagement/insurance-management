@@ -47,7 +47,7 @@ export class NotificationRuleService {
 
   async getById(id: string): Promise<NotificationRule> {
     const rule = await this.repository.findById(id)
-    if (!rule) throw new NotFoundException('Regra de notificacao nao encontrada')
+    if (!rule) throw new NotFoundException('Regra de notificação não encontrada')
     return rule
   }
 
@@ -59,7 +59,7 @@ export class NotificationRuleService {
 
   async delete(input: DeleteManyDto): Promise<void> {
     if (input.ids.length === 0 || !(await this.repository.deleteMany(input.ids))) {
-      throw new NotFoundException('Regra de notificacao nao encontrada')
+      throw new NotFoundException('Regra de notificação não encontrada')
     }
   }
 
@@ -126,7 +126,7 @@ export class NotificationRuleService {
     const groups = this.getConditionGroups(condition)
 
     if (!groups.some((group) => group.length)) {
-      throw new BadRequestException('A regra deve conter pelo menos uma condicao')
+      throw new BadRequestException('A regra deve conter pelo menos uma condição')
     }
 
     for (const group of groups) {
@@ -142,14 +142,14 @@ export class NotificationRuleService {
     )
 
     if (unknownGroup) {
-      throw new BadRequestException(`Grupo nao permitido: ${unknownGroup}`)
+      throw new BadRequestException(`Grupo não permitido: ${unknownGroup}`)
     }
 
     return notificationRuleGroups.map((groupName) => {
       const group = condition[groupName]
       if (group === undefined) return []
       if (!Array.isArray(group)) {
-        throw new BadRequestException(`O grupo ${groupName} deve ser uma lista de condicoes`)
+        throw new BadRequestException(`O grupo ${groupName} deve ser uma lista de condições`)
       }
       return group
     })
@@ -157,21 +157,21 @@ export class NotificationRuleService {
 
   private validateClause(rawClause: unknown): void {
     if (!this.isClauseRecord(rawClause)) {
-      throw new BadRequestException('Condicao invalida')
+      throw new BadRequestException('Condição inválida')
     }
 
     const clause = rawClause as NotificationRuleClause
     if (!notificationRuleFields.includes(clause.field)) {
-      throw new BadRequestException(`Campo nao permitido: ${String(clause.field)}`)
+      throw new BadRequestException(`Campo não permitido: ${String(clause.field)}`)
     }
     if (!notificationRuleOperators.includes(clause.operator)) {
-      throw new BadRequestException(`Operador nao permitido: ${String(clause.operator)}`)
+      throw new BadRequestException(`Operador não permitido: ${String(clause.operator)}`)
     }
     if (typeof clause.value !== 'string' || !this.isDateValue(clause.value)) {
       throw new BadRequestException('O valor deve ser context.today ou uma data YYYY-MM-DD')
     }
     if (typeof clause.isRecurring !== 'boolean') {
-      throw new BadRequestException('isRecurring deve ser booleano')
+      throw new BadRequestException('A recorrência deve ser um valor booleano')
     }
     if (clause.field === 'context.today' && clause.value === 'context.today') {
       throw new BadRequestException('context.today deve ser comparado a uma data YYYY-MM-DD')

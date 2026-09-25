@@ -86,23 +86,22 @@ export function useVisitsCalendar(
   const [dialogState, setDialogState] = useState<VisitDialogState>(null)
 
   const events = useMemo(() => {
-    const clientsById = new Map(clients.map((client) => [client.id, client.name]))
+    const clientsById = new Map(clients.map((client) => [client.id, client]))
 
-    return visits.map((visit) => ({
-      id: visit.id,
-      title: clientsById.get(visit.clientId)
-        ? `${visit.name} · ${clientsById.get(visit.clientId)}`
-        : visit.name,
-      start: visit.date,
-      extendedProps: { visitName: visit.name },
-    }))
+    return visits.map((visit) => {
+      const client = clientsById.get(visit.clientId)
+
+      return {
+        id: visit.id,
+        title: client ? `${visit.name} · ${client.name}` : visit.name,
+        start: visit.date,
+        extendedProps: { visitName: visit.name },
+      }
+    })
   }, [clients, visits])
 
   const handleDateClick = (info: DateClickArg) => {
-    setDialogState({
-      mode: "create",
-      date: localDateTime(info.date),
-    })
+    openCreate(info.date)
   }
 
   const handleEventClick = (info: EventClickArg) => {
@@ -114,11 +113,21 @@ export function useVisitsCalendar(
     setDialogState({ mode: "edit", visit })
   }
 
+  const openCreate = (date: Date) => {
+    setDialogState({ mode: "create", date: localDateTime(date) })
+  }
+
+  const openView = (visit: Visit) => {
+    setDialogState({ mode: "view", visit })
+  }
+
   return {
     dialogState,
     events,
     handleDateClick,
     handleEventClick,
+    openCreate,
+    openView,
     openEdit,
     closeDialog: () => setDialogState(null),
   }

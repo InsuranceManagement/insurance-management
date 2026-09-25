@@ -47,6 +47,9 @@ export default function ForgotPasswordForm({
       body: values,
     })
 
+    // The timestamp is intentionally created only after the user-triggered
+    // request succeeds.
+    // eslint-disable-next-line react-hooks/purity
     setResendAvailableAt(Date.now() + 60_000)
     onSuccess(values.email)
   })
@@ -84,7 +87,7 @@ export default function ForgotPasswordForm({
       setCooldown(remaining)
 
       if (remaining === 0) {
-        emailSent = true
+        onCooldownFinished()
       }
     }
 
@@ -124,7 +127,7 @@ export default function ForgotPasswordForm({
             ? "Reenviando..."
             : cooldown > 0
               ? `Reenviar em ${cooldown}s`
-              : "Reenviar email"}
+              : "Reenviar e-mail"}
         </Button>
 
         <Button
@@ -151,7 +154,7 @@ export default function ForgotPasswordForm({
             variant="small"
             className="font-medium"
           >
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">E-mail</label>
           </Typography>
 
           <Controller
@@ -162,7 +165,7 @@ export default function ForgotPasswordForm({
                 {...field}
                 id="email"
                 type="email"
-                placeholder="Digite seu email"
+                placeholder="Digite seu e-mail"
                 aria-invalid={!!form.formState.errors.email}
               />
             )}

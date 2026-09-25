@@ -147,7 +147,7 @@ export function NotificationRuleForm({
 
   return (
     <Box asChild>
-      <form className="max-h-[76vh] flex-col gap-4 overflow-y-auto pr-1" onSubmit={handleSubmit} noValidate>
+      <form className="crud-modal-form w-full min-w-0 flex-col gap-4 pb-8" onSubmit={handleSubmit} noValidate>
         <Box className="flex-col gap-1.5">
           <Label htmlFor="notification-rule-name">Nome</Label>
           <Input id="notification-rule-name" {...form.register("name")} aria-invalid={!!form.formState.errors.name} />
@@ -170,15 +170,15 @@ export function NotificationRuleForm({
         )} />
 
         <Box className="flex-col gap-3 border-t pt-4">
-          <Box className="items-center justify-between gap-3">
+          <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Typography variant="small" className="font-medium">Condições</Typography>
-            <Box className="items-center gap-2">
-              <Controller control={form.control} name="conditionGroup" render={({ field }) => <Select value={field.value} onValueChange={field.onChange}><SelectTrigger className="w-48"><SelectValue /></SelectTrigger><SelectContent>{notificationRuleGroups.map((group) => <SelectItem key={group} value={group}>{notificationRuleGroupLabels[group]}</SelectItem>)}</SelectContent></Select>} />
-              <Button type="button" size="sm" variant="outline" onClick={() => append(defaultCondition)}><PlusIcon />Adicionar</Button>
+            <Box className="flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+              <Controller control={form.control} name="conditionGroup" render={({ field }) => <Select value={field.value} onValueChange={field.onChange}><SelectTrigger className="w-full sm:w-48"><SelectValue /></SelectTrigger><SelectContent>{notificationRuleGroups.map((group) => <SelectItem key={group} value={group}>{notificationRuleGroupLabels[group]}</SelectItem>)}</SelectContent></Select>} />
+              <Button className="w-full sm:w-auto" type="button" size="sm" variant="outline" onClick={() => append(defaultCondition)}><PlusIcon />Adicionar</Button>
             </Box>
           </Box>
           {fields.map((item, index) => (
-            <Box key={item.id} className="grid grid-cols-1 gap-2 rounded-md border p-3 sm:grid-cols-2">
+            <Box key={item.id} className="min-w-0 grid grid-cols-1 gap-2 rounded-md border p-3 sm:grid-cols-2">
               <Controller control={form.control} name={`conditions.${index}.field`} render={({ field }) => <Select value={field.value} onValueChange={field.onChange}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{notificationRuleFields.map((ruleField) => <SelectItem key={ruleField} value={ruleField}>{notificationRuleFieldLabels[ruleField]}</SelectItem>)}</SelectContent></Select>} />
               <Controller control={form.control} name={`conditions.${index}.operator`} render={({ field }) => <Select value={field.value} onValueChange={field.onChange}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{notificationRuleOperators.map((operator) => <SelectItem key={operator} value={operator}>{notificationRuleOperatorLabels[operator]}</SelectItem>)}</SelectContent></Select>} />
               <Controller control={form.control} name={`conditions.${index}.isRecurring`} render={({ field }) => (
@@ -192,7 +192,7 @@ export function NotificationRuleForm({
           ))}
         </Box>
 
-        <Box className="justify-end gap-2 border-t pt-4">
+        <Box className="crud-modal-form-actions mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancelar</Button> : null}
           <Button type="submit" disabled={isSubmitting}>{submitLabel}</Button>
         </Box>

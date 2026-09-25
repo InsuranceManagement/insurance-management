@@ -74,11 +74,16 @@ export default function ProductTypeCrud() {
     <CrudScreen<ProductType, ProductTypeUpsertFormValues>
       title="Tipos de Produto"
       columns={columns}
+      inlineRowActions
+      hideInlineViewActionOnDesktop
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["description", "createdAt", "updatedAt"],
+      }}
       createForm={ProductTypeForm}
       createFormTitle="Novo tipo de produto"
       editFormTitle="Editar tipo de produto"
       viewModalTitle="Detalhes do Tipo de Produto"
-      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

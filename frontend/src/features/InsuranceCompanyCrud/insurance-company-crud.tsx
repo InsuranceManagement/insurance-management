@@ -26,9 +26,6 @@ const columns: ColumnDef<InsuranceCompany>[] = [
           className="size-4 rounded-full border"
           style={{ backgroundColor: row.original.color }}
         />
-        <Typography asChild variant="small">
-          <span>{row.original.color}</span>
-        </Typography>
       </Box>
     ),
   },
@@ -67,9 +64,6 @@ const viewFields: EntityViewField<InsuranceCompany>[] = [
           className="size-4 rounded-full border"
           style={{ backgroundColor: String(value) }}
         />
-        <Typography asChild variant="small">
-          <span>{String(value)}</span>
-        </Typography>
       </Box>
     ),
   },
@@ -98,11 +92,17 @@ export default function InsuranceCompanyCrud() {
     <CrudScreen<InsuranceCompany, InsuranceCompanyUpsertFormValues>
       title="Seguradoras"
       columns={columns}
+      inlineRowActions
+      hideInlineViewActionOnDesktop
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["color", "createdAt", "updatedAt"],
+        accentColor: (insuranceCompany) => insuranceCompany.color,
+      }}
       createForm={InsuranceCompanyForm}
       createFormTitle="Nova seguradora"
       editFormTitle="Editar seguradora"
       viewModalTitle="Detalhes da Seguradora"
-      viewModalSubtitle={(entity) => `#Id ${entity.id}`}
       viewFields={viewFields}
       mapEditEntityToFormValues={(entity) => ({
         name: entity.name,

@@ -56,7 +56,6 @@ const viewFields: EntityViewField<NotificationTemplate>[] = [
       </Typography>
     ),
   },
-  { accessorKey: "notificationTypeId", label: "ID do tipo de notificação" },
   {
     accessorKey: "variableSchema",
     label: "Variáveis",
@@ -96,10 +95,14 @@ export default function NotificationTemplateCrud() {
       title="Templates de mensagem"
       listQueryKey={["notification-templates"]}
       columns={columns}
+      mobileCard={{
+        titleColumnId: "name",
+        hiddenColumnIds: ["updatedAt"],
+      }}
       createForm={NotificationTemplateForm}
       createFormTitle="Novo template"
       editFormTitle="Editar template"
-      formModalContentClassName="sm:max-w-2xl"
+      formModalContentClassName="sm:max-w-2xl pb-[2em]"
       viewFields={viewFields}
       viewModalTitle="Detalhes do template"
       caption="Tabela de templates de mensagem"

@@ -86,7 +86,7 @@ export default function RegisterForm() {
             variant="small"
             className="font-medium"
           >
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">E-mail</label>
           </Typography>
 
           <Controller

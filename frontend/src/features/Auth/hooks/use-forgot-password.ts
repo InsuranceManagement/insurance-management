@@ -12,7 +12,7 @@ export function useForgotPassword() {
 
     meta: {
       successMessage:
-        "Se o email existir, enviaremos um link para redefinição.",
+        "Se o e-mail existir, enviaremos um link para redefinição.",
     },
   })
 }

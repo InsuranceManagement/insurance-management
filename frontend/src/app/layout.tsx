@@ -24,10 +24,6 @@ export const metadata: Metadata = {
   description: "Insurance operation and policy dashboard",
 }
 
-type RootLayoutProps = {
-  children: React.ReactNode
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,7 +41,7 @@ export default function RootLayout({
         "font-sans",
       )}
     >
-      <body className="min-h-full">
+      <body className="min-h-dvh overflow-x-hidden">
         <QueryProvider>
           <AuthProvider>
             <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
@@ -53,7 +49,7 @@ export default function RootLayout({
         </QueryProvider>
 
         <Toaster
-          position="top-right"
+          position="top-center"
           richColors
           closeButton
         />
