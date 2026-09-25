@@ -59,7 +59,7 @@ export function ApplicationLogs() {
   return (
     <Box
       asChild
-      className="min-w-0 flex-1 flex-col gap-6 bg-muted/20 p-4 sm:p-6 lg:p-8"
+      className="min-w-0 flex-1 flex-col gap-6 bg-muted/20 px-5 py-4 sm:p-6 lg:p-8"
     >
       <main>
         <Box className="flex-col justify-between gap-4 sm:flex-row sm:items-center">

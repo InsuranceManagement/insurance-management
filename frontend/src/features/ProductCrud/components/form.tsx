@@ -93,7 +93,7 @@ export function ProductForm({
   return (
     <Box asChild>
       <form
-        className="w-full flex-col gap-4"
+        className="crud-modal-form w-full flex-col gap-4"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -172,7 +172,7 @@ export function ProductForm({
           )}
         </Box>
 
-        <Box className="flex-row justify-end gap-2 pt-2 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
+        <Box className="crud-modal-form-actions crud-modal-form-actions-bottom flex-row justify-end gap-2 pt-2 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

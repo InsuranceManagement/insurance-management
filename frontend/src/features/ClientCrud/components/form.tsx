@@ -126,7 +126,7 @@ export function ClientForm({
   return (
     <Box asChild>
       <form
-        className="w-full min-w-0 flex-col gap-6 overflow-x-hidden"
+        className="crud-modal-form w-full min-w-0 flex-col gap-6 overflow-x-hidden"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -450,7 +450,7 @@ export function ClientForm({
           />
         </Box>
 
-        <Box className="flex-row justify-end gap-2 border-t bg-popover pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
+        <Box className="crud-modal-form-actions flex-row justify-end gap-2 border-t bg-popover pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? (
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar

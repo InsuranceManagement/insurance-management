@@ -108,7 +108,7 @@ export function NotificationTemplateForm({
   return (
     <Box asChild>
       <form
-        className="w-full min-w-0 flex-col gap-4 pb-8"
+        className="crud-modal-form w-full min-w-0 flex-col gap-4 pb-8"
         onSubmit={handleSubmit}
         noValidate
       >
@@ -247,7 +247,7 @@ export function NotificationTemplateForm({
           ))}
         </Box>
 
-        <Box className="mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
+        <Box className="crud-modal-form-actions mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? (
             <Button
               type="button"

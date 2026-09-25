@@ -69,10 +69,11 @@ export function EntityViewModal<TData>({
       onOpenChange={onOpenChange}
       title={title}
       contentClassName={contentClassName}
+      bodyClassName="h-full flex-col overscroll-contain pb-8 touch-pan-y [-webkit-overflow-scrolling:touch]"
       expandable={expandable}
       mobileFullscreen
     >
-      <Box className="w-full flex-col gap-4">
+      <Box className="min-h-max w-full flex-col gap-4">
         <Box className="grid grid-cols-1 gap-px overflow-hidden rounded-md border bg-border sm:grid-cols-2">
           {fields.map((field) => {
             const rawValue = entity?.[field.accessorKey]

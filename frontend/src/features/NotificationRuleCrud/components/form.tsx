@@ -147,7 +147,7 @@ export function NotificationRuleForm({
 
   return (
     <Box asChild>
-      <form className="w-full min-w-0 flex-col gap-4 pb-8" onSubmit={handleSubmit} noValidate>
+      <form className="crud-modal-form w-full min-w-0 flex-col gap-4 pb-8" onSubmit={handleSubmit} noValidate>
         <Box className="flex-col gap-1.5">
           <Label htmlFor="notification-rule-name">Nome</Label>
           <Input id="notification-rule-name" {...form.register("name")} aria-invalid={!!form.formState.errors.name} />
@@ -192,7 +192,7 @@ export function NotificationRuleForm({
           ))}
         </Box>
 
-        <Box className="mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
+        <Box className="crud-modal-form-actions mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>Cancelar</Button> : null}
           <Button type="submit" disabled={isSubmitting}>{submitLabel}</Button>
         </Box>

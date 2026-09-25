@@ -74,6 +74,8 @@ export default function ProductTypeCrud() {
     <CrudScreen<ProductType, ProductTypeUpsertFormValues>
       title="Tipos de Produto"
       columns={columns}
+      inlineRowActions
+      hideInlineViewActionOnDesktop
       mobileCard={{
         titleColumnId: "name",
         hiddenColumnIds: ["description", "createdAt", "updatedAt"],

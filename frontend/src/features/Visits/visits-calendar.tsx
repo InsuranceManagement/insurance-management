@@ -142,6 +142,14 @@ export function VisitsCalendar() {
               }
               locale={ptBrLocale}
               initialView="dayGridMonth"
+              views={{
+                timeGridWeek: {
+                  slotEventOverlap: false,
+                },
+                timeGridDay: {
+                  slotEventOverlap: false,
+                },
+              }}
               firstDay={1}
               height="auto"
               headerToolbar={{
@@ -169,7 +177,7 @@ export function VisitsCalendar() {
               }}
               allDaySlot={false}
               slotMinTime="07:00:00"
-              slotMaxTime="19:00:00"
+              slotMaxTime="19:30:00"
               events={calendar.events}
               eventDisplay="block"
               eventContent={(info) => {

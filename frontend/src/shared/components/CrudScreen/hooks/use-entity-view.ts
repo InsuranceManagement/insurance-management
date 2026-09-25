@@ -14,6 +14,13 @@ export function useEntityView<TData>({
   const [isEntityViewOpen, setIsEntityViewOpen] = useState(false)
   const [entityInView, setEntityInView] = useState<TData | null>(null)
 
+  const handleViewEntityRecord = (entity: TData) => {
+    if (!isEnabled) return
+
+    setEntityInView(entity)
+    setIsEntityViewOpen(true)
+  }
+
   const handleViewEntity = () => {
     if (!isEnabled || !isSingleSelection) return
 
@@ -21,8 +28,7 @@ export function useEntityView<TData>({
 
     if (!selectedEntity) return
 
-    setEntityInView(selectedEntity)
-    setIsEntityViewOpen(true)
+    handleViewEntityRecord(selectedEntity)
   }
 
   const handleEntityViewOpenChange = (open: boolean) => {
@@ -37,6 +43,7 @@ export function useEntityView<TData>({
     isEntityViewOpen,
     entityInView,
     handleViewEntity,
+    handleViewEntityRecord,
     handleEntityViewOpenChange,
   }
 }

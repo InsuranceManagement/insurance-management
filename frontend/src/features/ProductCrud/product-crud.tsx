@@ -85,6 +85,8 @@ export default function ProductCrud() {
     <CrudScreen<Product, ProductUpsertFormValues>
       title="Produtos"
       columns={columns}
+      inlineRowActions
+      hideInlineViewActionOnDesktop
       mobileCard={{
         titleColumnId: "name",
         hiddenColumnIds: ["createdAt"],

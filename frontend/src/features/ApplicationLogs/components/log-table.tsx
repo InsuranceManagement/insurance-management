@@ -31,9 +31,6 @@ export function LogTable({ logs, onSelect }: Readonly<LogTableProps>) {
           <article key={log.id} className="min-w-0 p-4">
             <Box className="min-w-0 flex-col gap-4">
               <Box className="min-w-0 items-start gap-3">
-                <Box className="size-10 shrink-0 items-center justify-center rounded-xl border bg-background text-muted-foreground">
-                  <MessageSquareTextIcon aria-hidden="true" className="size-4" />
-                </Box>
                 <Box className="min-w-0 flex-1 flex-col gap-1">
                   <Typography variant="small" className="break-words">
                     {getTypeLabel(log)}

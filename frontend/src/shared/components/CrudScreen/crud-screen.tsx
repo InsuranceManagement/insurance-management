@@ -66,6 +66,8 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   viewModalEmptyValue?: ReactNode
   viewModalContentClassName?: string
   viewModalExpandable?: boolean
+  inlineRowActions?: boolean
+  hideInlineViewActionOnDesktop?: boolean
   caption?: string
 }
 
@@ -86,6 +88,8 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   viewModalEmptyValue,
   viewModalContentClassName,
   viewModalExpandable = false,
+  inlineRowActions = false,
+  hideInlineViewActionOnDesktop = false,
   caption,
 }: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
@@ -115,6 +119,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   const selectedCount = selectedRows.length
   const isSingleSelection = selectedCount === 1
   const hasEntityView = !!viewFields?.length
+  const hasInlineRowActions = inlineRowActions && hasEntityView
 
   const handleClearSelection = () => {
     setRowSelection({})
@@ -124,6 +129,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
     isEntityViewOpen,
     entityInView,
     handleViewEntity,
+    handleViewEntityRecord,
     handleEntityViewOpenChange,
   } = useEntityView<TData>({
     selectedRows,
@@ -135,6 +141,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
     editingRow,
     isEditModalOpen,
     handleEditSelected,
+    handleEditEntity,
     handleEditModalOpenChange,
     handleEdit,
     clearEditingRow,
@@ -181,9 +188,9 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   })
 
   return (
-    <main className="flex min-w-0 flex-1 flex-col p-4 sm:p-6 lg:p-8">
+    <main className="flex min-w-0 flex-1 flex-col px-5 py-4 sm:p-6 lg:p-8">
       <Box className="flex-col gap-5">
-        <Box className="mx-1 flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 [&>button]:w-full sm:[&>button]:w-auto">
+        <Box className="mx-1 flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between [&>button]:w-full sm:[&>button]:w-auto">
           <Typography variant="h3">{title}</Typography>
 
           <AddButton
@@ -242,6 +249,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             isSingleSelection={isSingleSelection}
             canViewEntity={hasEntityView}
             canDelete={!!sourceRoutes.delete}
+            showEditAndView={!hasInlineRowActions}
             onClearSelection={handleClearSelection}
             onDeleteSelected={handleDeleteSelected}
             onEditSelected={handleEditSelected}
@@ -266,6 +274,15 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
                 mobileCard ?? {
                   titleColumnId: "name" as Extract<keyof TData, string>,
                 }
+              }
+              rowActions={
+                hasInlineRowActions
+                  ? {
+                      onEdit: handleEditEntity,
+                      onViewDetails: handleViewEntityRecord,
+                      hideViewOnDesktop: hideInlineViewActionOnDesktop,
+                    }
+                  : undefined
               }
               data={rows}
               className="w-full"

@@ -11,7 +11,12 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  FileTextIcon,
+  PencilIcon,
+} from "lucide-react"
 import { useState } from "react"
 
 import { Box } from "@/shared/components/ui/box"
@@ -33,6 +38,14 @@ import { cn } from "@/shared/lib/utils"
 type MobileCardConfig<TData> = {
   titleColumnId: Extract<keyof TData, string>
   hiddenColumnIds?: Extract<keyof TData, string>[]
+  tabletHiddenColumnIds?: Extract<keyof TData, string>[]
+  accentColor?: (entity: TData) => string | undefined
+}
+
+type RowActions<TData> = {
+  onEdit: (entity: TData) => void
+  onViewDetails: (entity: TData) => void
+  hideViewOnDesktop?: boolean
 }
 
 type DataTableProps<TData, TValue> = {
@@ -45,6 +58,7 @@ type DataTableProps<TData, TValue> = {
   className?: string
   searchPlaceholder?: string
   mobileCard: MobileCardConfig<TData>
+  rowActions?: RowActions<TData>
 }
 
 function DataTable<TData, TValue>({
@@ -57,6 +71,7 @@ function DataTable<TData, TValue>({
   className,
   searchPlaceholder = "Buscar em todas as colunas...",
   mobileCard,
+  rowActions,
 }: Readonly<DataTableProps<TData, TValue>>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState("")
@@ -91,6 +106,42 @@ function DataTable<TData, TValue>({
   const hiddenMobileColumns = new Set<string>(
     mobileCard.hiddenColumnIds ?? [],
   )
+  const hiddenTabletColumns = new Set<string>(
+    mobileCard.tabletHiddenColumnIds ?? [],
+  )
+  const hasRowActions = !!rowActions
+
+  const renderRowActions = (entity: TData) => {
+    if (!rowActions) return null
+
+    return (
+      <Box className="shrink-0 items-center gap-1 max-md:-translate-y-0.5 md:w-full md:justify-end md:gap-0.5">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="size-9 md:size-7"
+          aria-label="Editar registro"
+          onClick={() => rowActions.onEdit(entity)}
+        >
+          <PencilIcon className="size-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className={cn(
+            "size-9 md:size-7",
+            rowActions.hideViewOnDesktop && "lg:hidden",
+          )}
+          aria-label="Ver detalhes do registro"
+          onClick={() => rowActions.onViewDetails(entity)}
+        >
+          <FileTextIcon className="size-4" />
+        </Button>
+      </Box>
+    )
+  }
 
   const handleMobileSortChange = (columnId: string) => {
     if (columnId === noSortValue) {
@@ -171,6 +222,7 @@ function DataTable<TData, TValue>({
           <Box className="flex-col divide-y">
             {table.getRowModel().rows.map((row) => {
               const cells = row.getVisibleCells()
+              const accentColor = mobileCard.accentColor?.(row.original)
               const titleCell = cells.find(
                 (cell) => cell.column.id === mobileCard.titleColumnId,
               )
@@ -184,7 +236,13 @@ function DataTable<TData, TValue>({
                 <article
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer bg-card p-4 transition-colors data-[state=selected]:bg-muted/70"
+                  style={
+                    accentColor ? { borderLeftColor: accentColor } : undefined
+                  }
+                  className={cn(
+                    "cursor-pointer bg-card p-4 transition-colors data-[state=selected]:bg-muted/70",
+                    accentColor && "border-l-[5px]",
+                  )}
                   onClick={row.getToggleSelectedHandler()}
                 >
                   <Box className="min-w-0 items-start gap-3">
@@ -209,6 +267,13 @@ function DataTable<TData, TValue>({
                               titleCell.column.columnDef.cell,
                               titleCell.getContext(),
                             )}
+                          </Box>
+                        ) : null}
+                        {hasRowActions ? (
+                          <Box
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            {renderRowActions(row.original)}
                           </Box>
                         ) : null}
                       </Box>
@@ -278,6 +343,7 @@ function DataTable<TData, TValue>({
                       header.column.getCanSort() && "cursor-pointer select-none",
                       ["createdAt", "updatedAt"].includes(header.column.id) &&
                         "max-lg:hidden",
+                      hiddenTabletColumns.has(header.column.id) && "max-lg:hidden",
                     )}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -297,49 +363,86 @@ function DataTable<TData, TValue>({
                     )}
                   </TableHead>
                 ))}
+
+                {hasRowActions ? (
+                  <TableHead className="w-24 px-4 text-right">
+                    <span className="sr-only">Ações</span>
+                  </TableHead>
+                ) : null}
               </TableRow>
             ))}
           </TableHeader>
 
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer"
-                  onClick={row.getToggleSelectedHandler()}
-                >
-                  <TableCell
-                    className="w-10 px-2 text-center"
-                    onClick={(event) => event.stopPropagation()}
-                  >
-                    <Checkbox
-                      aria-label="Selecionar linha"
-                      checked={row.getIsSelected()}
-                      onCheckedChange={(checked) =>
-                        row.toggleSelected(checked === true)
-                      }
-                    />
-                  </TableCell>
+              table.getRowModel().rows.map((row) => {
+                const accentColor = mobileCard.accentColor?.(row.original)
 
-                  {row.getVisibleCells().map((cell) => (
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className="cursor-pointer"
+                    onClick={row.getToggleSelectedHandler()}
+                  >
                     <TableCell
-                      key={cell.id}
+                      style={
+                        accentColor
+                          ? { borderLeftColor: accentColor }
+                          : undefined
+                      }
                       className={cn(
-                        ["createdAt", "updatedAt"].includes(cell.column.id) &&
-                          "max-lg:hidden",
+                        "relative w-10 px-2 text-center",
+                        accentColor &&
+                          "[&_[data-slot=checkbox]]:translate-x-1",
                       )}
+                      onClick={(event) => event.stopPropagation()}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {accentColor ? (
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-y-0 left-0 w-[5px]"
+                          style={{ backgroundColor: accentColor }}
+                        />
+                      ) : null}
+                      <Checkbox
+                        aria-label="Selecionar linha"
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(checked) =>
+                          row.toggleSelected(checked === true)
+                        }
+                      />
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
+
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          ["createdAt", "updatedAt"].includes(cell.column.id) &&
+                            "max-lg:hidden",
+                          hiddenTabletColumns.has(cell.column.id) &&
+                            "max-lg:hidden",
+                        )}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+
+                    {hasRowActions ? (
+                      <TableCell
+                        className="w-24 px-4"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        {renderRowActions(row.original)}
+                      </TableCell>
+                    ) : null}
+                  </TableRow>
+                )
+              })
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + 1}
+                  colSpan={columns.length + 1 + (hasRowActions ? 1 : 0)}
                   className="h-20 text-center text-muted-foreground"
                 >
                   {emptyMessage}
@@ -353,4 +456,9 @@ function DataTable<TData, TValue>({
   )
 }
 
-export { DataTable, type DataTableProps, type MobileCardConfig }
+export {
+  DataTable,
+  type DataTableProps,
+  type MobileCardConfig,
+  type RowActions,
+}
