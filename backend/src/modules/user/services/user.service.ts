@@ -1,5 +1,4 @@
 import { AuthSession } from '@/modules/user/dto/auth-response.dto'
-import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
 import { ForgotPasswordDto } from '@/modules/user/dto/forgot-password.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { ResetPasswordDto } from '@/modules/user/dto/reset-password.dto'
@@ -27,20 +26,6 @@ export class UserService {
     private readonly passwordResetService: PasswordResetService,
     private readonly jwtService: JwtService,
   ) {}
-
-  async create(input: CreateUserDto): Promise<AuthSession> {
-    const existingUser = await this.userRepository.findByEmail(input.email)
-
-    if (existingUser) {
-      throw new BadRequestException('E-mail já está em uso')
-    }
-
-    const hashedPassword = await this.passwordService.hash(input.password)
-    const user = await this.userRepository.create({ ...input, password: hashedPassword })
-    const accessToken = await this.signToken(user)
-
-    return this.buildAuthResponse(user, accessToken)
-  }
 
   async login(input: LoginDto): Promise<AuthSession> {
     const user = await this.userRepository.findByEmail(input.email)
@@ -70,12 +55,6 @@ export class UserService {
     return this.toUserResponse(user)
   }
 
-  async list(): Promise<UserResponseDto[]> {
-    const users = await this.userRepository.list()
-
-    return users.map((user) => this.toUserResponse(user))
-  }
-
   async update(userId: string, input: UpdateUserDto): Promise<void> {
     const existingUser = await this.userRepository.findById(userId)
 
@@ -83,28 +62,39 @@ export class UserService {
       throw new NotFoundException('Usuário não encontrado')
     }
 
-    if (input.email && input.email !== existingUser.email) {
+    const changesEmail = input.email !== undefined && input.email !== existingUser.email
+    const changesPassword = input.password !== undefined
+
+    if (changesEmail || changesPassword) {
+      if (!input.currentPassword) {
+        throw new BadRequestException('Informe a senha atual para alterar e-mail ou senha')
+      }
+
+      const isCurrentPasswordValid = await this.passwordService.compare(
+        input.currentPassword,
+        existingUser.password,
+      )
+
+      if (!isCurrentPasswordValid) {
+        throw new UnauthorizedException('Senha atual inválida')
+      }
+    }
+
+    if (changesEmail && input.email) {
       const emailInUse = await this.userRepository.findByEmail(input.email)
       if (emailInUse && emailInUse.id !== userId) {
         throw new BadRequestException('E-mail já está em uso')
       }
     }
 
-    const updateData: UpdateUserDto = { ...input }
+    const updateData = { ...input }
+    delete updateData.currentPassword
 
     if (updateData.password) {
       updateData.password = await this.passwordService.hash(updateData.password)
     }
 
     await this.userRepository.update(userId, updateData)
-  }
-
-  async delete(userIds: string[]): Promise<void> {
-    const deletedCount = await this.userRepository.softDeleteMany(userIds)
-
-    if (deletedCount === 0) {
-      throw new NotFoundException('Usuário não encontrado')
-    }
   }
 
   async requestPasswordReset(input: ForgotPasswordDto): Promise<{ message: string }> {

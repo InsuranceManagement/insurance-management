@@ -24,4 +24,9 @@ export class UpdateUserDto implements UpdateUserInput {
       'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.',
   })
   password?: string
+
+  @ApiPropertyOptional({ description: 'Current password required to change e-mail or password' })
+  @IsOptional()
+  @IsString({ message: 'A senha atual deve ser um texto.' })
+  currentPassword?: string
 }

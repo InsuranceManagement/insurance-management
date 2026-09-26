@@ -1,13 +1,11 @@
 import { Public } from '@/common/auth/auth.decorators'
-import { DeleteManyDto } from '@/common/dto/delete-many.dto'
-import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { UpdateUserDto } from '@/modules/user/dto/update-user.dto'
 import { UserService } from '@/modules/user/services/user.service'
 import {
   Body,
   Controller,
-  Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -35,14 +33,6 @@ const AUTH_RATE_LIMIT_WINDOW = minutes(1)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Public()
-  @Throttle({ default: { limit: 5, ttl: AUTH_RATE_LIMIT_WINDOW } })
-  @Post()
-  @ApiOkResponse({ type: AuthResponseDto })
-  create(@Body() input: CreateUserDto, @Res({ passthrough: true }) response: Response) {
-    return this.createSession(input, response)
-  }
 
   @Public()
   @Throttle({ default: { limit: 5, ttl: AUTH_RATE_LIMIT_WINDOW } })
@@ -88,32 +78,26 @@ export class UserController {
 
   @Get(':id')
   @ApiCookieAuth(AUTH_COOKIE_NAME)
-  getById(@Param('id') id: string) {
+  getById(@Param('id') id: string, @Req() request: Request & { user?: JwtPayload }) {
+    this.assertOwnAccount(id, request.user!.sub)
     return this.userService.getById(id)
-  }
-
-  @Get()
-  @ApiCookieAuth(AUTH_COOKIE_NAME)
-  list() {
-    return this.userService.list()
   }
 
   @Patch(':id')
   @ApiCookieAuth(AUTH_COOKIE_NAME)
-  update(@Param('id') id: string, @Body() input: UpdateUserDto) {
+  update(
+    @Param('id') id: string,
+    @Body() input: UpdateUserDto,
+    @Req() request: Request & { user?: JwtPayload },
+  ) {
+    this.assertOwnAccount(id, request.user!.sub)
     return this.userService.update(id, input)
   }
 
-  @Delete()
-  @ApiCookieAuth(AUTH_COOKIE_NAME)
-  delete(@Body() input: DeleteManyDto) {
-    return this.userService.delete(input.ids)
-  }
-
-  private async createSession(input: CreateUserDto, response: Response) {
-    const session = await this.userService.create(input)
-    setAuthCookie(response, session.accessToken)
-    return { user: session.user }
+  private assertOwnAccount(targetUserId: string, authenticatedUserId: string) {
+    if (targetUserId !== authenticatedUserId) {
+      throw new ForbiddenException('Acesso negado')
+    }
   }
 
   private async loginSession(input: LoginDto, response: Response) {

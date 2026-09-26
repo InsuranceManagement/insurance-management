@@ -130,15 +130,6 @@ export default function LoginForm() {
         >
           {loginMutation.isPending ? "Entrando..." : "Entrar"}
         </Button>
-
-        <Typography asChild variant="small" className="text-center text-muted-foreground">
-          <p>
-            Não possui uma conta?{" "}
-            <Link href="/register" className="font-medium text-[#06608a] hover:underline">
-              Cadastre-se
-            </Link>
-          </p>
-        </Typography>
       </form>
     </Box>
   )

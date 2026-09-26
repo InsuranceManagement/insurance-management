@@ -11,12 +11,6 @@ export interface AuthResponse {
   }
 }
 
-export interface RegisterRequest {
-  name: string
-  email: string
-  password: string
-}
-
 //forgot and reset password
 
 export interface ForgotPasswordRequest {

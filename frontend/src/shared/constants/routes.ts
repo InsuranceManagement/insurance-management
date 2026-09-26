@@ -10,14 +10,6 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "GET",
       path: "/users/csrf",
     },
-    list: {
-      method: "GET",
-      path: "/users",
-    },
-    create: {
-      method: "POST",
-      path: "/users",
-    },
     login: {
       method: "POST",
       path: "/users/login",
@@ -37,10 +29,6 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
     updateById: {
       method: "PATCH",
       path: (id: string) => `/users/${id}`,
-    },
-    deleteMany: {
-      method: "DELETE",
-      path: "/users",
     },
     forgotPassword: {
       method: "POST",

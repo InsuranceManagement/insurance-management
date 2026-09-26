@@ -14,13 +14,6 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Informe sua senha"),
 })
 
-export const registerSchema = z.object({
-  name: z.string().trim().min(2, "O nome deve possuir pelo menos 2 caracteres"),
-
-  email: z.string().email("Informe um e-mail válido"),
-
-  password: passwordSchema,
-})
 
 export const forgotPasswordSchema = z.object({
   email: z.string().email("Informe um e-mail válido"),
@@ -38,6 +31,5 @@ export const resetPasswordSchema = z
   })
 
 export type LoginFormValues = z.infer<typeof loginSchema>
-export type RegisterFormValues = z.infer<typeof registerSchema>
 export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
