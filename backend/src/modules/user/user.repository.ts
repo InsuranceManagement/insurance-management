@@ -43,14 +43,18 @@ export class UserRepository {
   }
 
   async update(userId: string, input: Omit<UpdateUserInput, 'currentPassword'>): Promise<void> {
-    await this.prismaService.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        ...input,
-      },
-    })
+    if (input.password) {
+      await this.prismaService.$transaction(async (transaction) => {
+        await transaction.user.update({ where: { id: userId }, data: { ...input } })
+        await transaction.session.updateMany({
+          where: { userId, revokedAt: null, expiresAt: { gt: new Date() } },
+          data: { revokedAt: new Date() },
+        })
+      })
+      return
+    }
+
+    await this.prismaService.user.update({ where: { id: userId }, data: { ...input } })
   }
 
   async findByPasswordResetTokenHash(tokenHash: string): Promise<User | null> {
@@ -91,15 +95,19 @@ export class UserRepository {
   }
 
   async updatePasswordWithResetToken(userId: string, newPassword: string): Promise<void> {
-    await this.prismaService.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        password: newPassword,
-        passwordResetTokenHash: null,
-        passwordResetExpiresAt: null,
-      },
+    await this.prismaService.$transaction(async (transaction) => {
+      await transaction.user.update({
+        where: { id: userId },
+        data: {
+          password: newPassword,
+          passwordResetTokenHash: null,
+          passwordResetExpiresAt: null,
+        },
+      })
+      await transaction.session.updateMany({
+        where: { userId, revokedAt: null, expiresAt: { gt: new Date() } },
+        data: { revokedAt: new Date() },
+      })
     })
   }
 

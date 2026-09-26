@@ -8,6 +8,8 @@ import { User } from '@/modules/user/entities/user'
 import { PasswordService } from '@/modules/user/services/password.service'
 import { PasswordResetService } from '@/modules/user/services/passwordReset.service'
 import { UserRepository } from '@/modules/user/user.repository'
+import { SessionService } from '@/modules/session/session.service'
+import { environment } from '@/common/config/environment'
 import {
   BadRequestException,
   HttpException,
@@ -17,6 +19,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { randomUUID } from 'crypto'
 
 @Injectable()
 export class UserService {
@@ -25,9 +28,13 @@ export class UserService {
     private readonly passwordService: PasswordService,
     private readonly passwordResetService: PasswordResetService,
     private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
   ) {}
 
-  async login(input: LoginDto): Promise<AuthSession> {
+  async login(
+    input: LoginDto,
+    previousSession?: { id: string; userId: string },
+  ): Promise<AuthSession> {
     const user = await this.userRepository.findByEmail(input.email)
 
     if (!user?.isActive()) {
@@ -40,7 +47,11 @@ export class UserService {
       throw new UnauthorizedException('E-mail ou senha inválidos')
     }
 
-    const accessToken = await this.signToken(user)
+    const sessionId = randomUUID()
+    const issuedAt = Math.floor(Date.now() / 1000)
+    const expiresAt = new Date((issuedAt + environment.JWT_EXPIRES_IN_SECONDS) * 1000)
+    const accessToken = await this.signToken(user, sessionId, issuedAt)
+    await this.sessionService.replace(previousSession, sessionId, user.id, expiresAt)
 
     return this.buildAuthResponse(user, accessToken)
   }
@@ -148,12 +159,15 @@ export class UserService {
     return { message: 'Senha redefinida com sucesso.' }
   }
 
-  private async signToken(user: User): Promise<string> {
+  private async signToken(user: User, sessionId: string, issuedAt: number): Promise<string> {
     return await this.jwtService.signAsync({
       sub: user.id,
       id: user.id,
       name: user.name,
       email: user.email,
+      sid: sessionId,
+      tokenType: 'access',
+      iat: issuedAt,
     })
   }
 

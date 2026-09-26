@@ -7,10 +7,14 @@ import { PasswordResetService } from './services/passwordReset.service'
 import { UserService } from './services/user.service'
 import { UserController } from './user.controller'
 import { UserRepository } from './user.repository'
+import { SessionModule } from '@/modules/session/session.module'
+import { AuthModule } from '@/common/auth/auth.module'
 
 @Module({
   imports: [
     PrismaModule,
+    SessionModule,
+    AuthModule,
     JwtModule.register({
       secret: environment.JWT_SECRET,
       signOptions: {

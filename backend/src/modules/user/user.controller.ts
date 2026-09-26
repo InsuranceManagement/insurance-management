@@ -26,20 +26,33 @@ import { generateCsrfToken } from '@/common/auth/csrf'
 import { minutes, Throttle } from '@nestjs/throttler'
 import { ForgotPasswordDto } from './dto/forgot-password.dto'
 import { ResetPasswordDto } from './dto/reset-password.dto'
+import { SessionService } from '@/modules/session/session.service'
+import { Logger } from '@nestjs/common'
+import { AuthService } from '@/common/auth/auth.service'
 
 const AUTH_RATE_LIMIT_WINDOW = minutes(1)
 
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  private readonly logger = new Logger(UserController.name)
+
+  constructor(
+    private readonly userService: UserService,
+    private readonly sessionService: SessionService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Public()
   @Throttle({ default: { limit: 5, ttl: AUTH_RATE_LIMIT_WINDOW } })
   @Post('login')
   @ApiOkResponse({ type: AuthResponseDto })
-  login(@Body() input: LoginDto, @Res({ passthrough: true }) response: Response) {
-    return this.loginSession(input, response)
+  login(
+    @Body() input: LoginDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.loginSession(input, request, response)
   }
 
   @Public()
@@ -66,8 +79,17 @@ export class UserController {
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiCookieAuth(AUTH_COOKIE_NAME)
-  logout(@Res({ passthrough: true }) response: Response) {
-    clearAuthCookie(response)
+  async logout(
+    @Req() request: Request & { user?: JwtPayload },
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    try {
+      await this.sessionService.revoke(request.user!.sid, request.user!.sub)
+    } catch {
+      this.logger.error('Falha ao revogar sessao durante logout')
+    } finally {
+      clearAuthCookie(response)
+    }
   }
 
   @Get('me')
@@ -100,8 +122,16 @@ export class UserController {
     }
   }
 
-  private async loginSession(input: LoginDto, response: Response) {
-    const session = await this.userService.login(input)
+  private async loginSession(input: LoginDto, request: Request, response: Response) {
+    const cookieValue: unknown = request.cookies?.[AUTH_COOKIE_NAME]
+    const previousPayload =
+      typeof cookieValue === 'string'
+        ? await this.authService.validateOptionalToken(cookieValue)
+        : undefined
+    const session = await this.userService.login(
+      input,
+      previousPayload ? { id: previousPayload.sid, userId: previousPayload.sub } : undefined,
+    )
     setAuthCookie(response, session.accessToken)
     return { user: session.user }
   }
