@@ -3,7 +3,7 @@
 ## Controles detectados
 
 - `backend/src/main.ts` aplica Helmet, CORS por `ALLOWED_ORIGINS` e `ValidationPipe` com `whitelist`, transformacao e rejeicao de campos extras.
-- `AuthGuard` global exige Bearer JWT, exceto handlers `@Public()` e URLs de Swagger em `/docs`.
+- `AuthGuard` global exige cookie JWT, valida tipo, `sub`, `sid` e a sessao ativa no banco, exceto handlers `@Public()` e URLs de Swagger em `/docs`.
 - Rotas publicas: `GET /`, login, forgot-password, reset-password e emissao do token CSRF. A conta inicial e provisionada por `npm run user:bootstrap` no backend.
 - Throttling global: 100 requests/minuto. Login: 5/minuto; forgot-password: 3/minuto; reset-password: 4/minuto.
 - Senhas usam bcrypt com custo 10. Senhas aceitas tem no minimo oito caracteres, maiuscula, minuscula, numero e caractere especial.
@@ -24,5 +24,5 @@
 
 - **Detectado:** `DATABASE_URL` e `JWT_SECRET` caem para string vazia e nao ha validacao explicita de startup.
 - **Detectado:** Swagger e liberado pelo guard em qualquer ambiente.
-- **Detectado:** qualquer JWT valido tem acesso equivalente a todas as rotas protegidas.
-- **Pergunta em aberto:** requisitos de papeis, politica de sessao/revogacao, disponibilidade publica do Swagger e validacao obrigatoria de ambiente.
+- **Detectado:** qualquer sessao ativa de usuario tem acesso equivalente a todas as rotas protegidas; nao ha papeis ou ownership de dados.
+- **Pergunta em aberto:** disponibilidade publica do Swagger e validacao obrigatoria de ambiente.

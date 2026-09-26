@@ -4,7 +4,7 @@
 
 - Sem prefixo/versionamento global; porta padrao 8080.
 - Swagger em `GET /docs`.
-- Todas as rotas exigem Bearer JWT, exceto as marcadas **Publica** abaixo e o Swagger.
+- Rotas protegidas exigem cookie JWT associado a uma sessao ativa, exceto as marcadas **Publica** abaixo e o Swagger.
 - JSON e validado por `ValidationPipe` com transformacao, whitelist e rejeicao de propriedades extras.
 - Listagens retornam arrays sem paginacao detectada.
 - Deletes tabulares usam `DELETE` com corpo `{ "ids": string[] }`; Visit e a excecao individual.
@@ -17,13 +17,15 @@
 | ------ | ------------------------ | ------- | ------------------------------------------- |
 | GET    | `/`                      | Publica | Retorna `Hello World!`                      |
 | GET    | `/users/csrf`            | Publica | Gera token CSRF                             |
-| POST   | `/users/login`           | Publica | Credenciais -> cookie de sessao             |
+| POST   | `/users/login`           | Publica | Credenciais -> cria sessao e cookie de acesso |
 | POST   | `/users/forgot-password` | Publica | E-mail -> mensagem neutra                   |
 | POST   | `/users/reset-password`  | Publica | Token + nova senha -> mensagem              |
-| POST   | `/users/logout`          | JWT     | Limpa cookie de sessao                      |
+| POST   | `/users/logout`          | JWT     | Revoga sessao atual e limpa cookie           |
 | GET    | `/users/me`              | JWT     | Dados da conta autenticada                  |
 | GET    | `/users/:id`             | JWT     | Somente a propria conta                     |
 | PATCH  | `/users/:id`             | JWT     | Somente a propria conta; senha atual para alterar e-mail/senha |
+
+Cada login cria um `sid` individual; a API valida sua existencia, titular, revogacao, expiracao e usuario ativo em toda requisicao protegida. Troca/reset de senha revoga as sessoes ativas do usuario. Uma rotina diaria remove sessoes expiradas ou revogadas.
 
 ### Cadastros principais
 

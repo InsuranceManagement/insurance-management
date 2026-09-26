@@ -6,7 +6,8 @@ Fonte autoritativa: `backend/prisma/schema.prisma`. Banco: PostgreSQL; Prisma Cl
 
 | Model Prisma | Chave e campos principais | Relacoes | Exclusao |
 | --- | --- | --- | --- |
-| `User` | UUID; name; email unique; password; campos de reset; timestamps | Nenhuma | Soft por `deletedAt` |
+| `User` | UUID; name; email unique; password; campos de reset; timestamps | 1:N `Session` | Soft por `deletedAt` |
+| `Session` | ID UUID; userId; expiresAt; revokedAt?; createdAt | Pertence a User; cascade ao remover usuario | Fisica apos expiracao/revogacao |
 | `InsuranceCompany` | UUID; name; color; timestamps | 1:N `Products` | Soft |
 | `ProductType` | ID string fornecido; name unique; description | 1:N `Products` | Soft |
 | `Products` | ID string fornecido; name; FKs de tipo/seguradora | N:1 ProductType, N:1 InsuranceCompany, N:N Client | Soft |
@@ -22,10 +23,11 @@ Todos possuem `createdAt` e `updatedAt`; todos exceto Chart e ChartType possuem 
 
 - A relacao Client-Products e N:N implicita; Prisma administra a tabela de juncao.
 - Address tem `clientId @unique`, impondo no maximo um endereco por cliente.
+- Session pertence a User; guarda apenas o identificador da sessao, nunca o JWT. A autenticacao confirma usuario, revogacao e validade a cada requisicao.
 - Product exige ProductType e InsuranceCompany existentes por foreign key.
 - Visit exige Client existente por foreign key; o service restringe a cliente ativo.
 - Nao ha `onDelete` explicito no schema; use o comportamento Prisma/banco vigente e teste deletes fisicos com relacoes.
-- Nao ha indices explicitos alem de PKs e uniques declarados.
+- Session possui indices para usuario/revogacao, expiracao e revogacao; os demais indices seguem PKs e uniques declarados.
 
 ## Semantica de repository
 

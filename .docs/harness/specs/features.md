@@ -2,7 +2,7 @@
 
 | Area | Backend | Frontend | Evidencia principal |
 | --- | --- | --- | --- |
-| Autenticacao | Login, JWT, forgot/reset password; conta inicial via procedimento administrativo | Telas e hooks para login e recuperacao | `backend/src/modules/user`, `frontend/src/features/Auth` |
+| Autenticacao | Login com sessao revogavel, JWT, forgot/reset password; conta inicial via procedimento administrativo | Telas e hooks para login e recuperacao | `backend/src/modules/user`, `backend/src/modules/session`, `frontend/src/features/Auth` |
 | Usuarios | Obter e atualizar a propria conta | Sem tela de administracao detectada | `backend/src/modules/user/user.controller.ts` |
 | Seguradoras | CRUD e soft delete em lote | CRUD tabular protegido | `backend/src/modules/insurance-company`, `frontend/src/features/InsuranceCompanyCrud` |
 | Tipos de produto | CRUD, ID derivado do nome, soft delete | CRUD tabular protegido | `backend/src/modules/product-type`, `frontend/src/features/ProductTypeCrud` |
@@ -16,7 +16,7 @@
 
 ## Regras funcionais relevantes
 
-- Auth: nao ha cadastro publico; a conta inicial e criada pelo comando administrativo de bootstrap; login leva ao dashboard.
+- Auth: nao ha cadastro publico; a conta inicial e criada pelo comando administrativo de bootstrap; login cria sessao revogavel e leva ao dashboard.
 - Usuario/cliente nao podem repetir e-mail ativo. Cliente exige pelo menos CPF ou CNPJ e pode associar zero ou mais produtos ativos.
 - Seguradora e tipo de produto rejeitam nome ativo duplicado.
 - Seguradoras e tipos de produto com produtos ativos associados nao podem ser excluidos; produtos so aceitam associacoes com pais ativos.

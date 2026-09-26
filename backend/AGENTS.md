@@ -5,7 +5,7 @@ Leia primeiro o `AGENTS.md` raiz e os documentos do harness relacionados a taref
 ## Estrutura detectada
 
 - NestJS 11 em `src/`, Prisma 7/PostgreSQL em `prisma/` e client gerado em `generated/prisma/`.
-- Modulos: user, insurance-company, product-type, product, client, visit, chart-type, chart, dashboard e notifications.
+- Modulos: user, session, insurance-company, product-type, product, client, visit, chart-type, chart, dashboard e notifications.
 - Fluxo predominante: controller -> service -> repository -> `PrismaService`; DTOs validam HTTP, inputs tipam portas internas e entities mapeiam persistencia para dominio.
 - O guard JWT e o throttler sao globais. Rotas publicas exigem `@Public()`.
 

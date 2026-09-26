@@ -15,7 +15,7 @@
 - Backend modular. O caminho predominante e controller -> service -> repository -> Prisma; entities fazem mapeamento de dominio e DTOs validam a borda HTTP.
 - `AuthGuard` e throttler globais protegem a API; login, recuperacao de senha, CSRF e raiz sao publicos. Swagger fica em `/docs`.
 - Frontend separa paginas em `src/app`, fluxos em `src/features` e infraestrutura compartilhada em `src/shared`.
-- O frontend centraliza rotas em `src/shared/constants/routes.ts`, usa Axios e React Query e envia o JWT salvo em `localStorage`.
+- O frontend centraliza rotas em `src/shared/constants/routes.ts`, usa Axios e React Query; o JWT de acesso fica em cookie HttpOnly e o contexto mantem os dados publicos do usuario.
 - Dashboard busca configuracoes de `GET /charts` e usa o `apiRoute` persistido para carregar KPIs/series.
 - Notificacoes sao obtidas por um servico HTTP externo configurado por `NOTIFICATIONS_API_URL`; nao ha tabelas locais de notificacao no schema Prisma.
 
