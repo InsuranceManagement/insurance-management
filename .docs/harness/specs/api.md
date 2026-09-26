@@ -17,7 +17,7 @@
 | ------ | ------------------------ | ------- | ------------------------------------------- |
 | GET    | `/`                      | Publica | Retorna `Hello World!`                      |
 | GET    | `/users/csrf`            | Publica | Gera token CSRF                             |
-| POST   | `/users/login`           | Publica | Credenciais -> cria sessao e cookie de acesso |
+| POST   | `/users/login`           | Publica | Credenciais -> substitui a sessao ativa do cookie, quando valido, e define novo cookie |
 | POST   | `/users/forgot-password` | Publica | E-mail -> mensagem neutra                   |
 | POST   | `/users/reset-password`  | Publica | Token + nova senha -> mensagem              |
 | POST   | `/users/logout`          | JWT     | Revoga sessao atual e limpa cookie           |
@@ -25,7 +25,7 @@
 | GET    | `/users/:id`             | JWT     | Somente a propria conta                     |
 | PATCH  | `/users/:id`             | JWT     | Somente a propria conta; senha atual para alterar e-mail/senha |
 
-Cada login cria um `sid` individual; a API valida sua existencia, titular, revogacao, expiracao e usuario ativo em toda requisicao protegida. Troca/reset de senha revoga as sessoes ativas do usuario. Uma rotina diaria remove sessoes expiradas ou revogadas.
+Cada login cria um `sid` individual. Se o cookie recebido identificar uma sessao ativa, o login revoga essa sessao e cria a nova atomicamente; sem cookie valido, apenas cria uma sessao. A API valida existencia, titular, revogacao, expiracao e usuario ativo em toda requisicao protegida. Troca/reset de senha revoga as sessoes ativas do usuario. Uma rotina diaria remove sessoes expiradas ou revogadas.
 
 ### Cadastros principais
 
