@@ -25,7 +25,7 @@
 | GET    | `/users/:id`             | JWT     | Somente a propria conta                     |
 | PATCH  | `/users/:id`             | JWT     | Somente a propria conta; senha atual para alterar e-mail/senha |
 
-Cada login cria um `sid` individual. Se o cookie recebido identificar uma sessao ativa, o login revoga essa sessao e cria a nova atomicamente; sem cookie valido, apenas cria uma sessao. A API valida existencia, titular, revogacao, expiracao e usuario ativo em toda requisicao protegida. Troca/reset de senha revoga as sessoes ativas do usuario. Uma rotina diaria remove sessoes expiradas ou revogadas.
+Cada login cria um `sid` individual. Se o cookie recebido identificar uma sessao ativa, o login revoga essa sessao e cria a nova atomicamente; sem cookie valido, apenas cria uma sessao. A API valida existencia, titular, revogacao, expiracao e usuario ativo em toda requisicao protegida. Troca/reset de senha revoga as sessoes ativas do usuario. Uma rotina semanal, aos domingos as 02:00 em `America/Sao_Paulo`, remove sessoes expiradas ou revogadas.
 
 ### Cadastros principais
 

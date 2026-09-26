@@ -37,7 +37,7 @@ Como o corretor precisa manter outros dispositivos conectados quando encerra uma
 5. Na troca ou redefinição de senha e na desativação da conta, revogar todas as sessões ativas do usuário.
 6. Manter o tempo de vida da sessão alinhado ao `exp` do JWT. A verificação do estado da sessão em cada requisição continua obrigatória; a rotina de limpeza é apenas manutenção e não participa da decisão de autenticação.
 7. Não armazenar o JWT completo na tabela. O identificador da sessão não deve, sozinho, servir como credencial.
-8. Registrar no módulo de sessões uma rotina de limpeza agendada pelo NestJS, usando o `ScheduleModule` já registrado no `AppModule`. Executá-la diariamente em um fuso horário explícito, adequado à operação da aplicação.
+8. Registrar no módulo de sessões uma rotina de limpeza agendada pelo NestJS, usando o `ScheduleModule` já registrado no `AppModule`. Executá-la semanalmente em um fuso horário explícito, adequado à operação da aplicação.
 9. A rotina deve apagar em lote somente sessões expiradas ou já revogadas, ser segura para execução repetida e manter registros ativos intactos. Não deve registrar tokens, identificadores de sessão ou dados pessoais nos logs.
 10. Se a limpeza falhar, registrar o erro sem interromper login, autenticação ou outras operações da API. O atraso na limpeza pode manter linhas antigas por mais tempo, mas não pode revalidar uma sessão expirada ou revogada.
 11. Para o deploy inicial com uma instância da API, manter o agendamento no próprio backend. Se houver múltiplas instâncias no futuro, garantir que execuções concorrentes permaneçam idempotentes ou eleger uma única instância responsável pela rotina.

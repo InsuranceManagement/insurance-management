@@ -31,7 +31,7 @@
 
 - Dashboard: `GET /charts` retorna `apiRoute`, tipo, ordem e unidade. O frontend ordena, separa KPI dos demais e faz requests para cada `apiRoute`.
 - Password reset: a API gera token aleatorio, armazena somente hash/expiracao e opcionalmente pede envio ao servico de notificacoes.
-- Auth: cada login cria uma sessao persistida ligada ao `sid` do JWT. O guard valida a sessao e o usuario no banco em toda requisicao; logout revoga somente a sessao atual e troca/reset de senha revogam todas. A limpeza diaria roda as 02:00 em `America/Sao_Paulo`.
+- Auth: cada login cria uma sessao persistida ligada ao `sid` do JWT. O guard valida a sessao e o usuario no banco em toda requisicao; logout revoga somente a sessao atual e troca/reset de senha revogam todas. A limpeza semanal roda aos domingos, as 02:00 em `America/Sao_Paulo`.
 - Templates/logs: a API adapta payloads do servico externo e assina um JWT de feature quando `JWT_SECRET` existe.
 
 ## Decisoes nao detectadas
