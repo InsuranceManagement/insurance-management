@@ -2,8 +2,8 @@
 
 | Area | Backend | Frontend | Evidencia principal |
 | --- | --- | --- | --- |
-| Autenticacao | Registro, login, JWT, forgot/reset password | Telas e hooks para os quatro fluxos | `backend/src/modules/user`, `frontend/src/features/Auth` |
-| Usuarios | Listar, obter, atualizar e excluir em lote | Sem tela de administracao detectada | `backend/src/modules/user/user.controller.ts` |
+| Autenticacao | Login, JWT, forgot/reset password; conta inicial via procedimento administrativo | Telas e hooks para login e recuperacao | `backend/src/modules/user`, `frontend/src/features/Auth` |
+| Usuarios | Obter e atualizar a propria conta | Sem tela de administracao detectada | `backend/src/modules/user/user.controller.ts` |
 | Seguradoras | CRUD e soft delete em lote | CRUD tabular protegido | `backend/src/modules/insurance-company`, `frontend/src/features/InsuranceCompanyCrud` |
 | Tipos de produto | CRUD, ID derivado do nome, soft delete | CRUD tabular protegido | `backend/src/modules/product-type`, `frontend/src/features/ProductTypeCrud` |
 | Produtos | CRUD e relacoes com tipo/seguradora | CRUD tabular com selects | `backend/src/modules/product`, `frontend/src/features/ProductCrud` |
@@ -16,7 +16,7 @@
 
 ## Regras funcionais relevantes
 
-- Auth: registro retorna sessao, mas o frontend redireciona cadastro para login; login leva ao dashboard.
+- Auth: nao ha cadastro publico; a conta inicial e criada pelo comando administrativo de bootstrap; login leva ao dashboard.
 - Usuario/cliente nao podem repetir e-mail ativo. Cliente exige pelo menos CPF ou CNPJ e pode associar zero ou mais produtos ativos.
 - Seguradora e tipo de produto rejeitam nome ativo duplicado.
 - Seguradoras e tipos de produto com produtos ativos associados nao podem ser excluidos; produtos so aceitam associacoes com pais ativos.
@@ -29,7 +29,7 @@
 ## Cobertura de interface
 
 - Protegidas: `/dashboard`, `/seguradoras`, `/tipos-de-produto`, `/produtos`, `/clientes`, `/visitas`, `/logs`.
-- Publicas: `/login`, `/register`, `/forgot-password`, `/reset-password`.
+- Publicas: `/login`, `/forgot-password`, `/reset-password`.
 - **Detectado:** nao ha paginas para usuarios, charts ou chart types.
 - **Detectado:** `/logs` consulta `GET /notifications/logs`, mostra tipo, destinatario, remetente e status amigavel, e nao renderiza o HTML do corpo da mensagem. O contrato atual nao fornece nome de template no log. Status e tipos usam os nomes retornados pela API, com traducao dos valores tecnicos conhecidos e fallback para os IDs quando as relacoes sao nulas. Evidencias: `frontend/src/features/ApplicationLogs`, `frontend/src/app/(protected)/logs/page.tsx`.
 - **Desconhecido:** se essas paginas ausentes sao planejadas.

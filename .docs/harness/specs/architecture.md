@@ -22,7 +22,7 @@
 
 - O layout raiz instala React Query, auth, tooltip e toaster.
 - O grupo `(protected)` envolve dashboard/cadastros/visitas em `AuthGuard`, sidebar e header.
-- Rotas publicas: `/login`, `/register`, `/forgot-password`, `/reset-password`; `/` redireciona para `/dashboard`.
+- Rotas publicas: `/login`, `/forgot-password`, `/reset-password`; `/` redireciona para `/dashboard`. O cadastro publico foi removido.
 - Features de cadastro configuram o generico `CrudScreen`; visits usa FullCalendar; dashboard usa Highcharts/KPI.
 - `frontend/src/shared/constants/routes.ts` descreve metodo e path. `apiClient` resolve path, query, body e cancelamento.
 - React Query centraliza cache e toasts; mutations podem invalidar a chave da listagem.

@@ -4,8 +4,8 @@
 
 - `backend/src/main.ts` aplica Helmet, CORS por `ALLOWED_ORIGINS` e `ValidationPipe` com `whitelist`, transformacao e rejeicao de campos extras.
 - `AuthGuard` global exige Bearer JWT, exceto handlers `@Public()` e URLs de Swagger em `/docs`.
-- Rotas publicas: `GET /`, registro, login, forgot-password e reset-password.
-- Throttling global: 100 requests/minuto. Registro/login: 5/minuto; forgot-password: 3/minuto; reset-password: 4/minuto.
+- Rotas publicas: `GET /`, login, forgot-password, reset-password e emissao do token CSRF. A conta inicial e provisionada por `npm run user:bootstrap` no backend.
+- Throttling global: 100 requests/minuto. Login: 5/minuto; forgot-password: 3/minuto; reset-password: 4/minuto.
 - Senhas usam bcrypt com custo 10. Senhas aceitas tem no minimo oito caracteres, maiuscula, minuscula, numero e caractere especial.
 - Reset usa 32 bytes aleatorios, armazena SHA-256 do token, expira por padrao em 30 minutos e evita nova solicitacao por usuario dentro de 60 segundos.
 - O frontend define CSP e headers defensivos em `frontend/next.config.ts`.

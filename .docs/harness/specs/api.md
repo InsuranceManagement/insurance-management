@@ -16,14 +16,14 @@
 | Metodo | Path                     | Acesso  | Contrato resumido                           |
 | ------ | ------------------------ | ------- | ------------------------------------------- |
 | GET    | `/`                      | Publica | Retorna `Hello World!`                      |
-| POST   | `/users`                 | Publica | Cria user e retorna `{ accessToken, user }` |
-| POST   | `/users/login`           | Publica | Credenciais -> `{ accessToken, user }`      |
+| GET    | `/users/csrf`            | Publica | Gera token CSRF                             |
+| POST   | `/users/login`           | Publica | Credenciais -> cookie de sessao             |
 | POST   | `/users/forgot-password` | Publica | E-mail -> mensagem neutra                   |
 | POST   | `/users/reset-password`  | Publica | Token + nova senha -> mensagem              |
-| GET    | `/users`                 | JWT     | `UserResponseDto[]`                         |
-| GET    | `/users/:id`             | JWT     | `UserResponseDto`                           |
-| PATCH  | `/users/:id`             | JWT     | Update parcial                              |
-| DELETE | `/users`                 | JWT     | Soft delete batch por `ids`                 |
+| POST   | `/users/logout`          | JWT     | Limpa cookie de sessao                      |
+| GET    | `/users/me`              | JWT     | Dados da conta autenticada                  |
+| GET    | `/users/:id`             | JWT     | Somente a propria conta                     |
+| PATCH  | `/users/:id`             | JWT     | Somente a propria conta; senha atual para alterar e-mail/senha |
 
 ### Cadastros principais
 
