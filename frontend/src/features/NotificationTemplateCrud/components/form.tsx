@@ -33,7 +33,6 @@ function toFormValues(
     description: initialValues?.description ?? "",
     subject: initialValues?.subject ?? "",
     body: initialValues?.body ?? "",
-    notificationTypeId: initialValues?.notificationTypeId ?? "",
     isActive: initialValues?.isActive ?? true,
     variablePairs: Object.entries(initialValues?.variableSchema ?? {}).map(
       ([key, value]) => ({ key, value }),
@@ -79,7 +78,7 @@ export function NotificationTemplateForm({
       },
       {},
     )
-    const notificationTypeId = values.notificationTypeId?.trim() || null
+    const notificationTypeId = initialValues?.notificationTypeId?.trim() || null
     const hasVariableSchema = Object.keys(variableSchema).length > 0
 
     const payload: NotificationTemplateUpsertPayload = {
@@ -87,7 +86,7 @@ export function NotificationTemplateForm({
       description: values.description?.trim() || null,
       subject: values.subject.trim(),
       body: values.body.trim(),
-      isActive: values.isActive,
+      isActive: isEditing ? values.isActive : true,
       // Na edição o serviço externo exige as 7 chaves presentes (null é
       // aceito). Na criação ele exige notificationTypeId/variableSchema como
       // valores reais quando enviados, então omitimos em vez de mandar null.
@@ -97,7 +96,6 @@ export function NotificationTemplateForm({
             variableSchema: hasVariableSchema ? variableSchema : null,
           }
         : {
-            ...(notificationTypeId ? { notificationTypeId } : {}),
             ...(hasVariableSchema ? { variableSchema } : {}),
           }),
     }
@@ -153,7 +151,7 @@ export function NotificationTemplateForm({
 
         <Box className="flex-col gap-1.5">
           <Label htmlFor="notification-template-body">
-            Corpo (HTML)
+            Corpo da mensagem
           </Label>
           <Textarea
             id="notification-template-body"
@@ -168,32 +166,23 @@ export function NotificationTemplateForm({
           ) : null}
         </Box>
 
-        <Box className="flex-col gap-1.5">
-          <Label htmlFor="notification-template-notification-type-id">
-            ID do tipo de notificação
-          </Label>
-          <Input
-            id="notification-template-notification-type-id"
-            {...form.register("notificationTypeId")}
-            placeholder="Opcional"
+        {isEditing ? (
+          <Controller
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <Box className="items-center justify-between rounded-md border p-3">
+                <Typography variant="small">Template ativo</Typography>
+                <Input
+                  type="checkbox"
+                  checked={field.value}
+                  onChange={(event) => field.onChange(event.target.checked)}
+                  className="size-4"
+                />
+              </Box>
+            )}
           />
-        </Box>
-
-        <Controller
-          control={form.control}
-          name="isActive"
-          render={({ field }) => (
-            <Box className="items-center justify-between rounded-md border p-3">
-              <Typography variant="small">Template ativo</Typography>
-              <Input
-                type="checkbox"
-                checked={field.value}
-                onChange={(event) => field.onChange(event.target.checked)}
-                className="size-4"
-              />
-            </Box>
-          )}
-        />
+        ) : null}
 
         <Box className="flex-col gap-3 border-t pt-4">
           <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
