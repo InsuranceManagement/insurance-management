@@ -33,7 +33,6 @@ function toFormValues(
     description: initialValues?.description ?? "",
     subject: initialValues?.subject ?? "",
     body: initialValues?.body ?? "",
-    notificationTypeId: initialValues?.notificationTypeId ?? "",
     isActive: initialValues?.isActive ?? true,
     variablePairs: Object.entries(initialValues?.variableSchema ?? {}).map(
       ([key, value]) => ({ key, value }),
@@ -79,7 +78,7 @@ export function NotificationTemplateForm({
       },
       {},
     )
-    const notificationTypeId = values.notificationTypeId?.trim() || null
+    const notificationTypeId = initialValues?.notificationTypeId?.trim() || null
     const hasVariableSchema = Object.keys(variableSchema).length > 0
 
     const payload: NotificationTemplateUpsertPayload = {
@@ -97,7 +96,6 @@ export function NotificationTemplateForm({
             variableSchema: hasVariableSchema ? variableSchema : null,
           }
         : {
-            ...(notificationTypeId ? { notificationTypeId } : {}),
             ...(hasVariableSchema ? { variableSchema } : {}),
           }),
     }
@@ -166,17 +164,6 @@ export function NotificationTemplateForm({
               {form.formState.errors.body.message}
             </Typography>
           ) : null}
-        </Box>
-
-        <Box className="flex-col gap-1.5">
-          <Label htmlFor="notification-template-notification-type-id">
-            ID do tipo de notificação
-          </Label>
-          <Input
-            id="notification-template-notification-type-id"
-            {...form.register("notificationTypeId")}
-            placeholder="Opcional"
-          />
         </Box>
 
         <Controller
