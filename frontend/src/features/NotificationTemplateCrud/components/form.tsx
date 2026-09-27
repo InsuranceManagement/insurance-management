@@ -86,7 +86,7 @@ export function NotificationTemplateForm({
       description: values.description?.trim() || null,
       subject: values.subject.trim(),
       body: values.body.trim(),
-      isActive: values.isActive,
+      isActive: isEditing ? values.isActive : true,
       // Na edição o serviço externo exige as 7 chaves presentes (null é
       // aceito). Na criação ele exige notificationTypeId/variableSchema como
       // valores reais quando enviados, então omitimos em vez de mandar null.
@@ -166,21 +166,23 @@ export function NotificationTemplateForm({
           ) : null}
         </Box>
 
-        <Controller
-          control={form.control}
-          name="isActive"
-          render={({ field }) => (
-            <Box className="items-center justify-between rounded-md border p-3">
-              <Typography variant="small">Template ativo</Typography>
-              <Input
-                type="checkbox"
-                checked={field.value}
-                onChange={(event) => field.onChange(event.target.checked)}
-                className="size-4"
-              />
-            </Box>
-          )}
-        />
+        {isEditing ? (
+          <Controller
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <Box className="items-center justify-between rounded-md border p-3">
+                <Typography variant="small">Template ativo</Typography>
+                <Input
+                  type="checkbox"
+                  checked={field.value}
+                  onChange={(event) => field.onChange(event.target.checked)}
+                  className="size-4"
+                />
+              </Box>
+            )}
+          />
+        ) : null}
 
         <Box className="flex-col gap-3 border-t pt-4">
           <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
