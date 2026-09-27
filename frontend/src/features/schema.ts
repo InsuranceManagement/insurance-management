@@ -102,3 +102,13 @@ export type NotificationTemplateFormValues = z.infer<
   typeof notificationTemplateUpsertSchema
 >;
 
+export const leadUpsertSchema = z.object({
+  name: z.string().trim().min(1, "O nome é obrigatório."),
+  phoneNumber: z
+    .string()
+    .trim()
+    .regex(/^\d{10,15}$/, "O telefone deve conter entre 10 e 15 dígitos."),
+});
+
+export type LeadUpsertFormValues = z.infer<typeof leadUpsertSchema>;
+
