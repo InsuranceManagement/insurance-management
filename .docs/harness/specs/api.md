@@ -18,7 +18,7 @@
 | GET    | `/`                      | Publica | Retorna `Hello World!`                      |
 | GET    | `/users/csrf`            | Publica | Gera token CSRF                             |
 | POST   | `/users/login`           | Publica | Credenciais -> substitui a sessao ativa do cookie, quando valido, e define novo cookie |
-| POST   | `/users/forgot-password` | Publica | E-mail -> mensagem neutra                   |
+| POST   | `/users/forgot-password` | Publica | E-mail -> resposta neutra também no cooldown ou falha de envio; throttling por IP continua aplicado |
 | POST   | `/users/reset-password`  | Publica | Token + nova senha -> mensagem              |
 | POST   | `/users/logout`          | JWT     | Revoga sessao atual e limpa cookie           |
 | GET    | `/users/me`              | JWT     | Dados da conta autenticada                  |

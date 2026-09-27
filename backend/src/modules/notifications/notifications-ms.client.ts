@@ -112,9 +112,7 @@ export class NotificationsMsClient {
       clearTimeout(timeout)
 
       if (!response.ok) {
-        const responseBody = await response.text()
-
-        this.logger.warn(`Notification service responded with ${response.status}: ${responseBody}`)
+        this.logger.warn(`Notification service responded with status ${response.status}`)
 
         throw new ServiceUnavailableException(
           'Não foi possível obter os dados do serviço de notificações. Tente novamente mais tarde.',

@@ -12,17 +12,23 @@ import { SessionService } from '@/modules/session/session.service'
 import { environment } from '@/common/config/environment'
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { randomUUID } from 'crypto'
 
+const PASSWORD_RESET_COOLDOWN_MS = 60_000
+const PASSWORD_RESET_NEUTRAL_RESPONSE = {
+  message: 'Se o e-mail estiver cadastrado, enviaremos as instruções para redefinir a senha.',
+}
+
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name)
+
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordService: PasswordService,
@@ -109,36 +115,33 @@ export class UserService {
   }
 
   async requestPasswordReset(input: ForgotPasswordDto): Promise<{ message: string }> {
-    const existingUser = await this.userRepository.findByEmail(input.email)
+    try {
+      const existingUser = await this.userRepository.findByEmail(input.email)
 
-    if (existingUser?.isActive()) {
-      const lastRequest = existingUser.passwordResetRequestedAt
+      if (existingUser?.isActive()) {
+        const requestedAt = new Date()
+        const requestRegistered = await this.userRepository.tryRegisterPasswordResetRequest(
+          existingUser.id,
+          requestedAt,
+          PASSWORD_RESET_COOLDOWN_MS,
+        )
 
-      if (lastRequest) {
-        const elapsed = Date.now() - lastRequest.getTime()
-        const remainingMs = 60_000 - elapsed
+        if (requestRegistered) {
+          const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
 
-        if (remainingMs > 0) {
-          throw new HttpException(
-            {
-              message: 'Aguarde antes de solicitar um novo e-mail de recuperação',
-              remainingSeconds: Math.ceil(remainingMs / 1000),
-            },
-            HttpStatus.TOO_MANY_REQUESTS,
+          await this.userRepository.setPasswordResetToken(existingUser.id, tokenHash, expiresAt)
+          await this.passwordResetService.sendPasswordResetNotification(
+            existingUser,
+            token,
+            expiresAt,
           )
         }
       }
-
-      const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
-
-      await this.userRepository.setPasswordResetToken(existingUser.id, tokenHash, expiresAt)
-      await this.passwordResetService.sendPasswordResetNotification(existingUser, token, expiresAt)
-      await this.userRepository.updatePasswordResetRequestedAt(existingUser.id)
+    } catch {
+      this.logger.warn('Falha ao processar solicitacao de recuperacao de senha')
     }
 
-    return {
-      message: 'Se o e-mail estiver cadastrado, enviaremos as instruções para redefinir a senha.',
-    }
+    return PASSWORD_RESET_NEUTRAL_RESPONSE
   }
 
   async resetPassword(input: ResetPasswordDto): Promise<{ message: string }> {

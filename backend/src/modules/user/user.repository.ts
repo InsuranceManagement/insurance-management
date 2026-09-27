@@ -83,15 +83,25 @@ export class UserRepository {
     })
   }
 
-  async updatePasswordResetRequestedAt(userId: string): Promise<void> {
-    await this.prismaService.user.update({
+  async tryRegisterPasswordResetRequest(
+    userId: string,
+    requestedAt: Date,
+    cooldownMs: number,
+  ): Promise<boolean> {
+    const cooldownThreshold = new Date(requestedAt.getTime() - cooldownMs)
+    const result = await this.prismaService.user.updateMany({
       where: {
         id: userId,
+        deletedAt: null,
+        OR: [
+          { passwordResetRequestedAt: null },
+          { passwordResetRequestedAt: { lte: cooldownThreshold } },
+        ],
       },
-      data: {
-        passwordResetRequestedAt: new Date(),
-      },
+      data: { passwordResetRequestedAt: requestedAt },
     })
+
+    return result.count > 0
   }
 
   async updatePasswordWithResetToken(userId: string, newPassword: string): Promise<void> {
