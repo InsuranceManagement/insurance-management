@@ -151,7 +151,7 @@ export function NotificationTemplateForm({
 
         <Box className="flex-col gap-1.5">
           <Label htmlFor="notification-template-body">
-            Corpo (HTML)
+            Corpo da mensagem
           </Label>
           <Textarea
             id="notification-template-body"
