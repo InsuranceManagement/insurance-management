@@ -43,7 +43,7 @@ type MobileCardConfig<TData> = {
 }
 
 type RowActions<TData> = {
-  onEdit: (entity: TData) => void
+  onEdit?: (entity: TData) => void
   onViewDetails: (entity: TData) => void
   hideViewOnDesktop?: boolean
 }
@@ -110,22 +110,26 @@ function DataTable<TData, TValue>({
     mobileCard.tabletHiddenColumnIds ?? [],
   )
   const hasRowActions = !!rowActions
+  const hasDesktopRowActions =
+    !!rowActions && (!!rowActions.onEdit || !rowActions.hideViewOnDesktop)
 
   const renderRowActions = (entity: TData) => {
     if (!rowActions) return null
 
     return (
       <Box className="shrink-0 items-center gap-1 max-md:-translate-y-0.5 md:w-full md:justify-end md:gap-0.5">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="size-9 md:size-7"
-          aria-label="Editar registro"
-          onClick={() => rowActions.onEdit(entity)}
-        >
-          <PencilIcon className="size-4" />
-        </Button>
+        {rowActions.onEdit ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="size-9 md:size-7"
+            aria-label="Editar registro"
+            onClick={() => rowActions.onEdit?.(entity)}
+          >
+            <PencilIcon className="size-4" />
+          </Button>
+        ) : null}
         <Button
           type="button"
           variant="ghost"
@@ -365,7 +369,12 @@ function DataTable<TData, TValue>({
                 ))}
 
                 {hasRowActions ? (
-                  <TableHead className="w-24 px-4 text-right">
+                  <TableHead
+                    className={cn(
+                      "w-24 px-4 text-right",
+                      !hasDesktopRowActions && "lg:hidden",
+                    )}
+                  >
                     <span className="sr-only">Ações</span>
                   </TableHead>
                 ) : null}
@@ -430,7 +439,10 @@ function DataTable<TData, TValue>({
 
                     {hasRowActions ? (
                       <TableCell
-                        className="w-24 px-4"
+                        className={cn(
+                          "w-24 px-4",
+                          !hasDesktopRowActions && "lg:hidden",
+                        )}
                         onClick={(event) => event.stopPropagation()}
                       >
                         {renderRowActions(row.original)}
