@@ -10,6 +10,6 @@ export default defineConfig({
     seed: 'node -r ts-node/register -r tsconfig-paths/register prisma/seed.ts',
   },
   datasource: {
-    url: process.env['DATABASE_URL'],
+    url: process.env['DIRECT_URL'],
   },
 })
