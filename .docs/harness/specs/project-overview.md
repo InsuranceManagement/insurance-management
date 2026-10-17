@@ -31,7 +31,7 @@ Evidencias: `backend/src/modules`, `frontend/src/features`, `frontend/src/app/(p
 | Backend | `ALLOWED_ORIGINS`, `PORT`, `DATABASE_URL`, `JWT_SECRET`, `JWT_EXPIRES_IN_SECONDS`, `RESET_PASSWORD_URL`, `RESET_PASSWORD_TOKEN_TTL_MINUTES`, `NOTIFICATIONS_API_URL` |
 | Frontend | `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_BASE_PATH` |
 
-Nao ha arquivo de exemplo de ambiente detectado. Defaults relevantes: porta 8080, JWT 3600 segundos e token de reset 30 minutos.
+O backend inclui `backend/.env.example`. Defaults relevantes: porta 8080, JWT 3600 segundos e token de reset 30 minutos.
 
 ## Limites de conhecimento
 
