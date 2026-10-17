@@ -143,6 +143,10 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "POST",
       path: "/leads",
     },
+    convertById: {
+      method: "POST",
+      path: (id: string) => `/leads/${id}/convert`,
+    },
     deleteMany: {
       method: "DELETE",
       path: "/leads",

@@ -1,8 +1,9 @@
 import { Client } from '@/modules/client/entities/client'
 import { CreateClientInput } from '@/modules/client/inputs/create-client.input'
 import { UpdateClientInput } from '@/modules/client/inputs/update-client.input'
+import type { ConvertLeadDto } from '@/modules/lead/dto/convert-lead.dto'
 import { PrismaService } from '@/modules/database/prisma.service'
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 type ProductRecord = {
   id: string
@@ -32,6 +33,43 @@ export class ClientRepository {
       include: {
         address: true,
       },
+    })
+
+    return Client.fromPrisma(client)
+  }
+
+  async createFromLead(leadId: string, input: ConvertLeadDto): Promise<Client> {
+    const client = await this.prismaService.$transaction(async (transaction) => {
+      const lead = await transaction.lead.findFirst({
+        where: { id: leadId, deletedAt: null },
+      })
+      if (!lead) {
+        throw new NotFoundException('Lead não encontrado')
+      }
+
+      const { count } = await transaction.lead.updateMany({
+        where: { id: leadId, deletedAt: null },
+        data: { deletedAt: new Date() },
+      })
+      if (count === 0) {
+        throw new NotFoundException('Lead não encontrado')
+      }
+
+      return transaction.client.create({
+        data: {
+          name: lead.name,
+          phoneNumber: lead.phoneNumber,
+          email: input.email,
+          cpf: input.cpf,
+          cnpj: input.cnpj,
+          birthDate: input.birthDate,
+          address: { create: { ...input.address } },
+          products: input.productIds?.length
+            ? { connect: input.productIds.map((id) => ({ id })) }
+            : undefined,
+        },
+        include: { address: true },
+      })
     })
 
     return Client.fromPrisma(client)

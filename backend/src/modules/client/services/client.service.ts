@@ -4,6 +4,7 @@ import { ClientResponseDto } from '@/modules/client/dto/client-response.dto'
 import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
+import type { ConvertLeadDto } from '@/modules/lead/dto/convert-lead.dto'
 import { Client } from '@/modules/client/entities/client'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 
@@ -12,36 +13,21 @@ export class ClientService {
   constructor(private readonly clientRepository: ClientRepository) {}
 
   async create(input: CreateClientDto): Promise<ClientResponseDto> {
+    await this.validateCreate(input)
     const productIds = input.productIds ?? []
-
-    if (productIds.length > 0) {
-      await this.ensureProductsExist(productIds)
-    }
-
-    const existingEmail = await this.clientRepository.findByEmail(input.email)
-    if (existingEmail) {
-      throw new BadRequestException('E-mail já está em uso')
-    }
-
-    if (input.cpf) {
-      const existingCpf = await this.clientRepository.findByCpf(input.cpf)
-      if (existingCpf) {
-        throw new BadRequestException('CPF já está em uso')
-      }
-    }
-
-    if (input.cnpj) {
-      const existingCnpj = await this.clientRepository.findByCnpj(input.cnpj)
-      if (existingCnpj) {
-        throw new BadRequestException('CNPJ já está em uso')
-      }
-    }
 
     const client = await this.clientRepository.create({
       ...input,
       productIds,
     })
 
+    return this.toResponse(client)
+  }
+
+  async convertLead(leadId: string, input: ConvertLeadDto): Promise<ClientResponseDto> {
+    await this.validateCreate(input)
+
+    const client = await this.clientRepository.createFromLead(leadId, input)
     return this.toResponse(client)
   }
 
@@ -173,6 +159,23 @@ export class ClientService {
     const products = await this.clientRepository.findActiveProductsByIds(productIds)
     if (products.length !== productIds.length) {
       throw new NotFoundException('Um ou mais produtos não foram encontrados')
+    }
+  }
+
+  private async validateCreate(input: ConvertLeadDto): Promise<void> {
+    const productIds = input.productIds ?? []
+    if (productIds.length > 0) {
+      await this.ensureProductsExist(productIds)
+    }
+
+    if (await this.clientRepository.findByEmail(input.email)) {
+      throw new BadRequestException('E-mail já está em uso')
+    }
+    if (input.cpf && (await this.clientRepository.findByCpf(input.cpf))) {
+      throw new BadRequestException('CPF já está em uso')
+    }
+    if (input.cnpj && (await this.clientRepository.findByCnpj(input.cnpj))) {
+      throw new BadRequestException('CNPJ já está em uso')
     }
   }
 }

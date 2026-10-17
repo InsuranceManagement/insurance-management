@@ -66,6 +66,7 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload = never> = {
   viewModalEmptyValue?: ReactNode
   viewModalContentClassName?: string
   viewModalExpandable?: boolean
+  renderViewActions?: (entity: TData, closeView: () => void) => ReactNode
   inlineRowActions?: boolean
   hideInlineViewActionOnDesktop?: boolean
   caption?: string
@@ -88,6 +89,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>
   viewModalEmptyValue,
   viewModalContentClassName,
   viewModalExpandable = false,
+  renderViewActions,
   inlineRowActions = false,
   hideInlineViewActionOnDesktop = false,
   caption,
@@ -248,6 +250,11 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>
             onOpenChange={handleEntityViewOpenChange}
             entity={entityInView}
             fields={viewFields}
+            actions={
+              entityInView
+                ? renderViewActions?.(entityInView, () => handleEntityViewOpenChange(false))
+                : undefined
+            }
           />
         ) : null}
 
