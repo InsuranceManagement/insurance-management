@@ -31,6 +31,15 @@
 $ npm install
 ```
 
+## Initial account
+
+The public registration endpoint is disabled. To provision the first account, set
+`DATABASE_URL`, `BOOTSTRAP_USER_NAME`, `BOOTSTRAP_USER_EMAIL` and
+`BOOTSTRAP_USER_PASSWORD` through a trusted environment or secrets manager, then run
+`npm run user:bootstrap`. The command refuses to run when an active user already exists
+and stores only the bcrypt hash. Remove the `BOOTSTRAP_USER_*` values from the process
+environment after it completes. Do not put credentials in source files or shell history.
+
 ## Compile and run the project
 
 ```bash

@@ -22,6 +22,7 @@
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:migrate:reset": "npx prisma migrate reset",
     "prisma:seed": "npx prisma db seed",
+    "user:bootstrap": "node -r ts-node/register -r tsconfig-paths/register scripts/bootstrap-user.ts",
     "gen:module": "nest g resource",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\""
   },

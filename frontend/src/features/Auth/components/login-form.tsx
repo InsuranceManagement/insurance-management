@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -19,7 +18,6 @@ import { Input } from "@/shared/components/ui/input"
 import { Typography } from "@/shared/components/ui/typography"
 
 export default function LoginForm() {
-  const router = useRouter()
   const { login } = useAuth()
   const loginMutation = useLogin()
 
@@ -40,8 +38,6 @@ export default function LoginForm() {
 
     login(result.user)
     resetCsrfToken()
-
-    router.push("/dashboard")
   })
 
   return (
@@ -130,15 +126,6 @@ export default function LoginForm() {
         >
           {loginMutation.isPending ? "Entrando..." : "Entrar"}
         </Button>
-
-        <Typography asChild variant="small" className="text-center text-muted-foreground">
-          <p>
-            Não possui uma conta?{" "}
-            <Link href="/register" className="font-medium text-[#06608a] hover:underline">
-              Cadastre-se
-            </Link>
-          </p>
-        </Typography>
       </form>
     </Box>
   )

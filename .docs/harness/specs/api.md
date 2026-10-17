@@ -4,7 +4,7 @@
 
 - Sem prefixo/versionamento global; porta padrao 8080.
 - Swagger em `GET /docs`.
-- Todas as rotas exigem Bearer JWT, exceto as marcadas **Publica** abaixo e o Swagger.
+- Rotas protegidas exigem cookie JWT associado a uma sessao ativa, exceto as marcadas **Publica** abaixo e o Swagger.
 - JSON e validado por `ValidationPipe` com transformacao, whitelist e rejeicao de propriedades extras.
 - Listagens retornam arrays sem paginacao detectada.
 - Deletes tabulares usam `DELETE` com corpo `{ "ids": string[] }`; Visit e a excecao individual.
@@ -16,14 +16,16 @@
 | Metodo | Path                     | Acesso  | Contrato resumido                           |
 | ------ | ------------------------ | ------- | ------------------------------------------- |
 | GET    | `/`                      | Publica | Retorna `Hello World!`                      |
-| POST   | `/users`                 | Publica | Cria user e retorna `{ accessToken, user }` |
-| POST   | `/users/login`           | Publica | Credenciais -> `{ accessToken, user }`      |
-| POST   | `/users/forgot-password` | Publica | E-mail -> mensagem neutra                   |
+| GET    | `/users/csrf`            | Publica | Gera token CSRF                             |
+| POST   | `/users/login`           | Publica | Credenciais -> substitui a sessao ativa do cookie, quando valido, e define novo cookie |
+| POST   | `/users/forgot-password` | Publica | E-mail -> resposta neutra também no cooldown ou falha de envio; throttling por IP continua aplicado |
 | POST   | `/users/reset-password`  | Publica | Token + nova senha -> mensagem              |
-| GET    | `/users`                 | JWT     | `UserResponseDto[]`                         |
-| GET    | `/users/:id`             | JWT     | `UserResponseDto`                           |
-| PATCH  | `/users/:id`             | JWT     | Update parcial                              |
-| DELETE | `/users`                 | JWT     | Soft delete batch por `ids`                 |
+| POST   | `/users/logout`          | JWT     | Revoga sessao atual e limpa cookie           |
+| GET    | `/users/me`              | JWT     | Dados da conta autenticada                  |
+| GET    | `/users/:id`             | JWT     | Somente a propria conta                     |
+| PATCH  | `/users/:id`             | JWT     | Somente a propria conta; senha atual para alterar e-mail/senha |
+
+Cada login cria um `sid` individual. Se o cookie recebido identificar uma sessao ativa, o login revoga essa sessao e cria a nova atomicamente; sem cookie valido, apenas cria uma sessao. A API valida existencia, titular, revogacao, expiracao e usuario ativo em toda requisicao protegida. Troca/reset de senha revoga as sessoes ativas do usuario. Uma rotina semanal, aos domingos as 02:00 em `America/Sao_Paulo`, remove sessoes expiradas ou revogadas.
 
 ### Cadastros principais
 

@@ -1,5 +1,4 @@
 import { AuthSession } from '@/modules/user/dto/auth-response.dto'
-import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
 import { ForgotPasswordDto } from '@/modules/user/dto/forgot-password.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { ResetPasswordDto } from '@/modules/user/dto/reset-password.dto'
@@ -9,40 +8,39 @@ import { User } from '@/modules/user/entities/user'
 import { PasswordService } from '@/modules/user/services/password.service'
 import { PasswordResetService } from '@/modules/user/services/passwordReset.service'
 import { UserRepository } from '@/modules/user/user.repository'
+import { SessionService } from '@/modules/session/session.service'
+import { environment } from '@/common/config/environment'
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { randomUUID } from 'crypto'
+
+const PASSWORD_RESET_COOLDOWN_MS = 60_000
+const PASSWORD_RESET_NEUTRAL_RESPONSE = {
+  message: 'Se o e-mail estiver cadastrado, enviaremos as instruções para redefinir a senha.',
+}
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name)
+
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordService: PasswordService,
     private readonly passwordResetService: PasswordResetService,
     private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
   ) {}
 
-  async create(input: CreateUserDto): Promise<AuthSession> {
-    const existingUser = await this.userRepository.findByEmail(input.email)
-
-    if (existingUser) {
-      throw new BadRequestException('E-mail já está em uso')
-    }
-
-    const hashedPassword = await this.passwordService.hash(input.password)
-    const user = await this.userRepository.create({ ...input, password: hashedPassword })
-    const accessToken = await this.signToken(user)
-
-    return this.buildAuthResponse(user, accessToken)
-  }
-
-  async login(input: LoginDto): Promise<AuthSession> {
+  async login(
+    input: LoginDto,
+    previousSession?: { id: string; userId: string },
+  ): Promise<AuthSession> {
     const user = await this.userRepository.findByEmail(input.email)
 
     if (!user?.isActive()) {
@@ -55,7 +53,11 @@ export class UserService {
       throw new UnauthorizedException('E-mail ou senha inválidos')
     }
 
-    const accessToken = await this.signToken(user)
+    const sessionId = randomUUID()
+    const issuedAt = Math.floor(Date.now() / 1000)
+    const expiresAt = new Date((issuedAt + environment.JWT_EXPIRES_IN_SECONDS) * 1000)
+    const accessToken = await this.signToken(user, sessionId, issuedAt)
+    await this.sessionService.replace(previousSession, sessionId, user.id, expiresAt)
 
     return this.buildAuthResponse(user, accessToken)
   }
@@ -70,12 +72,6 @@ export class UserService {
     return this.toUserResponse(user)
   }
 
-  async list(): Promise<UserResponseDto[]> {
-    const users = await this.userRepository.list()
-
-    return users.map((user) => this.toUserResponse(user))
-  }
-
   async update(userId: string, input: UpdateUserDto): Promise<void> {
     const existingUser = await this.userRepository.findById(userId)
 
@@ -83,14 +79,33 @@ export class UserService {
       throw new NotFoundException('Usuário não encontrado')
     }
 
-    if (input.email && input.email !== existingUser.email) {
+    const changesEmail = input.email !== undefined && input.email !== existingUser.email
+    const changesPassword = input.password !== undefined
+
+    if (changesEmail || changesPassword) {
+      if (!input.currentPassword) {
+        throw new BadRequestException('Informe a senha atual para alterar e-mail ou senha')
+      }
+
+      const isCurrentPasswordValid = await this.passwordService.compare(
+        input.currentPassword,
+        existingUser.password,
+      )
+
+      if (!isCurrentPasswordValid) {
+        throw new UnauthorizedException('Senha atual inválida')
+      }
+    }
+
+    if (changesEmail && input.email) {
       const emailInUse = await this.userRepository.findByEmail(input.email)
       if (emailInUse && emailInUse.id !== userId) {
         throw new BadRequestException('E-mail já está em uso')
       }
     }
 
-    const updateData: UpdateUserDto = { ...input }
+    const updateData = { ...input }
+    delete updateData.currentPassword
 
     if (updateData.password) {
       updateData.password = await this.passwordService.hash(updateData.password)
@@ -99,45 +114,34 @@ export class UserService {
     await this.userRepository.update(userId, updateData)
   }
 
-  async delete(userIds: string[]): Promise<void> {
-    const deletedCount = await this.userRepository.softDeleteMany(userIds)
-
-    if (deletedCount === 0) {
-      throw new NotFoundException('Usuário não encontrado')
-    }
-  }
-
   async requestPasswordReset(input: ForgotPasswordDto): Promise<{ message: string }> {
-    const existingUser = await this.userRepository.findByEmail(input.email)
+    try {
+      const existingUser = await this.userRepository.findByEmail(input.email)
 
-    if (existingUser?.isActive()) {
-      const lastRequest = existingUser.passwordResetRequestedAt
+      if (existingUser?.isActive()) {
+        const requestedAt = new Date()
+        const requestRegistered = await this.userRepository.tryRegisterPasswordResetRequest(
+          existingUser.id,
+          requestedAt,
+          PASSWORD_RESET_COOLDOWN_MS,
+        )
 
-      if (lastRequest) {
-        const elapsed = Date.now() - lastRequest.getTime()
-        const remainingMs = 60_000 - elapsed
+        if (requestRegistered) {
+          const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
 
-        if (remainingMs > 0) {
-          throw new HttpException(
-            {
-              message: 'Aguarde antes de solicitar um novo e-mail de recuperação',
-              remainingSeconds: Math.ceil(remainingMs / 1000),
-            },
-            HttpStatus.TOO_MANY_REQUESTS,
+          await this.userRepository.setPasswordResetToken(existingUser.id, tokenHash, expiresAt)
+          await this.passwordResetService.sendPasswordResetNotification(
+            existingUser,
+            token,
+            expiresAt,
           )
         }
       }
-
-      const { token, tokenHash, expiresAt } = this.passwordResetService.createResetToken()
-
-      await this.userRepository.setPasswordResetToken(existingUser.id, tokenHash, expiresAt)
-      await this.passwordResetService.sendPasswordResetNotification(existingUser, token, expiresAt)
-      await this.userRepository.updatePasswordResetRequestedAt(existingUser.id)
+    } catch {
+      this.logger.warn('Falha ao processar solicitacao de recuperacao de senha')
     }
 
-    return {
-      message: 'Se o e-mail estiver cadastrado, enviaremos as instruções para redefinir a senha.',
-    }
+    return PASSWORD_RESET_NEUTRAL_RESPONSE
   }
 
   async resetPassword(input: ResetPasswordDto): Promise<{ message: string }> {
@@ -158,12 +162,15 @@ export class UserService {
     return { message: 'Senha redefinida com sucesso.' }
   }
 
-  private async signToken(user: User): Promise<string> {
+  private async signToken(user: User, sessionId: string, issuedAt: number): Promise<string> {
     return await this.jwtService.signAsync({
       sub: user.id,
       id: user.id,
       name: user.name,
       email: user.email,
+      sid: sessionId,
+      tokenType: 'access',
+      iat: issuedAt,
     })
   }
 
