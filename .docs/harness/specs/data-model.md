@@ -12,6 +12,7 @@ Fonte autoritativa: `backend/prisma/schema.prisma`. Banco: PostgreSQL; Prisma Cl
 | `ProductType` | ID string fornecido; name unique; description | 1:N `Products` | Soft |
 | `Products` | ID string fornecido; name; FKs de tipo/seguradora | N:1 ProductType, N:1 InsuranceCompany, N:N Client | Soft |
 | `Client` | UUID; name; email unique; cpf/cnpj unique opcionais; phone; birthDate | N:N Products, 1:1 Address, 1:N Visit | Soft |
+| `Lead` | UUID; name; phoneNumber; createdAt | Sem relacao persistida com Client | Soft por `deletedAt` |
 | `Address` | UUID; dados postais; clientId unique | Pertence a Client | Campo `deletedAt`; sem rota propria |
 | `ChartType` | ID string; name unique; description; size | 1:N Chart | Fisica |
 | `Chart` | ID string; name unique; apiRoute; order; unit?; chartTypeId | N:1 ChartType | Fisica |

@@ -28,6 +28,7 @@ type EntityViewModalProps<TData> = {
   emptyValue?: ReactNode
   contentClassName?: string
   expandable?: boolean
+  actions?: ReactNode
 }
 
 export function EntityViewModal<TData>({
@@ -39,6 +40,7 @@ export function EntityViewModal<TData>({
   emptyValue = "-",
   contentClassName,
   expandable = false,
+  actions,
 }: Readonly<EntityViewModalProps<TData>>) {
   const renderFieldValue = (value: ReactNode) => {
     if (
@@ -106,6 +108,7 @@ export function EntityViewModal<TData>({
             )
           })}
         </Box>
+        {actions ? <Box className="justify-end">{actions}</Box> : null}
       </Box>
     </Modal>
   )

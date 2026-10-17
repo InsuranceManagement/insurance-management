@@ -56,6 +56,10 @@ Produtos só podem ser criados ou atualizados com seguradora e tipo de produto a
 
 Criacao exige `name`, `email`, `phoneNumber`, `birthDate`, `address`; aceita `cpf?`, `cnpj?`, `productIds?`, mas ao menos CPF/CNPJ e obrigatorio. Address exige street, district, state, city e number; cep/complement sao opcionais.
 
+### Leads
+
+**Detectado:** `POST /leads` cria lead com nome e telefone. `GET /leads` lista leads ativos e `DELETE /leads` faz soft delete em lote. `POST /leads/:id/convert` exige JWT e os campos restantes de cliente (`email`, `birthDate`, `address`, `cpf?`, `cnpj?`, `productIds?`). Nome e telefone sao copiados do lead no servidor. A conversao cria o cliente e marca o lead como excluido na mesma transacao; lead inexistente ou inativo retorna 404. Evidencias: `backend/src/modules/lead/lead.controller.ts`, `backend/src/modules/client/services/client.service.ts`, `backend/src/modules/client/client.repository.ts`.
+
 ### Visitas
 
 | Metodo | Path          | Contrato                                            |

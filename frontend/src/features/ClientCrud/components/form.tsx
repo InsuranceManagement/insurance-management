@@ -27,6 +27,7 @@ type ClientFormProps = {
   onCancel?: () => void
   submitLabel?: string
   isSubmitting?: boolean
+  lockLeadFields?: boolean
 }
 
 const DEFAULT_VALUES: ClientUpsertFormValues = {
@@ -60,6 +61,7 @@ export function ClientForm({
   onCancel,
   submitLabel = "Salvar",
   isSubmitting = false,
+  lockLeadFields = false,
 }: Readonly<ClientFormProps>) {
   const { rows: products, areRowsLoading: areProductsLoading } =
     useListEntity<Product>({
@@ -147,6 +149,7 @@ export function ClientForm({
                 <Input
                   {...field}
                   id="client-name"
+                  readOnly={lockLeadFields}
                   placeholder="Ex.: Maria Souza"
                   aria-invalid={!!form.formState.errors.name}
                 />
@@ -236,6 +239,7 @@ export function ClientForm({
                 <Input
                   {...field}
                   id="client-phone"
+                  readOnly={lockLeadFields}
                   inputMode="numeric"
                   placeholder="11999999999"
                   aria-invalid={!!form.formState.errors.phoneNumber}
