@@ -89,7 +89,6 @@ export const notificationTemplateUpsertSchema = z.object({
   description: z.string().trim().optional(),
   subject: z.string().trim().min(1, "O assunto é obrigatório"),
   body: z.string().trim().min(1, "O corpo do template é obrigatório"),
-  notificationTypeId: z.string().trim().optional(),
   isActive: z.boolean(),
   variablePairs: z.array(
     z.object({

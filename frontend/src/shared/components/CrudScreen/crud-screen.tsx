@@ -36,8 +36,8 @@ import { EntityWithName } from "@/shared/models/entity"
 
 type CrudSourceRoutes = {
   list: ApiRouteType
-  create: ApiRouteType
-  edit: ApiRouteType
+  create?: ApiRouteType
+  edit?: ApiRouteType
   delete?: ApiRouteType
 }
 
@@ -49,14 +49,14 @@ type CrudFormProps<TFormPayload> = {
   isSubmitting?: boolean
 }
 
-type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
+type CrudScreenProps<TData extends EntityWithName, TCreatePayload = never> = {
   title: string
   sourceRoutes: CrudSourceRoutes
   listQueryKey?: QueryKey
   columns?: ColumnDef<TData>[]
   mobileCard?: MobileCardConfig<TData>
   cardView?: CrudCardView<TData>
-  createForm: ComponentType<CrudFormProps<TCreatePayload>>
+  createForm?: ComponentType<CrudFormProps<TCreatePayload>>
   createFormTitle?: string
   editFormTitle?: string
   formModalContentClassName?: string
@@ -71,7 +71,7 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload> = {
   caption?: string
 }
 
-export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
+export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>({
   title,
   sourceRoutes,
   listQueryKey: listQueryKeyProp,
@@ -119,6 +119,8 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
   const selectedCount = selectedRows.length
   const isSingleSelection = selectedCount === 1
   const hasEntityView = !!viewFields?.length
+  const canCreate = !!sourceRoutes.create && !!CreateFormComponent
+  const canEdit = !!sourceRoutes.edit && !!CreateFormComponent
   const hasInlineRowActions = inlineRowActions && hasEntityView
 
   const handleClearSelection = () => {
@@ -193,42 +195,48 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
         <Box className="mx-1 flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between [&>button]:w-full sm:[&>button]:w-auto">
           <Typography variant="h3">{title}</Typography>
 
-          <AddButton
-            onClick={handleOpenCreateModal}
-            disabled={isCreatePending}
-          />
+          {canCreate ? (
+            <AddButton
+              onClick={handleOpenCreateModal}
+              disabled={isCreatePending}
+            />
+          ) : null}
         </Box>
 
-        <Modal
-          open={isCreateModalOpen}
-          onOpenChange={handleCreateModalOpenChange}
-          title={createFormTitle}
-          contentClassName={formModalContentClassName}
-          mobileFullscreen
-        >
-          <CreateFormComponent
-            onSubmit={handleCreate}
-            onCancel={() => handleCreateModalOpenChange(false)}
-            submitLabel="Criar"
-            isSubmitting={isCreatePending}
-          />
-        </Modal>
+        {canCreate && CreateFormComponent ? (
+          <Modal
+            open={isCreateModalOpen}
+            onOpenChange={handleCreateModalOpenChange}
+            title={createFormTitle}
+            contentClassName={formModalContentClassName}
+            mobileFullscreen
+          >
+            <CreateFormComponent
+              onSubmit={handleCreate}
+              onCancel={() => handleCreateModalOpenChange(false)}
+              submitLabel="Criar"
+              isSubmitting={isCreatePending}
+            />
+          </Modal>
+        ) : null}
 
-        <Modal
-          open={isEditModalOpen}
-          onOpenChange={handleEditModalOpenChange}
-          title={editFormTitle}
-          contentClassName={formModalContentClassName}
-          mobileFullscreen
-        >
-          <CreateFormComponent
-            initialValues={editFormInitialValues}
-            onSubmit={handleEdit}
-            onCancel={() => handleEditModalOpenChange(false)}
-            submitLabel="Salvar alteracoes"
-            isSubmitting={isEditPending}
-          />
-        </Modal>
+        {canEdit && CreateFormComponent ? (
+          <Modal
+            open={isEditModalOpen}
+            onOpenChange={handleEditModalOpenChange}
+            title={editFormTitle}
+            contentClassName={formModalContentClassName}
+            mobileFullscreen
+          >
+            <CreateFormComponent
+              initialValues={editFormInitialValues}
+              onSubmit={handleEdit}
+              onCancel={() => handleEditModalOpenChange(false)}
+              submitLabel="Salvar alteracoes"
+              isSubmitting={isEditPending}
+            />
+          </Modal>
+        ) : null}
 
         {hasEntityView ? (
           <EntityViewModal<TData>
@@ -248,6 +256,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
             selectedCount={selectedCount}
             isSingleSelection={isSingleSelection}
             canViewEntity={hasEntityView}
+            canEdit={canEdit}
             canDelete={!!sourceRoutes.delete}
             showEditAndView={!hasInlineRowActions}
             onClearSelection={handleClearSelection}
@@ -278,7 +287,7 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload>({
               rowActions={
                 hasInlineRowActions
                   ? {
-                      onEdit: handleEditEntity,
+                      onEdit: canEdit ? handleEditEntity : undefined,
                       onViewDetails: handleViewEntityRecord,
                       hideViewOnDesktop: hideInlineViewActionOnDesktop,
                     }

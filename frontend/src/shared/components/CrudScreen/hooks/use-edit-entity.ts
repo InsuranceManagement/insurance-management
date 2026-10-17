@@ -11,7 +11,7 @@ type EditableEntityRecord = {
 
 type UseEditEntityOptions<TData extends EditableEntityRecord> = {
   title: string
-  editRoute: ApiRouteType
+  editRoute?: ApiRouteType
   listQueryKey: QueryKey
   selectedRows: TData[]
 }
@@ -29,7 +29,7 @@ export function useEditEntity<
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   const editMutation = useApiMutation<unknown, TEditPayload>({
-    route: editRoute,
+    route: editRoute ?? { method: "PATCH", path: "" },
     queryKeyToSync: listQueryKey,
     meta: {
       errorMessage: `Erro ao editar registros em ${title}.`,
@@ -38,12 +38,13 @@ export function useEditEntity<
   })
 
   const handleEditEntity = (entity: TData) => {
+    if (!editRoute) return
     setEditingRow(entity)
     setIsEditModalOpen(true)
   }
 
   const handleEditSelected = () => {
-    if (selectedRows.length !== 1) {
+    if (!editRoute || selectedRows.length !== 1) {
       return
     }
 
@@ -65,7 +66,7 @@ export function useEditEntity<
   }
 
   const handleEdit = (payload: TEditPayload) => {
-    if (!editingRow) {
+    if (!editRoute || !editingRow) {
       return
     }
 

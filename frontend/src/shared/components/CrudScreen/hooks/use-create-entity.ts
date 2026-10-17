@@ -7,7 +7,7 @@ import { useApiMutation } from "@/shared/hooks/use-api-mutation"
 
 type UseCreateEntityOptions = {
   title: string
-  createRoute: ApiRouteType
+  createRoute?: ApiRouteType
   listQueryKey: QueryKey
 }
 
@@ -19,7 +19,7 @@ export function useCreateEntity<TCreatePayload>({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const createMutation = useApiMutation<unknown, TCreatePayload>({
-    route: createRoute,
+    route: createRoute ?? { method: "POST", path: "" },
     queryKeyToSync: listQueryKey,
     meta: {
       errorMessage: `Erro ao criar registros em ${title}.`,
@@ -28,6 +28,7 @@ export function useCreateEntity<TCreatePayload>({
   })
 
   const handleOpenCreateModal = () => {
+    if (!createRoute) return
     setIsCreateModalOpen(true)
   }
 
@@ -36,6 +37,8 @@ export function useCreateEntity<TCreatePayload>({
   }
 
   const handleCreate = (payload: TCreatePayload) => {
+    if (!createRoute) return
+
     createMutation.mutate(
       {
         body: payload,

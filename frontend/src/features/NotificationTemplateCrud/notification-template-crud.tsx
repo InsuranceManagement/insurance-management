@@ -69,7 +69,7 @@ const viewFields: EntityViewField<NotificationTemplate>[] = [
   },
   {
     accessorKey: "body",
-    label: "Corpo (HTML)",
+    label: "Corpo da mensagem",
     cell: ({ entity }) => (
       <Box asChild>
         <pre className="max-h-64 overflow-auto rounded-md bg-muted p-3 text-xs whitespace-pre-wrap">

@@ -10,6 +10,7 @@ import {
   MailIcon,
   PackageIcon,
   TagsIcon,
+  UserPlusIcon,
   UsersIcon,
 } from "lucide-react"
 import Image from "next/image"
@@ -85,6 +86,11 @@ const supportItems = [
     title: "Clientes",
     href: "/clientes",
     icon: UsersIcon,
+  },
+  {
+    title: "Leads",
+    href: "/leads",
+    icon: UserPlusIcon,
   },
 ]
 

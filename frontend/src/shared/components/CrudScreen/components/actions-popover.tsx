@@ -9,6 +9,7 @@ type ActionsPopoverProps = {
   selectedCount: number
   isSingleSelection: boolean
   canViewEntity?: boolean
+  canEdit?: boolean
   canDelete?: boolean
   showEditAndView?: boolean
   onClearSelection: () => void
@@ -21,6 +22,7 @@ export function ActionsPopover({
   selectedCount,
   isSingleSelection,
   canViewEntity = true,
+  canEdit = true,
   canDelete = true,
   showEditAndView = true,
   onClearSelection,
@@ -67,25 +69,27 @@ export function ActionsPopover({
 
       {showEditAndView ? (
         <>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            aria-label="Editar selecionado"
-            aria-pressed={isSingleSelection}
-            disabled={!isSingleSelection}
-            className={cn(
-              "size-10 xl:size-6",
-              isSingleSelection ? "bg-muted text-foreground" : "",
-            )}
-            onClick={onEditSelected}
-          >
-            <PencilIcon
+          {canEdit ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              aria-label="Editar selecionado"
+              aria-pressed={isSingleSelection}
+              disabled={!isSingleSelection}
               className={cn(
-                isSingleSelection ? "text-foreground" : "text-muted-foreground",
+                "size-10 xl:size-6",
+                isSingleSelection ? "bg-muted text-foreground" : "",
               )}
-            />
-          </Button>
+              onClick={onEditSelected}
+            >
+              <PencilIcon
+                className={cn(
+                  isSingleSelection ? "text-foreground" : "text-muted-foreground",
+                )}
+              />
+            </Button>
+          ) : null}
 
           <Button
             type="button"

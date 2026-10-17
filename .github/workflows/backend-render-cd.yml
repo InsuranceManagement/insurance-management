@@ -1,0 +1,131 @@
+name: backend-render-cd
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-render-cd
+  cancel-in-progress: false
+
+jobs:
+  validate-secrets:
+    name: Check release secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify required secrets are configured
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          test -n "$DIRECT_URL"
+          test -n "$RENDER_DEPLOY_HOOK_URL"
+
+  validate:
+    name: Validate backend
+    needs: validate-secrets
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: insurance_management
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d insurance_management"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/insurance_management
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/insurance_management
+      JWT_SECRET: ci-test-jwt-secret
+      CSRF_SECRET: ci-test-csrf-secret
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint without autofix
+        run: npx eslint "{src,apps,libs,test}/**/*.ts"
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test -- --runInBand
+
+      - name: E2E tests
+        run: npm run test:e2e -- --runInBand --forceExit
+
+  migrate:
+    name: Apply database migrations
+    needs: validate
+    runs-on: ubuntu-latest
+    env:
+      DIRECT_URL: postgresql://generator:generator@localhost:5432/placeholder
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate
+
+      - name: Deploy Prisma migrations
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: npx prisma migrate deploy
+
+  deploy:
+    name: Deploy to Render
+    needs: migrate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          test -n "$RENDER_DEPLOY_HOOK_URL"
+          curl --fail-with-body --retry 3 --get \
+            --data-urlencode "ref=${COMMIT_SHA}" \
+            "$RENDER_DEPLOY_HOOK_URL"
