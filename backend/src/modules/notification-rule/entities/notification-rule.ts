@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { NotificationRuleModel as PrismaNotificationRule } from '@generated/prisma/models/NotificationRule'
 import type { NotificationRuleCondition } from './notification-rule-condition'
 

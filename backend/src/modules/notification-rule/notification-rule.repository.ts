@@ -31,7 +31,7 @@ export class NotificationRuleRepository {
       data: {
         name: input.name,
         templateId: input.templateId,
-        condition: input.condition as Prisma.InputJsonValue,
+        condition: input.condition,
         isActive: input.isActive,
       },
     })
@@ -63,7 +63,7 @@ export class NotificationRuleRepository {
       data: {
         name: input.name,
         templateId: input.templateId,
-        condition: input.condition as Prisma.InputJsonValue | undefined,
+        condition: input.condition,
         isActive: input.isActive,
       },
     })
