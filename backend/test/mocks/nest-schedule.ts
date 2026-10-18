@@ -8,6 +8,7 @@ export const ScheduleModule = {
   forRoot: () => ({ module: ScheduleModuleStub }),
 }
 
-export function Cron(..._args: unknown[]): MethodDecorator {
+export function Cron(...args: unknown[]): MethodDecorator {
+  void args
   return () => undefined
 }
