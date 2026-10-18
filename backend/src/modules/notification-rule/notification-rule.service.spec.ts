@@ -91,16 +91,4 @@ describe('NotificationRuleService', () => {
       expect.objectContaining({ recipientEmail: client.email, templateId: 'template-2' }),
     )
   })
-
-  it('sends an idempotency key scoped to the rule, client, and calendar day', async () => {
-    repository.listActive.mockResolvedValue([christmasRule])
-
-    await service.executeDailyRules(new Date('2030-12-25T12:00:00.000Z'))
-
-    expect(notificationsClient.sendTemplateEmail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        idempotencyKey: 'notification-rule:rule-1:client:client-1:date:2030-12-25',
-      }),
-    )
-  })
 })

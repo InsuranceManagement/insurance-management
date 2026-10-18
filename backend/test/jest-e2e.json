@@ -5,5 +5,11 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^@nestjs/schedule$": "<rootDir>/mocks/nest-schedule.ts",
+    "^@/(.*)$": "<rootDir>/../src/$1",
+    "^@generated/prisma$": "<rootDir>/../generated/prisma/client",
+    "^@generated/prisma/(.*)$": "<rootDir>/../generated/prisma/$1"
   }
 }
