@@ -16,12 +16,6 @@ export class Lead {
   }
 
   static fromPrisma(lead: PrismaLead): Lead {
-    return new Lead(
-      lead.id,
-      lead.name,
-      lead.phoneNumber,
-      lead.createdAt,
-      lead.deletedAt,
-    )
+    return new Lead(lead.id, lead.name, lead.phoneNumber, lead.createdAt, lead.deletedAt)
   }
 }
