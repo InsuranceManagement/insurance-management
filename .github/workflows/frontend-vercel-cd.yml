@@ -69,5 +69,5 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Deploy to Vercel
-        working-directory: ..
+        working-directory: ${{ github.workspace }}
         run: vercel deploy --prod --yes --project="$VERCEL_PROJECT_ID" --token="$VERCEL_TOKEN"
