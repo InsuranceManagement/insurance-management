@@ -5,7 +5,7 @@ import { AUTH_COOKIE_NAME } from './cookie.constants'
 const cookieOptions = {
   httpOnly: true,
   secure: environment.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  sameSite: environment.NODE_ENV === 'production' ? ('none' as const) : ('lax' as const),
   path: '/',
 }
 

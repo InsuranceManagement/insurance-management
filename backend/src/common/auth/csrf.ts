@@ -1,5 +1,5 @@
-import { doubleCsrf } from 'csrf-csrf'
 import { randomBytes } from 'crypto'
+import { doubleCsrf } from 'csrf-csrf'
 import type { Request } from 'express'
 
 import { environment } from '../config/environment'
@@ -18,7 +18,7 @@ const csrf = doubleCsrf({
   cookieOptions: {
     httpOnly: true,
     secure: environment.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: environment.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
   },
   getCsrfTokenFromRequest: (request: Request) => request.headers[CSRF_HEADER_NAME],
