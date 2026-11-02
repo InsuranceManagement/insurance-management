@@ -40,6 +40,13 @@ The public registration endpoint is disabled. To provision the first account, se
 and stores only the bcrypt hash. Remove the `BOOTSTRAP_USER_*` values from the process
 environment after it completes. Do not put credentials in source files or shell history.
 
+## Email notifications
+
+Configure `NOTIFICATIONS_API_URL`, `RESEND_API_KEY` and `RESEND_FROM` in the backend
+environment. `RESEND_FROM` uses the format `Name <email@verified-domain.com>` and is
+the administrative sender for password recovery. Keep `RESEND_API_KEY` in a secrets
+manager; the sender address must be accepted by the configured Resend account.
+
 ## Compile and run the project
 
 ```bash

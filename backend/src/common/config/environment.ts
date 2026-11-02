@@ -15,4 +15,6 @@ export const environment = {
   RESET_PASSWORD_URL: process.env.RESET_PASSWORD_URL || '',
   RESET_PASSWORD_TOKEN_TTL_MINUTES: Number(process.env.RESET_PASSWORD_TOKEN_TTL_MINUTES) || 30,
   NOTIFICATIONS_API_URL: process.env.NOTIFICATIONS_API_URL || '',
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  RESEND_FROM: process.env.RESEND_FROM || '',
 }

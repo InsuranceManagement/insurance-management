@@ -2,7 +2,6 @@ import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { createHash, randomBytes } from 'crypto'
 
 import { environment } from '@/common/config/environment'
-import { NOTIFICATION_MAIL_FROM_NAME } from '@/modules/notifications/notification-email.contract'
 import { User } from '@/modules/user/entities/user'
 import { JwtService } from '@nestjs/jwt'
 
@@ -27,6 +26,10 @@ export class PasswordResetService {
   async sendPasswordResetNotification(user: User, token: string, expiresAt: Date): Promise<void> {
     if (!environment.NOTIFICATIONS_API_URL) {
       return
+    }
+
+    if (!environment.RESEND_API_KEY || !environment.RESEND_FROM) {
+      throw new ServiceUnavailableException('Envio de e-mail não está configurado.')
     }
 
     const resetUrl = this.buildPasswordResetUrl(token)
@@ -59,11 +62,12 @@ export class PasswordResetService {
         </div>`
 
     const payload = {
-      type: 'Email',
+      type: 'ResendEmail',
+      resendApiKey: environment.RESEND_API_KEY,
+      resendFrom: environment.RESEND_FROM,
       emailBody,
       recipientEmail: user.email,
       subject: 'Reset password',
-      mailFromName: NOTIFICATION_MAIL_FROM_NAME,
     }
 
     const headers: Record<string, string> = {
