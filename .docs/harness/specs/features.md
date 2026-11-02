@@ -15,6 +15,24 @@
 | Chart types | CRUD com presets de tamanho | Sem gestao detectada | `backend/src/modules/chart-type` |
 | Notificacoes | Logs e criacao/edicao de templates via servico externo | **Detectado:** historico de mensagens em `/logs`, com busca, filtros por status/tipo/erro, paginacao local e detalhes | `backend/src/modules/notifications`, `frontend/src/features/ApplicationLogs` |
 
+## Regras de notificacao agendadas
+
+**Detectado:** `NotificationRuleScheduler` chama `executeDailyRules()` todos os dias as 09:00 no fuso `America/Sao_Paulo` (`backend/src/modules/notification-rule/notification-rule.scheduler.ts`). O modulo registra o scheduler no `NotificationRuleModule`; o processamento roda dentro do processo NestJS.
+
+**Detectado:** em cada execucao, o servico carrega regras ativas em ordem de criacao e clientes ativos (`deletedAt: null`). Para cada par regra/cliente, avalia as condicoes e envia uma mensagem usando o `templateId` da regra somente quando todas as condicoes combinadas forem satisfeitas. As regras nao guardam destinatarios: cada execucao reavalia os clientes atuais.
+
+**Detectado:** condicoes podem conter `all` (todas precisam corresponder) e/ou `any` (ao menos uma precisa corresponder, quando o grupo nao esta vazio). Os campos aceitos sao `context.today`, `client.birthDate` e `client.createdAt`; o unico operador e `EQUALS`. Com `isRecurring: true`, a comparacao usa mes e dia (`MM-DD`), ignorando o ano; com `false`, compara a data completa (`YYYY-MM-DD`). Datas de calendario sao calculadas no fuso `America/Sao_Paulo`. `context.today` como valor e reservado para comparar um campo do cliente com a data de hoje; nao e aceito como valor de uma condicao cujo campo tambem seja `context.today`.
+
+**Detectado:** o envio passa por `NotificationsMsClient.sendTemplateEmail()` para `POST /notifications/send`, com tipo `ResendEmail`, `resendApiKey`, e-mail do cliente, ID do template e variaveis `client.id`, `client.name`, `client.email`, `client.phoneNumber`, `client.birthDate` e `context.today`. O cliente externo tem timeout de sete segundos. Falha ao enviar para um cliente e registrada e nao impede o processamento dos pares seguintes. Evidencias: `backend/src/modules/notification-rule/notification-rule.service.ts`, `backend/src/modules/notifications/notifications-ms.client.ts`.
+
+**Detectado:** a pre-visualizacao `POST /notification-rules/:id/preview` aplica a mesma avaliacao e retorna o total e ate 20 clientes correspondentes; ela nao envia mensagens. O teste esta disponivel na tela de regras.
+
+**Detectado:** o payload `ResendEmail` do envio por regra atualmente nao inclui `resendFrom`, embora esse campo apareca no contrato informado para o servico externo. Verifique essa integracao antes de esperar que os envios agendados sejam aceitos.
+
+**Inferencia:** nao ha lock distribuido nem registro local de execucao/idempotencia no scheduler. Se varias replicas do backend estiverem rodando, cada replica pode executar o job e tentar enviar as mesmas mensagens. Tambem, como as regras sao reavaliadas diariamente sem registro de envio, uma condicao que continuar verdadeira pode enviar novamente a cada dia.
+
+Evidencias principais: `backend/src/modules/notification-rule/notification-rule.scheduler.ts`, `backend/src/modules/notification-rule/notification-rule.service.ts`, `backend/src/modules/notification-rule/notification-rule.processor.ts`, `backend/src/modules/notification-rule/notification-rule.repository.ts`, `backend/src/modules/notifications/notifications-ms.client.ts`.
+
 ## Regras funcionais relevantes
 
 - Auth: nao ha cadastro publico; a conta inicial e criada pelo comando administrativo de bootstrap; login cria sessao revogavel e leva ao dashboard.

@@ -153,6 +153,11 @@ export function NotificationTemplateForm({
           <Label htmlFor="notification-template-body">
             Corpo da mensagem
           </Label>
+          <Typography variant="small" className="text-muted-foreground">
+            Para usar uma variável, escreva o nome entre chaves. Exemplo: Olá,
+            {" "}
+            {"{nome}"}!
+          </Typography>
           <Textarea
             id="notification-template-body"
             rows={8}

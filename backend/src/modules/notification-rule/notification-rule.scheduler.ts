@@ -8,7 +8,7 @@ export class NotificationRuleScheduler {
 
   constructor(private readonly notificationRuleService: NotificationRuleService) {}
 
-  @Cron('0 0 9 * * *', { timeZone: 'America/Sao_Paulo' })
+  @Cron('0 */10 * * * *', { timeZone: 'America/Sao_Paulo' })
   async runDailyRules(): Promise<void> {
     try {
       await this.notificationRuleService.executeDailyRules()
