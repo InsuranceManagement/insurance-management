@@ -43,6 +43,12 @@ const columns: ColumnDef<NotificationTemplate>[] = [
   },
 ]
 
+const templateStatusFilter = {
+  label: "Mostrar inativos",
+  matches: (template: NotificationTemplate, checked: boolean) =>
+    template.isActive !== checked,
+}
+
 const viewFields: EntityViewField<NotificationTemplate>[] = [
   { accessorKey: "name", label: "Nome" },
   { accessorKey: "description", label: "Descrição" },
@@ -94,6 +100,7 @@ export default function NotificationTemplateCrud() {
     <CrudScreen<NotificationTemplate, NotificationTemplateUpsertPayload>
       title="Templates de mensagem"
       listQueryKey={["notification-templates"]}
+      listFilter={templateStatusFilter}
       columns={columns}
       mobileCard={{
         titleColumnId: "name",

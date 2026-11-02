@@ -30,6 +30,8 @@ import {
 } from "@/shared/components/DataTable/data-table"
 import { DeleteModal } from "@/shared/components/DeleteModal/delete-modal"
 import { Modal } from "@/shared/components/ui/modal"
+import { Checkbox } from "@/shared/components/ui/checkbox"
+import { Label } from "@/shared/components/ui/label"
 import { Typography } from "@/shared/components/ui/typography"
 import { ApiRouteType } from "@/shared/constants/routes"
 import { EntityWithName } from "@/shared/models/entity"
@@ -70,6 +72,10 @@ type CrudScreenProps<TData extends EntityWithName, TCreatePayload = never> = {
   inlineRowActions?: boolean
   hideInlineViewActionOnDesktop?: boolean
   caption?: string
+  listFilter?: {
+    label: string
+    matches: (entity: TData, checked: boolean) => boolean
+  }
 }
 
 export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>({
@@ -93,14 +99,21 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>
   inlineRowActions = false,
   hideInlineViewActionOnDesktop = false,
   caption,
+  listFilter,
 }: Readonly<CrudScreenProps<TData, TCreatePayload>>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [filterChecked, setFilterChecked] = useState(false)
 
-  const { rows, areRowsLoading, listQueryKey } = useListEntity<TData>({
+  const { rows: allRows, areRowsLoading, listQueryKey } = useListEntity<TData>({
     title,
     listRoute: sourceRoutes.list,
     listQueryKey: listQueryKeyProp,
   })
+
+  const rows = useMemo(
+    () => listFilter ? allRows.filter((row) => listFilter.matches(row, filterChecked)) : allRows,
+    [allRows, filterChecked, listFilter],
+  )
 
   const selectedRows = useMemo(() => {
     const currentRows = rows
@@ -232,7 +245,10 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>
           >
             <CreateFormComponent
               initialValues={editFormInitialValues}
-              onSubmit={handleEdit}
+              onSubmit={(values) => {
+                if (listFilter) handleClearSelection()
+                return handleEdit(values)
+              }}
               onCancel={() => handleEditModalOpenChange(false)}
               submitLabel="Salvar alteracoes"
               isSubmitting={isEditPending}
@@ -256,6 +272,20 @@ export function CrudScreen<TData extends EntityWithName, TCreatePayload = never>
                 : undefined
             }
           />
+        ) : null}
+
+        {listFilter ? (
+          <Box className="items-center gap-2">
+            <Checkbox
+              id="crud-list-filter"
+              checked={filterChecked}
+              onCheckedChange={(checked) => {
+                setFilterChecked(checked === true)
+                handleClearSelection()
+              }}
+            />
+            <Label htmlFor="crud-list-filter">{listFilter.label}</Label>
+          </Box>
         ) : null}
 
         <Box className="relative w-full flex-col">

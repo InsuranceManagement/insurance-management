@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon, Trash2Icon } from "lucide-react"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import {
@@ -24,6 +24,15 @@ type NotificationTemplateFormProps = {
   submitLabel?: string
   isSubmitting?: boolean
 }
+
+const availableVariables = [
+  { key: "client.name", label: "Nome do cliente" },
+  { key: "client.email", label: "E-mail do cliente" },
+  { key: "client.phoneNumber", label: "Telefone do cliente" },
+  { key: "client.birthDate", label: "Data de nascimento" },
+  { key: "client.id", label: "ID do cliente" },
+  { key: "context.today", label: "Data atual" },
+] as const
 
 function toFormValues(
   initialValues?: Partial<NotificationTemplateUpsertPayload>,
@@ -60,6 +69,8 @@ export function NotificationTemplateForm({
     control: form.control,
     name: "variablePairs",
   })
+  const bodyRef = useRef<HTMLTextAreaElement | null>(null)
+  const bodyField = form.register("body")
 
   useEffect(() => {
     form.reset(normalizedInitialValues)
@@ -68,6 +79,28 @@ export function NotificationTemplateForm({
   const isSubmitDisabled = isSubmitting || form.formState.isSubmitting
 
   const isEditing = !!initialValues
+
+  const insertVariable = (variable: (typeof availableVariables)[number]) => {
+    const body = form.getValues("body")
+    const textarea = bodyRef.current
+    const start = textarea?.selectionStart ?? body.length
+    const end = textarea?.selectionEnd ?? body.length
+    const placeholder = `{{${variable.key}}}`
+
+    form.setValue("body", body.slice(0, start) + placeholder + body.slice(end), {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+
+    if (!form.getValues("variablePairs").some((pair) => pair.key === variable.key)) {
+      append({ key: variable.key, value: variable.label })
+    }
+
+    requestAnimationFrame(() => {
+      textarea?.focus()
+      textarea?.setSelectionRange(start + placeholder.length, start + placeholder.length)
+    })
+  }
 
   const handleSubmit = form.handleSubmit(async (values) => {
     const variableSchema = values.variablePairs.reduce<Record<string, string>>(
@@ -154,14 +187,16 @@ export function NotificationTemplateForm({
             Corpo da mensagem
           </Label>
           <Typography variant="small" className="text-muted-foreground">
-            Para usar uma variável, escreva o nome entre chaves. Exemplo: Olá,
-            {" "}
-            {"{nome}"}!
+            Escolha uma variável abaixo para inseri-la na mensagem.
           </Typography>
           <Textarea
             id="notification-template-body"
             rows={8}
-            {...form.register("body")}
+            {...bodyField}
+            ref={(element) => {
+              bodyField.ref(element)
+              bodyRef.current = element
+            }}
             aria-invalid={!!form.formState.errors.body}
           />
           {form.formState.errors.body?.message ? (
@@ -169,6 +204,22 @@ export function NotificationTemplateForm({
               {form.formState.errors.body.message}
             </Typography>
           ) : null}
+          <Typography variant="small" className="text-muted-foreground">
+            Variáveis disponíveis:
+          </Typography>
+          <Box className="flex-wrap gap-2">
+            {availableVariables.map((variable) => (
+              <Button
+                key={variable.key}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => insertVariable(variable)}
+              >
+                {variable.label}
+              </Button>
+            ))}
+          </Box>
         </Box>
 
         {isEditing ? (
@@ -189,57 +240,62 @@ export function NotificationTemplateForm({
           />
         ) : null}
 
-        <Box className="flex-col gap-3 border-t pt-4">
-          <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <Typography variant="small" className="font-medium">
-              Variáveis do template
-            </Typography>
-            <Button
-              className="w-full sm:w-auto"
-              type="button"
-              size="sm"
-              variant="outline"
-              onClick={() => append({ key: "", value: "" })}
-            >
-              <PlusIcon />
-              Adicionar
-            </Button>
-          </Box>
-
-          {fields.length === 0 ? (
-            <Typography variant="small" className="text-muted-foreground">
-              Sem variáveis configuradas.
-            </Typography>
-          ) : null}
-
-          {fields.map((item, index) => (
-            <Box
-              key={item.id}
-              className="min-w-0 flex-col items-stretch gap-2 rounded-md border p-3 sm:flex-row sm:items-center"
-            >
-              <Input
-                className="min-w-0 w-full"
-                {...form.register(`variablePairs.${index}.key`)}
-                placeholder="Chave"
-              />
-              <Input
-                className="min-w-0 w-full"
-                {...form.register(`variablePairs.${index}.value`)}
-                placeholder="Descrição da variável"
-              />
+        <details className="border-t pt-4">
+          <summary className="cursor-pointer text-sm font-medium">
+            Configuração avançada de variáveis
+          </summary>
+          <Box className="flex-col gap-3 pt-3">
+            <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Typography variant="small" className="font-medium">
+                Variáveis do template
+              </Typography>
               <Button
-                className="self-end sm:self-auto"
+                className="w-full sm:w-auto"
                 type="button"
-                size="icon-sm"
-                variant="ghost"
-                aria-label="Remover variável"
-                onClick={() => remove(index)}
+                size="sm"
+                variant="outline"
+                onClick={() => append({ key: "", value: "" })}
               >
-                <Trash2Icon />
+                <PlusIcon />
+                Adicionar
               </Button>
             </Box>
-          ))}
-        </Box>
+
+            {fields.length === 0 ? (
+              <Typography variant="small" className="text-muted-foreground">
+                Sem variáveis configuradas.
+              </Typography>
+            ) : null}
+
+            {fields.map((item, index) => (
+              <Box
+                key={item.id}
+                className="min-w-0 flex-col items-stretch gap-2 rounded-md border p-3 sm:flex-row sm:items-center"
+              >
+                <Input
+                  className="min-w-0 w-full"
+                  {...form.register(`variablePairs.${index}.key`)}
+                  placeholder="Chave"
+                />
+                <Input
+                  className="min-w-0 w-full"
+                  {...form.register(`variablePairs.${index}.value`)}
+                  placeholder="Descrição da variável"
+                />
+                <Button
+                  className="self-end sm:self-auto"
+                  type="button"
+                  size="icon-sm"
+                  variant="ghost"
+                  aria-label="Remover variável"
+                  onClick={() => remove(index)}
+                >
+                  <Trash2Icon />
+                </Button>
+              </Box>
+            ))}
+          </Box>
+        </details>
 
         <Box className="crud-modal-form-actions mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? (
