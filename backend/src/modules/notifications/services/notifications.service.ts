@@ -4,6 +4,7 @@ import { TemplateResponseDto } from '@/modules/notifications/dto/template-respon
 import { UpdateTemplateDto } from '@/modules/notifications/dto/update-template.dto'
 import { NotificationLog } from '@/modules/notifications/entities/notification-log'
 import { Template } from '@/modules/notifications/entities/template'
+import { NOTIFICATION_EMAIL_TYPE } from '@/modules/notifications/notification-email.contract'
 import { NotificationsMsClient } from '@/modules/notifications/notifications-ms.client'
 import { Injectable } from '@nestjs/common'
 
@@ -22,7 +23,10 @@ export class NotificationsService {
   }
 
   async createTemplate(input: CreateTemplateDto): Promise<TemplateResponseDto> {
-    const template = await this.notificationsMsClient.createTemplate(input)
+    const template = await this.notificationsMsClient.createTemplate({
+      ...input,
+      notificationTypeId: input.notificationTypeId ?? NOTIFICATION_EMAIL_TYPE,
+    })
     return this.toTemplateResponse(template)
   }
 

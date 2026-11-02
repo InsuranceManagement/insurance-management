@@ -30,7 +30,7 @@ export class CreateTemplateDto implements CreateTemplateInput {
   @IsBoolean({ message: 'O campo ativo deve ser um booleano.' })
   isActive?: boolean
 
-  @ApiPropertyOptional({ description: 'Notification type id' })
+  @ApiPropertyOptional({ description: 'Notification type id', default: 'ResendEmail' })
   @IsOptional()
   @IsString({ message: 'O ID do tipo de notificação deve ser um texto.' })
   notificationTypeId?: string

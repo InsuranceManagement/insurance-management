@@ -8,7 +8,10 @@ import type { CreateTemplateInput } from '@/modules/notifications/inputs/create-
 import type { UpdateTemplateInput } from '@/modules/notifications/inputs/update-template.input'
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { type NotificationTemplateVariables } from './notification-email.contract'
+import {
+  NOTIFICATION_EMAIL_TYPE,
+  type NotificationTemplateVariables,
+} from './notification-email.contract'
 
 const REQUEST_TIMEOUT_MS = 7000
 
@@ -71,7 +74,7 @@ export class NotificationsMsClient {
     await this.request('/notifications/send', {
       method: 'POST',
       body: {
-        type: 'ResendEmail',
+        type: NOTIFICATION_EMAIL_TYPE,
         resendApiKey: environment.RESEND_API_KEY,
         resendFrom: environment.RESEND_FROM,
         recipientEmail: input.recipientEmail,
