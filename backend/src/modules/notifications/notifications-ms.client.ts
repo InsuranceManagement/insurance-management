@@ -64,11 +64,16 @@ export class NotificationsMsClient {
   }
 
   async sendTemplateEmail(input: SendTemplateEmailInput): Promise<void> {
+    if (!environment.RESEND_API_KEY || !environment.RESEND_FROM) {
+      throw new ServiceUnavailableException('Envio de e-mail não está configurado.')
+    }
+
     await this.request('/notifications/send', {
       method: 'POST',
       body: {
         type: 'ResendEmail',
         resendApiKey: environment.RESEND_API_KEY,
+        resendFrom: environment.RESEND_FROM,
         recipientEmail: input.recipientEmail,
         templateId: input.templateId,
         templateVariables: input.templateVariables,
