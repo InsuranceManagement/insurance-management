@@ -1,7 +1,6 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon, Trash2Icon } from "lucide-react"
 import { useEffect, useMemo, useRef } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
@@ -65,7 +64,7 @@ export function NotificationTemplateForm({
     resolver: zodResolver(notificationTemplateUpsertSchema),
     defaultValues: normalizedInitialValues,
   })
-  const { fields, append, remove } = useFieldArray({
+  const { append } = useFieldArray({
     control: form.control,
     name: "variablePairs",
   })
@@ -239,63 +238,6 @@ export function NotificationTemplateForm({
             )}
           />
         ) : null}
-
-        <details className="border-t pt-4">
-          <summary className="cursor-pointer text-sm font-medium">
-            Configuração avançada de variáveis
-          </summary>
-          <Box className="flex-col gap-3 pt-3">
-            <Box className="flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <Typography variant="small" className="font-medium">
-                Variáveis do template
-              </Typography>
-              <Button
-                className="w-full sm:w-auto"
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => append({ key: "", value: "" })}
-              >
-                <PlusIcon />
-                Adicionar
-              </Button>
-            </Box>
-
-            {fields.length === 0 ? (
-              <Typography variant="small" className="text-muted-foreground">
-                Sem variáveis configuradas.
-              </Typography>
-            ) : null}
-
-            {fields.map((item, index) => (
-              <Box
-                key={item.id}
-                className="min-w-0 flex-col items-stretch gap-2 rounded-md border p-3 sm:flex-row sm:items-center"
-              >
-                <Input
-                  className="min-w-0 w-full"
-                  {...form.register(`variablePairs.${index}.key`)}
-                  placeholder="Chave"
-                />
-                <Input
-                  className="min-w-0 w-full"
-                  {...form.register(`variablePairs.${index}.value`)}
-                  placeholder="Descrição da variável"
-                />
-                <Button
-                  className="self-end sm:self-auto"
-                  type="button"
-                  size="icon-sm"
-                  variant="ghost"
-                  aria-label="Remover variável"
-                  onClick={() => remove(index)}
-                >
-                  <Trash2Icon />
-                </Button>
-              </Box>
-            ))}
-          </Box>
-        </details>
 
         <Box className="crud-modal-form-actions mb-4 flex-row justify-end gap-2 border-t pt-4 [&>button]:min-w-0 [&>button]:flex-1 sm:[&>button]:flex-none">
           {onCancel ? (
