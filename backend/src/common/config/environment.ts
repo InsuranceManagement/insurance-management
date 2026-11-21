@@ -17,4 +17,5 @@ export const environment = {
   NOTIFICATIONS_API_URL: process.env.NOTIFICATIONS_API_URL || '',
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
   RESEND_FROM: process.env.RESEND_FROM || '',
+  LEAD_NOTIFICATION_EMAIL: process.env.LEAD_NOTIFICATION_EMAIL || '',
 }

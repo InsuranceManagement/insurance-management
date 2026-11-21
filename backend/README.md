@@ -46,6 +46,8 @@ Configure `NOTIFICATIONS_API_URL`, `RESEND_API_KEY` and `RESEND_FROM` in the bac
 environment. `RESEND_FROM` uses the format `Name <email@verified-domain.com>` and is
 the administrative sender for password recovery. Keep `RESEND_API_KEY` in a secrets
 manager; the sender address must be accepted by the configured Resend account.
+Set `LEAD_NOTIFICATION_EMAIL` to the recipient that should receive alerts after a lead
+is created. If delivery fails, the lead remains saved and the failure is logged.
 
 ## Compile and run the project
 

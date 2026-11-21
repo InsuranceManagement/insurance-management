@@ -26,6 +26,12 @@ export type SendTemplateEmailInput = {
   templateVariables: NotificationTemplateVariables
 }
 
+export type SendEmailInput = {
+  recipientEmail: string
+  subject: string
+  emailBody: string
+}
+
 @Injectable()
 export class NotificationsMsClient {
   private readonly logger = new Logger(NotificationsMsClient.name)
@@ -80,6 +86,22 @@ export class NotificationsMsClient {
         recipientEmail: input.recipientEmail,
         templateId: input.templateId,
         templateVariables: input.templateVariables,
+      },
+    })
+  }
+
+  async sendEmail(input: SendEmailInput): Promise<void> {
+    if (!environment.RESEND_API_KEY || !environment.RESEND_FROM) {
+      throw new ServiceUnavailableException('Envio de e-mail não está configurado.')
+    }
+
+    await this.request('/notifications/send', {
+      method: 'POST',
+      body: {
+        type: NOTIFICATION_EMAIL_TYPE,
+        resendApiKey: environment.RESEND_API_KEY,
+        resendFrom: environment.RESEND_FROM,
+        ...input,
       },
     })
   }

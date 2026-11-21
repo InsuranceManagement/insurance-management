@@ -60,6 +60,8 @@ Criacao exige `name`, `email`, `phoneNumber`, `birthDate`, `address`; aceita `cp
 
 **Detectado:** `POST /leads` cria lead com nome e telefone. `GET /leads` lista leads ativos e `DELETE /leads` faz soft delete em lote. `POST /leads/:id/convert` exige JWT e os campos restantes de cliente (`email`, `birthDate`, `address`, `cpf?`, `cnpj?`, `productIds?`). Nome e telefone sao copiados do lead no servidor. A conversao cria o cliente e marca o lead como excluido na mesma transacao; lead inexistente ou inativo retorna 404. Evidencias: `backend/src/modules/lead/lead.controller.ts`, `backend/src/modules/client/services/client.service.ts`, `backend/src/modules/client/client.repository.ts`.
 
+**Detectado:** apos salvar um lead, a API tenta enviar um aviso com nome e telefone ao endereco em `LEAD_NOTIFICATION_EMAIL`, usando o servico de notificacoes e as configuracoes `RESEND_API_KEY` e `RESEND_FROM`. A falha no envio nao desfaz o cadastro e e registrada no log; sem destinatario configurado, o envio nao e tentado. Evidencias: `backend/src/modules/lead/services/lead.service.ts`, `backend/src/modules/notifications/notifications-ms.client.ts`.
+
 ### Visitas
 
 | Metodo | Path          | Contrato                                            |
