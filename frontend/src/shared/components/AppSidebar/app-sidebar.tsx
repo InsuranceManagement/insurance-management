@@ -15,8 +15,8 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { useMemo } from "react"
+import { usePathname } from "next/navigation"
+import { useMemo, useState } from "react"
 
 import logoBranca from "@/shared/assets/logo_branca.png"
 import logoWm from "@/shared/assets/logo_wm.png"
@@ -113,7 +113,7 @@ function getActiveHref(pathname: string | null): string | null {
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const router = useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const activeHref = useMemo(() => getActiveHref(pathname), [pathname])
   const { isMobile, setOpenMobile } = useSidebar()
 
@@ -123,10 +123,18 @@ export function AppSidebar() {
     if (isMobile) setOpenMobile(false)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (isLoggingOut) return
+
+    setIsLoggingOut(true)
     handleNavigate()
-    logout()
-    router.replace("/login")
+
+    try {
+      // AuthGuard redirects after logout clears the authentication state.
+      await logout()
+    } finally {
+      setIsLoggingOut(false)
+    }
   }
 
   return (
@@ -234,8 +242,10 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Sair"
+              tooltip={isLoggingOut ? "Saindo..." : "Sair"}
               onClick={handleLogout}
+              disabled={isLoggingOut}
+              aria-busy={isLoggingOut}
               className="text-sidebar-foreground"
             >
               <LogOutIcon />
@@ -245,7 +255,7 @@ export function AppSidebar() {
                 variant="small"
                 className="text-sidebar-foreground"
               >
-                <span>Sair</span>
+                <span>{isLoggingOut ? "Saindo..." : "Sair"}</span>
               </Typography>
             </SidebarMenuButton>
           </SidebarMenuItem>
