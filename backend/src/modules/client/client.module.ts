@@ -1,3 +1,4 @@
+import { NotificationsModule } from '@/modules/notifications/notifications.module'
 import { Module } from '@nestjs/common'
 import { PrismaModule } from '../database/prisma.module'
 import { ClientController } from './client.controller'
@@ -5,7 +6,7 @@ import { ClientRepository } from './client.repository'
 import { ClientService } from './services/client.service'
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, NotificationsModule],
   controllers: [ClientController],
   providers: [ClientService, ClientRepository],
   exports: [ClientService],
