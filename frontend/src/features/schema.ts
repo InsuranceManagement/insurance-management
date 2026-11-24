@@ -102,3 +102,50 @@ export type NotificationTemplateFormValues = z.infer<
   typeof notificationTemplateUpsertSchema
 >;
 
+export const sendClientEmailSchema = z
+  .object({
+    mode: z.enum(["custom", "template"]),
+    subject: z
+      .string()
+      .trim()
+      .max(200, "O assunto deve ter no máximo 200 caracteres.")
+      .optional(),
+    message: z
+      .string()
+      .trim()
+      .max(5000, "A mensagem deve ter no máximo 5000 caracteres.")
+      .optional(),
+    templateId: z.string().trim().optional(),
+  })
+  .superRefine((values, context) => {
+    if (values.mode === "template") {
+      if (!values.templateId) {
+        context.addIssue({
+          code: "custom",
+          path: ["templateId"],
+          message: "Selecione um template.",
+        });
+      }
+      return;
+    }
+
+    if (!values.subject) {
+      context.addIssue({
+        code: "custom",
+        path: ["subject"],
+        message: "O assunto é obrigatório.",
+      });
+    }
+
+    if (!values.message) {
+      context.addIssue({
+        code: "custom",
+        path: ["message"],
+        message: "A mensagem é obrigatória.",
+      });
+    }
+  });
+
+export type SendClientEmailFormValues = z.infer<typeof sendClientEmailSchema>;
+
+

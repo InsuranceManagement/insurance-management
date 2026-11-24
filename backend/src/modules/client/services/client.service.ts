@@ -4,13 +4,26 @@ import { ClientResponseDto } from '@/modules/client/dto/client-response.dto'
 import { ClientWithProductsResponseDto } from '@/modules/client/dto/client-with-products-response.dto'
 import { CreateClientDto } from '@/modules/client/dto/create-client.dto'
 import { UpdateClientDto } from '@/modules/client/dto/update-client.dto'
+import { SendClientEmailInput } from '@/modules/client/inputs/send-client-email.input'
 import type { ConvertLeadDto } from '@/modules/lead/dto/convert-lead.dto'
 import { Client } from '@/modules/client/entities/client'
+import { NotificationsMsClient } from '@/modules/notifications/notifications-ms.client'
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+const TIME_ZONE = 'America/Sao_Paulo'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 @Injectable()
 export class ClientService {
-  constructor(private readonly clientRepository: ClientRepository) {}
+  constructor(
+    private readonly clientRepository: ClientRepository,
+    private readonly notificationsMsClient: NotificationsMsClient,
+  ) {}
 
   async create(input: CreateClientDto): Promise<ClientResponseDto> {
     await this.validateCreate(input)
@@ -107,6 +120,74 @@ export class ClientService {
     if (deletedCount === 0) {
       throw new NotFoundException('Cliente não encontrado')
     }
+  }
+
+  async sendEmail(clientId: string, input: SendClientEmailInput): Promise<void> {
+    const client = await this.clientRepository.findById(clientId)
+
+    if (!client?.isActive()) {
+      throw new NotFoundException('Cliente não encontrado')
+    }
+
+    if (!client.email?.trim()) {
+      throw new BadRequestException('Cliente não possui e-mail cadastrado')
+    }
+
+    const templateId = input.templateId?.trim() || undefined
+    const subject = input.subject?.trim() || undefined
+    const message = input.message?.trim() || undefined
+
+    if (templateId && (subject || message)) {
+      throw new BadRequestException(
+        'Informe um template ou assunto e mensagem personalizados, não ambos.',
+      )
+    }
+
+    if (templateId) {
+      await this.notificationsMsClient.sendTemplateEmail({
+        recipientEmail: client.email,
+        templateId,
+        templateVariables: {
+          'client.id': client.id,
+          'client.name': client.name,
+          'client.email': client.email,
+          'client.phoneNumber': client.phoneNumber,
+          'client.birthDate': client.birthDate.toISOString(),
+          'context.today': dayjs().tz(TIME_ZONE).format('YYYY-MM-DD'),
+        },
+      })
+      return
+    }
+
+    if (!subject || !message) {
+      throw new BadRequestException('Informe o assunto e a mensagem do e-mail.')
+    }
+
+    await this.notificationsMsClient.sendEmail({
+      recipientEmail: client.email,
+      subject,
+      emailBody: this.formatEmailBody(message),
+    })
+  }
+
+  private formatEmailBody(message: string): string {
+    return message
+      .split(/\r?\n\s*\r?\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean)
+      .map((paragraph) => `<p>${this.escapeHtml(paragraph).replace(/\r?\n/g, '<br>')}</p>`)
+      .join('')
+  }
+
+  private escapeHtml(value: string): string {
+    const entities: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }
+    return value.replace(/[&<>"']/g, (character) => entities[character])
   }
 
   private toResponse(client: Client): ClientResponseDto {

@@ -129,6 +129,10 @@ export const routes: Record<string, Record<string, ApiRouteType>> = {
       method: "PATCH",
       path: (id: string) => `/clients/${id}`,
     },
+    sendEmailById: {
+      method: "POST",
+      path: (id: string) => `/clients/${id}/email`,
+    },
     deleteMany: {
       method: "DELETE",
       path: "/clients",
