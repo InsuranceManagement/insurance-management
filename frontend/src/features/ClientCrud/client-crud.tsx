@@ -1,9 +1,11 @@
 "use client"
 
 import { type ColumnDef } from "@tanstack/react-table"
-import { useMemo } from "react"
+import { Mail } from "lucide-react"
+import { useMemo, useState } from "react"
 
 import { ClientForm } from "@/features/ClientCrud/components/form"
+import { SendClientEmailModal } from "@/features/ClientCrud/components/send-client-email-modal"
 import { type Client } from "@/features/ClientCrud/models/client"
 import {
   formatProductLabel,
@@ -14,6 +16,7 @@ import { type EntityViewField } from "@/shared/components/CrudScreen/components/
 import { CrudScreen } from "@/shared/components/CrudScreen/crud-screen"
 import { useListEntity } from "@/shared/components/CrudScreen/hooks/use-list-entity"
 import { Box } from "@/shared/components/ui/box"
+import { Button } from "@/shared/components/ui/button"
 import { Typography } from "@/shared/components/ui/typography"
 import { routes } from "@/shared/constants/routes"
 import { formatDate } from "@/shared/lib/date-format"
@@ -208,6 +211,7 @@ const createViewFields = (
 ]
 
 export default function ClientCrud() {
+  const [clientToEmail, setClientToEmail] = useState<Client | null>(null)
   const { rows: products } = useListEntity<Product>({
     title: "Produtos",
     listRoute: routes.products.list,
@@ -222,48 +226,70 @@ export default function ClientCrud() {
   }, [products])
 
   return (
-    <CrudScreen<Client, ClientUpsertFormValues>
-      title="Clientes"
-      columns={columns}
-      inlineRowActions
-      mobileCard={{
-        titleColumnId: "name",
-        hiddenColumnIds: ["email", "cpf", "createdAt"],
-        tabletHiddenColumnIds: ["cpf"],
-      }}
-      createForm={ClientForm}
-      createFormTitle="Novo cliente"
-      editFormTitle="Editar cliente"
-      formModalContentClassName="sm:max-w-3xl"
-      viewModalTitle="Detalhes do Cliente"
-      viewModalContentClassName="sm:max-w-3xl"
-      viewModalExpandable
-      viewFields={viewFields}
-      mapEditEntityToFormValues={(entity) => ({
-        name: entity.name,
-        email: entity.email,
-        cpf: entity.cpf ?? "",
-        cnpj: entity.cnpj ?? "",
-        phoneNumber: entity.phoneNumber,
-        birthDate: formatDate(entity.birthDate, "YYYY-MM-DD", ""),
-        address: {
-          cep: entity.address.cep ?? "",
-          street: entity.address.street,
-          district: entity.address.district,
-          state: entity.address.state,
-          city: entity.address.city,
-          number: entity.address.number,
-          complement: entity.address.complement ?? "",
-        },
-        productIds: entity.products.map((product) => product.id),
-      })}
-      caption="Tabela de clientes"
-      sourceRoutes={{
-        list: routes.clients.list,
-        create: routes.clients.create,
-        edit: routes.clients.updateById,
-        delete: routes.clients.deleteMany,
-      }}
-    />
+    <>
+      <CrudScreen<Client, ClientUpsertFormValues>
+        title="Clientes"
+        columns={columns}
+        inlineRowActions
+        mobileCard={{
+          titleColumnId: "name",
+          hiddenColumnIds: ["email", "cpf", "createdAt"],
+          tabletHiddenColumnIds: ["cpf"],
+        }}
+        createForm={ClientForm}
+        createFormTitle="Novo cliente"
+        editFormTitle="Editar cliente"
+        formModalContentClassName="sm:max-w-3xl"
+        viewModalTitle="Detalhes do Cliente"
+        viewModalContentClassName="sm:max-w-3xl"
+        viewModalExpandable
+        viewFields={viewFields}
+        renderViewActions={(client, closeView) => (
+          <Button
+            type="button"
+            disabled={!client.email?.trim()}
+            onClick={() => {
+              closeView()
+              setClientToEmail(client)
+            }}
+          >
+            <Mail className="size-4" />
+            Enviar e-mail
+          </Button>
+        )}
+        mapEditEntityToFormValues={(entity) => ({
+          name: entity.name,
+          email: entity.email,
+          cpf: entity.cpf ?? "",
+          cnpj: entity.cnpj ?? "",
+          phoneNumber: entity.phoneNumber,
+          birthDate: formatDate(entity.birthDate, "YYYY-MM-DD", ""),
+          address: {
+            cep: entity.address.cep ?? "",
+            street: entity.address.street,
+            district: entity.address.district,
+            state: entity.address.state,
+            city: entity.address.city,
+            number: entity.address.number,
+            complement: entity.address.complement ?? "",
+          },
+          productIds: entity.products.map((product) => product.id),
+        })}
+        caption="Tabela de clientes"
+        sourceRoutes={{
+          list: routes.clients.list,
+          create: routes.clients.create,
+          edit: routes.clients.updateById,
+          delete: routes.clients.deleteMany,
+        }}
+      />
+      <SendClientEmailModal
+        client={clientToEmail}
+        open={!!clientToEmail}
+        onOpenChange={(open) => {
+          if (!open) setClientToEmail(null)
+        }}
+      />
+    </>
   )
 }
