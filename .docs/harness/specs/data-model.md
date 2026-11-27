@@ -49,7 +49,7 @@ Todos possuem `createdAt` e `updatedAt`; todos exceto Chart e ChartType possuem 
 
 - Migrations ficam em `backend/prisma/migrations`; `prisma.config.ts` configura schema, migrations e seed.
 - `backend/prisma/seed.ts` percorre `seedData` e faz upsert por `id`.
-- O seed inclui user, catalogos, charts, seguradoras, produtos, clientes e enderecos. Trate credenciais/dados de seed como sensiveis e nao os replique no harness.
+- **Detectado:** o seed inclui user, chartType e chart. Trate credenciais/dados de seed como sensiveis e nao os replique no harness. Evidencia: `backend/prisma/seed-data.ts`.
 
 ## Mudancas
 

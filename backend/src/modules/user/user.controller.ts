@@ -1,3 +1,5 @@
+import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
+import { UserResponseDto } from '@/modules/user/dto/user-response.dto'
 import { Public } from '@/common/auth/auth.decorators'
 import { LoginDto } from '@/modules/user/dto/login.dto'
 import { UpdateUserDto } from '@/modules/user/dto/update-user.dto'
@@ -15,7 +17,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common'
-import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { ApiCookieAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import type { Request, Response } from 'express'
 import { JwtPayload } from '@/common/auth/auth.service'
 import { AUTH_COOKIE_NAME } from '@/common/auth/cookie.constants'
@@ -74,6 +76,13 @@ export class UserController {
   @ApiOkResponse({ type: CsrfResponseDto })
   csrf(@Req() request: Request, @Res({ passthrough: true }) response: Response): CsrfResponseDto {
     return { csrfToken: generateCsrfToken(request, response) }
+  }
+
+  @Post()
+  @ApiCookieAuth(AUTH_COOKIE_NAME)
+  @ApiCreatedResponse({ type: UserResponseDto })
+  create(@Body() input: CreateUserDto) {
+    return this.userService.create(input)
   }
 
   @Post('logout')

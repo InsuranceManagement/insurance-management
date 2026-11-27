@@ -40,3 +40,38 @@ describe('NotificationsMsClient.sendEmail', () => {
     })
   })
 })
+
+describe('NotificationsMsClient cold start', () => {
+  const originalEnvironment = { ...environment }
+
+  afterEach(() => {
+    Object.assign(environment, originalEnvironment)
+    jest.useRealTimers()
+    jest.restoreAllMocks()
+  })
+
+  it('allows a slow response beyond seven seconds and retains a timeout', async () => {
+    jest.useFakeTimers()
+    environment.NOTIFICATIONS_API_URL = 'https://notifications.example'
+    environment.JWT_SECRET = ''
+    let signal: AbortSignal | undefined
+    jest.spyOn(global, 'fetch').mockImplementation((_url, options) => {
+      signal = options?.signal as AbortSignal
+      return new Promise<Response>((_resolve, reject) => {
+        signal?.addEventListener('abort', () =>
+          reject(Object.assign(new Error('Aborted'), { name: 'AbortError' })),
+        )
+      })
+    })
+    const client = new NotificationsMsClient({} as JwtService)
+    const result = client.getTemplates()
+    const rejection = expect(result).rejects.toThrow('demorou para responder')
+    await Promise.resolve()
+
+    await jest.advanceTimersByTimeAsync(7_000)
+    expect(signal?.aborted).toBe(false)
+    await jest.advanceTimersByTimeAsync(83_000)
+    expect(signal?.aborted).toBe(true)
+    await rejection
+  })
+})

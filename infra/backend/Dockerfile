@@ -45,5 +45,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
 
-# Run migrations, run seed once, and start the compiled app.
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/prisma/seed.js && exec node dist/src/main.js"]
+# Run migrations and start the compiled app.
+CMD ["sh", "-c", "npx prisma migrate deploy && exec node dist/src/main.js"]

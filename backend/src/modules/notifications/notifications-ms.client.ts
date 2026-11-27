@@ -13,7 +13,7 @@ import {
   type NotificationTemplateVariables,
 } from './notification-email.contract'
 
-const REQUEST_TIMEOUT_MS = 7000
+const REQUEST_TIMEOUT_MS = 90_000
 
 type MsRequestOptions = {
   method: 'GET' | 'POST' | 'PUT'
@@ -151,7 +151,7 @@ export class NotificationsMsClient {
       clearTimeout(timeout)
 
       if (error instanceof Error && error.name === 'AbortError') {
-        this.logger.warn('Notification service timeout after 7 seconds')
+        this.logger.warn(`Notification service timeout after ${REQUEST_TIMEOUT_MS / 1000} seconds`)
 
         throw new ServiceUnavailableException(
           'O serviço de notificações demorou para responder. Tente novamente mais tarde.',

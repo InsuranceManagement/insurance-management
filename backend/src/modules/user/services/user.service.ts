@@ -1,3 +1,4 @@
+import { CreateUserDto } from '@/modules/user/dto/create-user.dto'
 import { AuthSession } from '@/modules/user/dto/auth-response.dto'
 import { ForgotPasswordDto } from '@/modules/user/dto/forgot-password.dto'
 import { LoginDto } from '@/modules/user/dto/login.dto'
@@ -36,6 +37,24 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly sessionService: SessionService,
   ) {}
+
+  async create(input: CreateUserDto): Promise<UserResponseDto> {
+    const password = await this.passwordService.hash(input.password)
+    try {
+      const user = await this.userRepository.create({ ...input, name: input.name.trim(), password })
+      return this.toUserResponse(user)
+    } catch (error) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('E-mail já está em uso')
+      }
+      throw error
+    }
+  }
 
   async login(
     input: LoginDto,

@@ -20,6 +20,11 @@ type UserRecord = {
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async create(input: { name: string; email: string; password: string }): Promise<User> {
+    const user = await this.prismaService.user.create({ data: input })
+    return this.toEntity(user)
+  }
+
   async findById(userId: string): Promise<User | null> {
     const user = await this.prismaService.user.findFirst({
       where: {
