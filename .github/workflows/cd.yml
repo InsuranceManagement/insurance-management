@@ -1,9 +1,7 @@
+# Fluxo legado de deploy, disponivel apenas por acionamento manual.
 name: cd
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       deploy_environment:
@@ -20,11 +18,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEPLOY_ENVIRONMENT: ${{ github.event_name == 'push' && 'homolog' || inputs.deploy_environment }}
-  BACKEND_IMAGE: lucascastelano/insurance-management-backend:${{ github.event_name == 'push' && 'homolog' || inputs.deploy_environment }}
-  FRONTEND_IMAGE: lucascastelano/insurance-management-frontend:${{ github.event_name == 'push' && 'homolog' || inputs.deploy_environment }}
-  NEXT_PUBLIC_API_URL: ${{ (github.event_name == 'push' || inputs.deploy_environment == 'homolog') && 'https://apim-insurance-management.azure-api.net/homolog/api' || 'https://apim-insurance-management.azure-api.net/api' }}
-  NEXT_PUBLIC_BASE_PATH: ${{ (github.event_name == 'push' || inputs.deploy_environment == 'homolog') && '/homolog' || '' }}
+  DEPLOY_ENVIRONMENT: ${{ inputs.deploy_environment }}
+  BACKEND_IMAGE: lucascastelano/insurance-management-backend:${{ inputs.deploy_environment }}
+  FRONTEND_IMAGE: lucascastelano/insurance-management-frontend:${{ inputs.deploy_environment }}
+  NEXT_PUBLIC_API_URL: ${{ inputs.deploy_environment == 'homolog' && 'https://apim-insurance-management.azure-api.net/homolog/api' || 'https://apim-insurance-management.azure-api.net/api' }}
+  NEXT_PUBLIC_BASE_PATH: ${{ inputs.deploy_environment == 'homolog' && '/homolog' || '' }}
 
 jobs:
   deploy-frontend:
