@@ -13,7 +13,7 @@ import {
   type NotificationTemplateVariables,
 } from './notification-email.contract'
 
-const REQUEST_TIMEOUT_MS = 90_000
+const REQUEST_TIMEOUT_MS = 300_000
 
 type MsRequestOptions = {
   method: 'GET' | 'POST' | 'PUT'

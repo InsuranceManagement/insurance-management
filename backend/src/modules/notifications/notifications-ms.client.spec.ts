@@ -50,7 +50,7 @@ describe('NotificationsMsClient cold start', () => {
     jest.restoreAllMocks()
   })
 
-  it('allows a slow response beyond seven seconds and retains a timeout', async () => {
+  it('allows up to five minutes for a response', async () => {
     jest.useFakeTimers()
     environment.NOTIFICATIONS_API_URL = 'https://notifications.example'
     environment.JWT_SECRET = ''
@@ -68,9 +68,9 @@ describe('NotificationsMsClient cold start', () => {
     const rejection = expect(result).rejects.toThrow('demorou para responder')
     await Promise.resolve()
 
-    await jest.advanceTimersByTimeAsync(7_000)
+    await jest.advanceTimersByTimeAsync(299_999)
     expect(signal?.aborted).toBe(false)
-    await jest.advanceTimersByTimeAsync(83_000)
+    await jest.advanceTimersByTimeAsync(1)
     expect(signal?.aborted).toBe(true)
     await rejection
   })
